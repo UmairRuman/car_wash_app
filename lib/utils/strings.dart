@@ -1,0 +1,13 @@
+var stringCreateAccount = "Create new Account";
+var stringReadAndAgreeTo = "I read and agree to";
+var stringTermsAndCondition = "Terms & Conditons";
+var stringAlreadyHaveAnAccount = "Already have an account?";
+var stringSignInPage = "Sign In";
+var stringLogin = "Login";
+var stringDontHaveAnAccount = "Don't have an Account?";
+var stringSignUpPage = "Sign Up";
+var stringWelcomeBack = "Welcome Back";
+var stringBookYourCarWash = "Book Your Car Wash";
+var stringUserName = "Hey, Umair";
+var stringPreviousWork = "Previous Work";
+var stringOurServices = "Our Services";
