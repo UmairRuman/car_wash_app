@@ -28,8 +28,8 @@ class UserName extends StatelessWidget {
   }
 }
 
-class UserLocation extends StatelessWidget {
-  const UserLocation({super.key});
+class HomePageUserLocation extends StatelessWidget {
+  const HomePageUserLocation({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -11,3 +11,5 @@ var stringBookYourCarWash = "Book Your Car Wash";
 var stringUserName = "Hey, Umair";
 var stringPreviousWork = "Previous Work";
 var stringOurServices = "Our Services";
+var stringFavouriteCarWashServices = "Favourite Car Wash Services";
+var stringBookButton = "Book";

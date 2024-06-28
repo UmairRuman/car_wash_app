@@ -1,20 +1,15 @@
 import 'dart:developer';
 
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:car_wash_app/pages/BottomNavigationBar/Controller/bottom_bar_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePageBottomNavigationBar extends StatefulWidget {
+class HomePageBottomNavigationBar extends ConsumerWidget {
   const HomePageBottomNavigationBar({super.key});
 
   @override
-  State<HomePageBottomNavigationBar> createState() =>
-      _HomePageBottomNavigationBarState();
-}
-
-class _HomePageBottomNavigationBarState
-    extends State<HomePageBottomNavigationBar> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return AnimatedNotchBottomBar(
@@ -73,7 +68,7 @@ class _HomePageBottomNavigationBarState
         ),
       ],
       onTap: (value) {
-        log(value.toString());
+        ref.read(bottomStateProvider.notifier).currentNavigationState(value);
       },
       kBottomRadius: 0,
       kIconSize: screenWidth * 0.06,

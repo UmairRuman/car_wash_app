@@ -1,5 +1,5 @@
-import 'package:car_wash_app/first_page/widget/buttons.dart';
-import 'package:car_wash_app/first_page/widget/clipped_container.dart';
+import 'package:car_wash_app/pages/first_page/widget/buttons.dart';
+import 'package:car_wash_app/pages/first_page/widget/clipped_container.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
