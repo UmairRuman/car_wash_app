@@ -1,18 +1,19 @@
+import 'package:car_wash_app/pages/sign_up_page/controller/sign_up_page_controller.dart';
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:car_wash_app/utils/gradients.dart';
 import 'package:car_wash_app/utils/strings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BtnCreateAccount extends StatefulWidget {
+class BtnCreateAccount extends ConsumerWidget {
   const BtnCreateAccount({super.key});
 
   @override
-  State<BtnCreateAccount> createState() => _BtnCreateAccountState();
-}
-
-class _BtnCreateAccountState extends State<BtnCreateAccount> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var emailController = ref.read(signUpPageProvider.notifier).emailTEC;
+    var passWordController = ref.read(signUpPageProvider.notifier).passwordTEC;
+    var nameController = ref.read(signUpPageProvider.notifier).nameTEC;
     return Row(
       children: [
         const Spacer(
@@ -24,12 +25,23 @@ class _BtnCreateAccountState extends State<BtnCreateAccount> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
             ),
-            onPressed: () => {
-              setState(() {
-                passwordKey.currentState!.validate();
-                emailKey.currentState!.validate();
-                nameKey.currentState!.validate();
-              })
+            onPressed: () async {
+              if (signUpPagePasswordKey.currentState!.validate() &&
+                  signUpPageEmailKey.currentState!.validate() &&
+                  signUpPageNameKey.currentState!.validate()) {
+                UserCredential credentials = await FirebaseAuth.instance
+                    .createUserWithEmailAndPassword(
+                        email: emailController.text,
+                        password: passWordController.text);
+
+                User? user = credentials.user;
+
+                if (user != null) {
+                  await user.updateProfile(displayName: nameController.text);
+                  await user.reload();
+                  user = FirebaseAuth.instance.currentUser;
+                }
+              }
             },
             backgroundColor: Colors.transparent,
             elevation: 0,

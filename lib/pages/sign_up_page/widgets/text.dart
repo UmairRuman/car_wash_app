@@ -1,3 +1,4 @@
+import 'package:car_wash_app/pages/login_page/view/login_page.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,9 @@ class TextWidgetAlreadyHaveAnAccount extends StatelessWidget {
         Expanded(
             flex: 14,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, LoginPage.pageName);
+              },
               child: FittedBox(
                 child: Text(
                   stringSignInPage,

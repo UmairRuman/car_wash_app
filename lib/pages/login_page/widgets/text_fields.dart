@@ -3,7 +3,8 @@ import 'package:car_wash_app/utils/validations/validators.dart';
 import 'package:flutter/material.dart';
 
 class LoginTextFieldEmail extends StatelessWidget {
-  const LoginTextFieldEmail({super.key});
+  final GlobalKey<FormState> formKey;
+  const LoginTextFieldEmail({super.key, required this.formKey});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class LoginTextFieldEmail extends StatelessWidget {
         Expanded(
           flex: 80,
           child: Form(
-            key: emailKey,
+            key: formKey,
             child: TextFormField(
                 validator: emailValidator,
                 controller: TextEditingController(),
@@ -23,20 +24,20 @@ class LoginTextFieldEmail extends StatelessWidget {
                     fillColor: Colors.white,
                     labelText: "Email",
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.purple, width: 1.5),
+                      borderSide: BorderSide(color: Colors.blue, width: 1.5),
                       borderRadius: BorderRadius.all(
                         Radius.circular(30),
                       ),
                     ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.purple, width: 1.5),
+                      borderSide: BorderSide(color: Colors.blue, width: 1.5),
                       borderRadius: BorderRadius.all(
                         Radius.circular(30),
                       ),
                     ),
                     prefixIcon: Icon(
                       Icons.email,
-                      color: Colors.purple,
+                      color: Colors.blue,
                     ))),
           ),
         ),
@@ -49,7 +50,8 @@ class LoginTextFieldEmail extends StatelessWidget {
 }
 
 class LoginTextFieldPassword extends StatelessWidget {
-  const LoginTextFieldPassword({super.key});
+  final GlobalKey<FormState> formKey;
+  const LoginTextFieldPassword({super.key, required this.formKey});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class LoginTextFieldPassword extends StatelessWidget {
         Expanded(
           flex: 80,
           child: Form(
-            key: passwordKey,
+            key: formKey,
             child: TextFormField(
                 validator: passwordValidator,
                 controller: TextEditingController(),
@@ -69,20 +71,20 @@ class LoginTextFieldPassword extends StatelessWidget {
                     fillColor: Colors.white,
                     labelText: "Password",
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.purple, width: 1.5),
+                      borderSide: BorderSide(color: Colors.blue, width: 1.5),
                       borderRadius: BorderRadius.all(
                         Radius.circular(30),
                       ),
                     ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.purple, width: 1.5),
+                      borderSide: BorderSide(color: Colors.blue, width: 1.5),
                       borderRadius: BorderRadius.all(
                         Radius.circular(30),
                       ),
                     ),
                     prefixIcon: Icon(
                       Icons.lock,
-                      color: Colors.purple,
+                      color: Colors.blue,
                     ))),
           ),
         ),

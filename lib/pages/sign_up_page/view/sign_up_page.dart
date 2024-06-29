@@ -4,9 +4,11 @@ import 'package:car_wash_app/pages/sign_up_page/widgets/lower_container.dart';
 import 'package:car_wash_app/pages/sign_up_page/widgets/text.dart';
 import 'package:car_wash_app/pages/sign_up_page/widgets/text_fields.dart';
 import 'package:car_wash_app/pages/sign_up_page/widgets/top_container_painter.dart';
+import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatelessWidget {
+  static const String pageName = "/signUpPage";
   const SignUpPage({super.key});
 
   @override
@@ -36,9 +38,21 @@ class SignUpPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const Expanded(flex: 10, child: TextFieldName()),
-              const Expanded(flex: 10, child: TextFieldEmail()),
-              const Expanded(flex: 10, child: TextFieldPassword()),
+              Expanded(
+                  flex: 10,
+                  child: TextFieldName(
+                    formKey: signUpPageNameKey,
+                  )),
+              Expanded(
+                  flex: 10,
+                  child: TextFieldEmail(
+                    formKey: signUpPageEmailKey,
+                  )),
+              Expanded(
+                  flex: 10,
+                  child: TextFieldPassword(
+                    formKey: signUpPagePasswordKey,
+                  )),
               const Expanded(flex: 5, child: CheckBoxTermsAndCondition()),
               const Expanded(flex: 10, child: BtnCreateAccount()),
               const Expanded(flex: 10, child: TextWidgetAlreadyHaveAnAccount()),

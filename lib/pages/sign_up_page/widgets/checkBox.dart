@@ -21,8 +21,8 @@ class _CheckBoxTermsAndConditionState extends State<CheckBoxTermsAndCondition> {
         Expanded(
             flex: 10,
             child: Checkbox(
-              activeColor: Colors.purple,
-              focusColor: Colors.purple,
+              activeColor: Colors.blue,
+              focusColor: Colors.blue,
               value: value,
               onChanged: (value) {
                 setState(() {
@@ -40,7 +40,7 @@ class _CheckBoxTermsAndConditionState extends State<CheckBoxTermsAndCondition> {
               child: Text(
                 stringTermsAndCondition,
                 style: const TextStyle(
-                    color: Colors.purple,
+                    color: Color.fromARGB(255, 16, 99, 166),
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),

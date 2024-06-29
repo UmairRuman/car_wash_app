@@ -5,6 +5,7 @@ import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 
 class FirstPage extends StatelessWidget {
+  static const String pageName = "/";
   const FirstPage({super.key});
 
   @override

@@ -1,14 +1,14 @@
-import 'package:car_wash_app/pages/BottomNavigationBar/Widget/bottom_bar_widget.dart';
-import 'package:car_wash_app/pages/HomePage/Widget/categories_list_view.dart';
-import 'package:car_wash_app/pages/HomePage/Widget/home_page_texts.dart';
-import 'package:car_wash_app/pages/HomePage/Widget/previous_work_images.dart';
-import 'package:car_wash_app/pages/HomePage/Widget/previous_work_text.dart';
-import 'package:car_wash_app/pages/HomePage/Widget/profile_info.dart';
-import 'package:car_wash_app/pages/HomePage/Widget/top_container.dart';
+import 'package:car_wash_app/pages/category_page/Widget/categories_list_view.dart';
+import 'package:car_wash_app/pages/category_page/Widget/home_page_texts.dart';
+import 'package:car_wash_app/pages/category_page/Widget/previous_work_images.dart';
+import 'package:car_wash_app/pages/category_page/Widget/previous_work_text.dart';
+import 'package:car_wash_app/pages/category_page/Widget/profile_info.dart';
+import 'package:car_wash_app/pages/category_page/Widget/top_container.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class CategoryPage extends StatelessWidget {
+  static const String pageName = "/categoryPage";
+  const CategoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {

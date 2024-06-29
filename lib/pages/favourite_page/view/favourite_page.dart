@@ -5,6 +5,7 @@ import 'package:car_wash_app/utils/decorations/favourite_page_decorations.dart';
 import 'package:flutter/material.dart';
 
 class FavouritePage extends StatelessWidget {
+  static const String pageName = "/favouritePage";
   const FavouritePage({super.key});
 
   @override

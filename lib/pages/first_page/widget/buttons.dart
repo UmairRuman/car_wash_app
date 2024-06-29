@@ -1,3 +1,5 @@
+import 'package:car_wash_app/pages/login_page/view/login_page.dart';
+import 'package:car_wash_app/pages/sign_up_page/view/sign_up_page.dart';
 import 'package:flutter/material.dart';
 
 class MainLayoutLoginButton extends StatelessWidget {
@@ -6,7 +8,9 @@ class MainLayoutLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, LoginPage.pageName);
+      },
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -35,7 +39,9 @@ class MainLayoutSignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, SignUpPage.pageName);
+      },
       child: Container(
         alignment: Alignment.center,
         decoration: const BoxDecoration(

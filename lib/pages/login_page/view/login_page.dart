@@ -2,9 +2,11 @@ import 'package:car_wash_app/pages/login_page/widgets/buttons.dart';
 import 'package:car_wash_app/pages/login_page/widgets/icons.dart';
 import 'package:car_wash_app/pages/login_page/widgets/text_fields.dart';
 import 'package:car_wash_app/pages/login_page/widgets/texts.dart';
+import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
+  static const String pageName = "/loginPage";
   const LoginPage({super.key});
 
   @override
@@ -30,27 +32,36 @@ class LoginPage extends StatelessWidget {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50))),
-                child: const Column(
+                child: Column(
                   children: [
-                    Spacer(
+                    const Spacer(
                       flex: 10,
                     ),
-                    Expanded(flex: 10, child: LoginTextTitle()),
-                    Expanded(flex: 15, child: LoginTextFieldEmail()),
-                    Expanded(flex: 15, child: LoginTextFieldPassword()),
-                    Spacer(
+                    const Expanded(flex: 10, child: LoginTextTitle()),
+                    Expanded(
+                        flex: 15,
+                        child: LoginTextFieldEmail(
+                          formKey: loginPageEmailKey,
+                        )),
+                    Expanded(
+                        flex: 15,
+                        child: LoginTextFieldPassword(
+                          formKey: loginPagePasswordKey,
+                        )),
+                    const Spacer(
                       flex: 5,
                     ),
-                    Expanded(flex: 10, child: BtnLogin()),
-                    Spacer(
+                    const Expanded(flex: 10, child: BtnLogin()),
+                    const Spacer(
                       flex: 3,
                     ),
-                    Expanded(flex: 10, child: TextWidgetDontHaveAccount()),
-                    Spacer(
+                    const Expanded(
+                        flex: 10, child: TextWidgetDontHaveAccount()),
+                    const Spacer(
                       flex: 5,
                     ),
-                    Expanded(flex: 10, child: SocialMediaIcons()),
-                    Spacer(
+                    const Expanded(flex: 10, child: SocialMediaIcons()),
+                    const Spacer(
                       flex: 7,
                     ),
                   ],

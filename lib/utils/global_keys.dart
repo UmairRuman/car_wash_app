@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
-final passwordKey = GlobalKey<FormState>();
-final emailKey = GlobalKey<FormState>();
-final nameKey = GlobalKey<FormState>();
+final signUpPagePasswordKey = GlobalKey<FormState>();
+final signUpPageEmailKey = GlobalKey<FormState>();
+final signUpPageNameKey = GlobalKey<FormState>();
+
+final loginPagePasswordKey = GlobalKey<FormState>();
+final loginPageEmailKey = GlobalKey<FormState>();

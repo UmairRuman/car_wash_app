@@ -1,12 +1,13 @@
-import 'package:car_wash_app/pages/BottomNavigationBar/Controller/bottom_bar_controller.dart';
-import 'package:car_wash_app/pages/BottomNavigationBar/Widget/bottom_bar_widget.dart';
-import 'package:car_wash_app/pages/HomePage/View/homePage.dart';
+import 'package:car_wash_app/pages/home_page/Controller/bottom_bar_controller.dart';
+import 'package:car_wash_app/pages/home_page/Widget/bottom_bar_widget.dart';
+import 'package:car_wash_app/pages/category_page/View/categoryPage.dart';
 import 'package:car_wash_app/pages/favourite_page/view/favourite_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyBottomNavigationBar extends ConsumerWidget {
-  const MyBottomNavigationBar({super.key});
+class HomePage extends ConsumerWidget {
+  static const String pageName = '/homePage';
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +17,7 @@ class MyBottomNavigationBar extends ConsumerWidget {
       body: Builder(
         builder: (context) {
           if (currentIndex == 0) {
-            return const HomePage();
+            return const CategoryPage();
           } else if (currentIndex == 1) {
             return Container();
           } else if (currentIndex == 2) {
