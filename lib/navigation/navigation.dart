@@ -5,6 +5,7 @@ import 'package:car_wash_app/pages/favourite_page/view/favourite_page.dart';
 import 'package:car_wash_app/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/pages/home_page/view/bottom_navigation_bar.dart';
 import 'package:car_wash_app/pages/login_page/view/login_page.dart';
+import 'package:car_wash_app/pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/pages/sign_up_page/view/sign_up_page.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ Route? onGenerateRoute(RouteSettings settings) {
     BookingPage.pageName => myPageBuilder(const BookingPage()),
     HomePage.pageName => myPageBuilder(const HomePage()),
     CategoryPage.pageName => myPageBuilder(const CategoryPage()),
+    ProfilePage.pageName => myPageBuilder(const ProfilePage()),
     _ => myPageBuilder(const ErrorPage())
   };
 }

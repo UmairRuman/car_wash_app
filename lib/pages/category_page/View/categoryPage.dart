@@ -59,12 +59,15 @@ class CategoryPage extends StatelessWidget {
                               child: const HomePageSearchBar()),
                         ]))),
             const Spacer(
-              flex: 5,
+              flex: 3,
             ),
             const Expanded(flex: 5, child: HomePageServiceText()),
-            const Expanded(flex: 25, child: CategoriesList()),
+            const Spacer(
+              flex: 3,
+            ),
+            const Expanded(flex: 22, child: CategoriesList()),
             const Expanded(flex: 10, child: HomePagePreviousServiceText()),
-            const Expanded(flex: 25, child: PreviousWorkImages()),
+            const Expanded(flex: 27, child: PreviousWorkImages()),
           ],
         ),
       ),

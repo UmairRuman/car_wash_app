@@ -184,11 +184,11 @@ class FavouriteCategoryBookButton extends StatelessWidget {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30))),
-                child: FittedBox(
+                child: const FittedBox(
                   fit: BoxFit.none,
                   child: Text(
                     stringBookButton,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),

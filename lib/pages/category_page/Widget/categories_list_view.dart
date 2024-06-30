@@ -17,7 +17,7 @@ class CategoriesList extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: listOfCategoryName.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisSpacing: 30,
+              mainAxisSpacing: 16,
               crossAxisCount: 2,
             ),
             itemBuilder: (BuildContext context, int index) {

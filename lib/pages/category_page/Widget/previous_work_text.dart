@@ -6,22 +6,29 @@ class HomePagePreviousServiceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const Spacer(
+        Spacer(
           flex: 5,
         ),
         FittedBox(
             child: Expanded(
-                flex: 30,
+                flex: 25,
                 child: Text(
                   stringPreviousWork,
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ))),
-        const Spacer(
-          flex: 65,
+        Spacer(
+          flex: 50,
         ),
+        Expanded(
+            flex: 15,
+            child: Icon(
+              Icons.arrow_forward,
+            )),
+        Spacer(
+          flex: 5,
+        )
       ],
     );
   }

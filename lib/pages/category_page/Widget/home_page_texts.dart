@@ -6,9 +6,9 @@ class HomePageServiceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const Spacer(
+        Spacer(
           flex: 5,
         ),
         FittedBox(
@@ -16,12 +16,15 @@ class HomePageServiceText extends StatelessWidget {
                 flex: 30,
                 child: Text(
                   stringOurServices,
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ))),
-        const Spacer(
-          flex: 65,
+        Spacer(
+          flex: 45,
         ),
+        Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
+        Spacer(
+          flex: 5,
+        )
       ],
     );
   }

@@ -64,9 +64,9 @@ class FirstPage extends StatelessWidget {
                 height: 250,
                 left: screenWidth / 2 - 125,
                 top: screenHeight / 4 - 125,
-                child: Text(
+                child: const Text(
                   stringBookYourCarWash,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),

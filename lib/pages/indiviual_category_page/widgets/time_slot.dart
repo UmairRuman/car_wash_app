@@ -45,7 +45,7 @@ class TextChooseTimeSlot extends StatelessWidget {
           flex: 5,
         ),
         Expanded(
-          flex: 25,
+          flex: 22,
           child: FittedBox(
             child: Text(
               stringChooseTimeSlot,
@@ -54,11 +54,11 @@ class TextChooseTimeSlot extends StatelessWidget {
           ),
         ),
         Spacer(
-          flex: 50,
+          flex: 55,
         ),
         Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
         Spacer(
-          flex: 5,
+          flex: 3,
         )
       ],
     );

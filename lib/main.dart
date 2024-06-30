@@ -1,7 +1,6 @@
 import 'package:car_wash_app/navigation/navigation.dart';
 import 'package:car_wash_app/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/pages/home_page/view/bottom_navigation_bar.dart';
-import 'package:car_wash_app/pages/indiviual_category_page/view/indiviual_category_page.dart';
 import 'package:car_wash_app/pages/sign_up_page/controller/auth_state_change_notifier.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,7 +31,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const IndiviualCategoryPage(),
+        home: const AuthHandler(),
       ),
     );
   }
