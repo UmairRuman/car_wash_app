@@ -2,7 +2,8 @@ import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
 class IndiviualCategoryImage extends StatelessWidget {
-  const IndiviualCategoryImage({super.key});
+  final String imagePath;
+  const IndiviualCategoryImage({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class IndiviualCategoryImage extends StatelessWidget {
                 ],
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
                 image: DecorationImage(
-                    image: AssetImage(picCarWash), fit: BoxFit.cover)),
+                    image: AssetImage(imagePath), fit: BoxFit.cover)),
           ),
         ),
       ),

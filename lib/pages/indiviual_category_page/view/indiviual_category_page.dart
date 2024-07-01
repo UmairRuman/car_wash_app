@@ -1,3 +1,4 @@
+import 'package:car_wash_app/pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/pages/indiviual_category_page/widgets/buttons.dart';
 import 'package:car_wash_app/pages/indiviual_category_page/widgets/car_model_container.dart';
 import 'package:car_wash_app/pages/indiviual_category_page/widgets/category_image.dart';
@@ -6,42 +7,59 @@ import 'package:car_wash_app/pages/indiviual_category_page/widgets/selected_date
 import 'package:car_wash_app/pages/indiviual_category_page/widgets/texts.dart';
 import 'package:car_wash_app/pages/indiviual_category_page/widgets/time_slot.dart';
 import 'package:car_wash_app/pages/indiviual_category_page/widgets/top_row.dart';
+import 'package:car_wash_app/utils/categoryInfo.dart';
+import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
 class IndiviualCategoryPage extends StatelessWidget {
+  static const String pageName = "/individualCategoryPage";
   const IndiviualCategoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    var data = ModalRoute.of(context)!.settings.arguments ??
+        ImageAndServiceNameSender(
+            categoryName: listOfCategoryName[1],
+            imagePath: listOfPreviousWorkImages[1]);
+    String imagePath = (data as ImageAndServiceNameSender).imagePath;
+    String serviceName = data.categoryName;
+    return SafeArea(
         child: Scaffold(
       body: Column(
         children: [
-          Spacer(
+          const Spacer(
             flex: 3,
           ),
-          Expanded(flex: 5, child: TopRowIndiviualCategoryPage()),
-          Spacer(
+          Expanded(
+              flex: 5,
+              child: TopRowIndiviualCategoryPage(
+                serviceName: serviceName,
+              )),
+          const Spacer(
             flex: 2,
           ),
-          Expanded(flex: 20, child: IndiviualCategoryImage()),
           Expanded(
+              flex: 20,
+              child: IndiviualCategoryImage(
+                imagePath: imagePath,
+              )),
+          const Expanded(
             flex: 5,
             child: TextChooseYourCarModel(),
           ),
-          Expanded(flex: 15, child: CarModelContainer()),
-          Spacer(
+          const Expanded(flex: 15, child: CarModelContainer()),
+          const Spacer(
             flex: 2,
           ),
-          Expanded(flex: 5, child: TextSelectDate()),
-          Expanded(flex: 15, child: DateTimePicker()),
-          Expanded(flex: 5, child: TextChooseTimeSlot()),
-          Expanded(flex: 10, child: TimeSlot()),
-          Spacer(
+          const Expanded(flex: 5, child: TextSelectDate()),
+          const Expanded(flex: 15, child: DateTimePicker()),
+          const Expanded(flex: 5, child: TextChooseTimeSlot()),
+          const Expanded(flex: 10, child: TimeSlot()),
+          const Spacer(
             flex: 3,
           ),
-          Expanded(flex: 8, child: ButtonBookAWash()),
-          Spacer(
+          const Expanded(flex: 8, child: ButtonBookAWash()),
+          const Spacer(
             flex: 2,
           )
         ],

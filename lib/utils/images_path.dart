@@ -12,11 +12,11 @@ var picEngineCleaning = "assets/images/picEngineCleaning.jpg";
 var picTireDressing = "assets/images/picTireDressing.jpg";
 
 List<String> listOfPreviousWorkImages = [
-  picCarPoolish,
-  picOilChange,
-  picTireDressing,
   picCarWash,
+  picCarPoolish,
   picCarInteriorWashing,
+  picEngineCleaning,
+  picTireDressing,
+  picOilChange,
   picDashBoardCleaning,
-  picEngineCleaning
 ];

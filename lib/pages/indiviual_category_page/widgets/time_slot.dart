@@ -20,7 +20,13 @@ class TimeSlot extends ConsumerWidget {
                     width: constraints.maxWidth / 4,
                     alignment: Alignment.center,
                     decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 201, 219, 234),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromARGB(255, 167, 204, 234),
+                              offset: Offset(3, 3),
+                              blurRadius: 3)
+                        ],
                         borderRadius:
                             BorderRadius.all(Radius.elliptical(15, 15))),
                     child: Text(

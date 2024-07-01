@@ -62,7 +62,7 @@ class TextWidgetDontHaveAccount extends StatelessWidget {
         const Spacer(
           flex: 25,
         ),
-        Expanded(
+        const Expanded(
             flex: 38, child: FittedBox(child: Text(stringDontHaveAnAccount))),
         const Spacer(
           flex: 2,
@@ -71,6 +71,7 @@ class TextWidgetDontHaveAccount extends StatelessWidget {
             flex: 15,
             child: GestureDetector(
               onTap: () {
+                Navigator.of(context).pop();
                 Navigator.of(context).pushNamed(SignUpPage.pageName);
               },
               child: FittedBox(

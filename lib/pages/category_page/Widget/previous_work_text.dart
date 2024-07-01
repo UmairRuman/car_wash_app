@@ -11,13 +11,14 @@ class HomePagePreviousServiceText extends StatelessWidget {
         Spacer(
           flex: 5,
         ),
-        FittedBox(
-            child: Expanded(
-                flex: 25,
-                child: Text(
-                  stringPreviousWork,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ))),
+        Expanded(
+            flex: 25,
+            child: FittedBox(
+              child: Text(
+                stringPreviousWork,
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+            )),
         Spacer(
           flex: 50,
         ),

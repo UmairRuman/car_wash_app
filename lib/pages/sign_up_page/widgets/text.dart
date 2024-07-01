@@ -26,7 +26,7 @@ class TextWidgetAlreadyHaveAnAccount extends StatelessWidget {
         const Spacer(
           flex: 20,
         ),
-        Expanded(
+        const Expanded(
             flex: 43,
             child: FittedBox(child: Text(stringAlreadyHaveAnAccount))),
         const Spacer(
@@ -36,6 +36,7 @@ class TextWidgetAlreadyHaveAnAccount extends StatelessWidget {
             flex: 14,
             child: GestureDetector(
               onTap: () {
+                Navigator.of(context).pop();
                 Navigator.pushNamed(context, LoginPage.pageName);
               },
               child: FittedBox(

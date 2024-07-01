@@ -1,4 +1,8 @@
+import 'package:car_wash_app/pages/first_page/view/first_page.dart';
+import 'package:car_wash_app/pages/login_page/view/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class EditProfileButton extends StatelessWidget {
   const EditProfileButton({super.key});
@@ -42,7 +46,14 @@ class LogOutProfileButton extends StatelessWidget {
         Expanded(
             flex: 60,
             child: FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                SchedulerBinding.instance.addPostFrameCallback(
+                  (timeStamp) {
+                    Navigator.of(context).pushNamed(FirstPage.pageName);
+                  },
+                );
+              },
               backgroundColor: Colors.blue,
               child: const Text(
                 "Log Out",

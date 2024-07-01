@@ -1,4 +1,10 @@
+import 'dart:developer';
+
+import 'package:car_wash_app/pages/category_page/Model/model_For_sending_data.dart';
+import 'package:car_wash_app/pages/indiviual_category_page/view/indiviual_category_page.dart';
 import 'package:car_wash_app/utils/categoryInfo.dart';
+import 'package:car_wash_app/utils/images_path.dart';
+import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesList extends StatelessWidget {
@@ -21,21 +27,32 @@ class CategoriesList extends StatelessWidget {
               crossAxisCount: 2,
             ),
             itemBuilder: (BuildContext context, int index) {
-              return Column(
-                children: [
-                  const Spacer(
-                    flex: 5,
-                  ),
-                  Expanded(
-                      flex: 40, child: Image.asset(listOfCategoryIcons[index])),
-                  Expanded(
-                      flex: 40,
-                      child: FittedBox(
-                        child: Text(
-                          listOfCategoryName[index],
-                        ),
-                      ))
-                ],
+              return InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                      IndiviualCategoryPage.pageName,
+                      arguments: ImageAndServiceNameSender(
+                          categoryName: listOfCategoryName[index],
+                          imagePath: listOfPreviousWorkImages[index]));
+                  log("Clicked on $index");
+                },
+                child: Column(
+                  children: [
+                    const Spacer(
+                      flex: 5,
+                    ),
+                    Expanded(
+                        flex: 40,
+                        child: Image.asset(listOfCategoryIcons[index])),
+                    Expanded(
+                        flex: 40,
+                        child: FittedBox(
+                          child: Text(
+                            listOfCategoryName[index],
+                          ),
+                        ))
+                  ],
+                ),
               );
             },
           ),
