@@ -1,7 +1,8 @@
 var googleIconPath = "assets/images/google2.png";
 var twitterIconPath = "assets/images/twitter1.png";
 var carWashMainScreenLogo = "assets/images/carwash.png";
-var profilePic = "assets/images/myImage.png";
+var profilePic = "assets/images/mypic.png";
+var emptyImage = "assets/images/emptyImage.png";
 
 var picCarWash = "assets/images/picCarWash.jpg";
 var picCarPoolish = "assets/images/picCarPoolish.jpg";

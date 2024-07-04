@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/navigation/navigation.dart';
+import 'package:car_wash_app/pages/chooser_page/view/chooser_page.dart';
 import 'package:car_wash_app/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/pages/sign_up_page/controller/auth_state_change_notifier.dart';
@@ -35,7 +36,7 @@ class MyApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const AuthHandler(),
+      home: const ChooserPage(),
     );
   }
 }

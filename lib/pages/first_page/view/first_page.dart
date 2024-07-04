@@ -63,12 +63,14 @@ class FirstPage extends StatelessWidget {
                 width: 250,
                 height: 250,
                 left: screenWidth / 2 - 125,
-                top: screenHeight / 4 - 125,
-                child: const Text(
-                  stringBookYourCarWash,
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                top: screenHeight / 9 - 125,
+                child: const FittedBox(
+                  child: Text(
+                    stringBookYourCarWash,
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 )),
             Positioned(

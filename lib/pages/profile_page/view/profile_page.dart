@@ -21,19 +21,19 @@ class ProfilePage extends StatelessWidget {
                     Stack(clipBehavior: Clip.none, children: [
                   const TopContainerDecorationProfilePage(),
                   Positioned(
-                      height: constraints.maxHeight / 2.5,
-                      width: constraints.maxWidth / 2.5,
+                      height: constraints.maxHeight / 2,
+                      width: constraints.maxWidth / 2,
                       left: constraints.maxWidth / 2 -
-                          (constraints.maxWidth / 2.5) / 2,
+                          (constraints.maxWidth / 2) / 2,
                       bottom: constraints.maxHeight / 8 -
-                          (constraints.maxHeight / 2.5) / 2,
+                          (constraints.maxHeight / 2) / 2,
                       child: const ProfilePagePic()),
                   Positioned(
                       height: constraints.maxHeight / 2.5,
                       width: constraints.maxWidth / 2,
                       left: constraints.maxWidth / 2 -
                           (constraints.maxWidth / 2) / 2,
-                      top: constraints.maxHeight / 2 -
+                      top: constraints.maxHeight / 3 -
                           (constraints.maxHeight / 2.5) / 2,
                       child: const UserName()),
                 ]),

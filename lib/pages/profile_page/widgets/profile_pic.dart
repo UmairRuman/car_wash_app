@@ -9,8 +9,8 @@ class ProfilePagePic extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image: DecorationImage(
-              image: AssetImage(profilePic), fit: BoxFit.cover)),
+          image:
+              DecorationImage(image: AssetImage(profilePic), fit: BoxFit.fill)),
     );
   }
 }
@@ -20,11 +20,13 @@ class UserName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      "Umair Ruman",
-      textAlign: TextAlign.center,
-      style: TextStyle(
-          color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+    return const FittedBox(
+      child: Text(
+        "Umair Ruman",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

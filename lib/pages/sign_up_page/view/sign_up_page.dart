@@ -39,23 +39,22 @@ class SignUpPage extends StatelessWidget {
                 ),
               ),
               Expanded(
-                  flex: 10,
+                  flex: 12,
                   child: TextFieldName(
                     formKey: signUpPageNameKey,
                   )),
               Expanded(
-                  flex: 10,
+                  flex: 12,
                   child: TextFieldEmail(
                     formKey: signUpPageEmailKey,
                   )),
               Expanded(
-                  flex: 10,
+                  flex: 12,
                   child: TextFieldPassword(
                     formKey: signUpPagePasswordKey,
                   )),
-              const Expanded(flex: 5, child: CheckBoxTermsAndCondition()),
               const Expanded(flex: 10, child: BtnCreateAccount()),
-              const Expanded(flex: 10, child: TextWidgetAlreadyHaveAnAccount()),
+              const Expanded(flex: 9, child: TextWidgetAlreadyHaveAnAccount()),
               Expanded(
                 flex: 20,
                 child: ClipPath(

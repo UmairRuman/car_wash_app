@@ -21,13 +21,14 @@ Route? onGenerateRoute(RouteSettings settings) {
     CategoryPage.pageName => myPageBuilder(const CategoryPage()),
     ProfilePage.pageName => myPageBuilder(const ProfilePage()),
     IndiviualCategoryPage.pageName =>
-      myPageBuilder(const IndiviualCategoryPage()),
+      myPageBuilder(const IndiviualCategoryPage(), settings),
     _ => myPageBuilder(const ErrorPage())
   };
 }
 
-PageRouteBuilder myPageBuilder(Widget page) {
+PageRouteBuilder myPageBuilder(Widget page, [RouteSettings? settings]) {
   return PageRouteBuilder(
+    settings: settings,
     pageBuilder: (context, animation, secondaryAnimation) {
       return AnimatedOpacity(
         opacity: animation.value,
