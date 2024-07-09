@@ -1,17 +1,19 @@
+import 'package:car_wash_app/Admin/Pages/category_page/Widget/dialog.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePagePreviousServiceText extends StatelessWidget {
+class HomePagePreviousServiceText extends ConsumerWidget {
   const HomePagePreviousServiceText({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Row(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
       children: [
-        Spacer(
+        const Spacer(
           flex: 5,
         ),
-        Expanded(
+        const Expanded(
             flex: 25,
             child: FittedBox(
               child: Text(
@@ -19,15 +21,22 @@ class HomePagePreviousServiceText extends StatelessWidget {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             )),
-        Spacer(
+        const Spacer(
           flex: 50,
         ),
         Expanded(
             flex: 15,
-            child: Icon(
-              Icons.arrow_forward,
+            child: InkWell(
+              onTap: () {
+                myDialog(context);
+              },
+              child: Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 201, 218, 232),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: const Icon(Icons.add)),
             )),
-        Spacer(
+        const Spacer(
           flex: 5,
         )
       ],

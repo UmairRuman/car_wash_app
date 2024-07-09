@@ -6,12 +6,12 @@ class HomePageServiceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Spacer(
+        const Spacer(
           flex: 5,
         ),
-        Expanded(
+        const Expanded(
             flex: 30,
             child: FittedBox(
               child: Text(
@@ -19,11 +19,20 @@ class HomePageServiceText extends StatelessWidget {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             )),
-        Spacer(
+        const Spacer(
           flex: 45,
         ),
-        Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
-        Spacer(
+        Expanded(
+            flex: 15,
+            child: InkWell(
+              onTap: () {},
+              child: Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 201, 218, 232),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: const Icon(Icons.add)),
+            )),
+        const Spacer(
           flex: 5,
         )
       ],

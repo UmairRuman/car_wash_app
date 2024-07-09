@@ -3,8 +3,8 @@ import 'package:car_wash_app/Client/pages/indiviual_category_page/controller/dat
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TextSelectDate extends StatelessWidget {
-  const TextSelectDate({super.key});
+class AdminSideTextSelectDate extends StatelessWidget {
+  const AdminSideTextSelectDate({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,11 @@ class TextSelectDate extends StatelessWidget {
         ),
         const Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
         const Spacer(
-          flex: 40,
+          flex: 10,
+        ),
+        const Expanded(flex: 20, child: AdminSideSelectedDate()),
+        const Spacer(
+          flex: 10,
         ),
         Expanded(
             flex: 15,
@@ -32,11 +36,14 @@ class TextSelectDate extends StatelessWidget {
               onTap: () {
                 dialogForEditYear(context);
               },
-              child: Container(
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 201, 218, 232),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: const Icon(Icons.date_range_rounded)),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                    decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 201, 218, 232),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    child: const Icon(Icons.date_range_rounded)),
+              ),
             )),
         const Spacer(
           flex: 5,
@@ -46,8 +53,8 @@ class TextSelectDate extends StatelessWidget {
   }
 }
 
-class SelectedDate extends ConsumerWidget {
-  const SelectedDate({super.key});
+class AdminSideSelectedDate extends ConsumerWidget {
+  const AdminSideSelectedDate({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

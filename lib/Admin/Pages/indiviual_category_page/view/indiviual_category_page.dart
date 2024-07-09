@@ -1,11 +1,12 @@
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/buttons.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/category_image.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/selected_date.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/time_slot.dart';
 import 'package:car_wash_app/Client/pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/buttons.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/car_model_container.dart';
-import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/category_image.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/date_time_line.dart';
-import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/selected_date.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/texts.dart';
-import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/time_slot.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/top_row.dart';
 import 'package:car_wash_app/utils/categoryInfo.dart';
 import 'package:car_wash_app/utils/images_path.dart';
@@ -25,6 +26,7 @@ class AdminSideIndiviualCategoryPage extends StatelessWidget {
     String serviceName = data.categoryName;
     return SafeArea(
         child: Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           const Spacer(
@@ -40,7 +42,7 @@ class AdminSideIndiviualCategoryPage extends StatelessWidget {
           ),
           Expanded(
               flex: 20,
-              child: IndiviualCategoryImage(
+              child: IndiviualCategoryImageAndDescription(
                 imagePath: imagePath,
               )),
           const Expanded(
@@ -51,14 +53,14 @@ class AdminSideIndiviualCategoryPage extends StatelessWidget {
           const Spacer(
             flex: 2,
           ),
-          const Expanded(flex: 5, child: TextSelectDate()),
+          const Expanded(flex: 5, child: AdminSideTextSelectDate()),
           const Expanded(flex: 15, child: DateTimePicker()),
           const Expanded(flex: 5, child: TextChooseTimeSlot()),
           const Expanded(flex: 10, child: TimeSlot()),
           const Spacer(
             flex: 3,
           ),
-          const Expanded(flex: 8, child: ButtonBookAWash()),
+          const Expanded(flex: 8, child: ButtonSaveService()),
           const Spacer(
             flex: 2,
           )

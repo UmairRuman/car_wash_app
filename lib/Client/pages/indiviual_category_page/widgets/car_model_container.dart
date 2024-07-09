@@ -1,11 +1,21 @@
+import 'dart:developer';
+
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CarModelContainer extends StatelessWidget {
+class CarModelContainer extends ConsumerWidget {
   const CarModelContainer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var imagePath = ref.read(carInfoProvider.notifier).carImagePath;
+    var carServicePrice = ref.read(carInfoProvider.notifier).carCurrentPrice;
+    var carName = ref.read(carInfoProvider.notifier).carName;
+    log("Car Image path $imagePath");
+    log("Car Service Price $carServicePrice");
+    log("Car name : $carName");
     return LayoutBuilder(
       builder: (context, constraints) => ListView.builder(
         scrollDirection: Axis.horizontal,

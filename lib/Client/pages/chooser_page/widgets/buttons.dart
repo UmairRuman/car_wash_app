@@ -1,8 +1,10 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Admin/Pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/controller/phone_authenticatio_notifier.dart';
 import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
+import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +28,13 @@ class BtnContinueChooserPage extends ConsumerWidget {
                 if (ref
                     .read(userAdditionStateProvider.notifier)
                     .isUserDataAdded) {
-                  Navigator.of(context).pushNamed(HomePage.pageName);
+                  if (ref
+                      .read(userAdditionStateProvider.notifier)
+                      .listOfUserInfo[MapForUserInfo.isServiceProvider]) {
+                    Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
+                  } else {
+                    Navigator.of(context).pushNamed(HomePage.pageName);
+                  }
                 }
               },
               backgroundColor: const Color.fromARGB(255, 14, 63, 103),

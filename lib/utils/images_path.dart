@@ -11,6 +11,7 @@ var picOilChange = "assets/images/picOilChange.jpg";
 var picDashBoardCleaning = "assets/images/picDashBoardCleaning.jpg";
 var picEngineCleaning = "assets/images/picEngineCleaning.jpg";
 var picTireDressing = "assets/images/picTireDressing.jpg";
+var cameraImage = "assets/images/camera.png";
 
 List<String> listOfPreviousWorkImages = [
   picCarWash,
