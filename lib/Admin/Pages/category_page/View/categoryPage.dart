@@ -1,4 +1,4 @@
-import 'package:car_wash_app/Client/pages/category_page/Widget/categories_list_view.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widgets/categories_list_view.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/home_page_texts.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/previous_work_images.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/previous_work_text.dart';
@@ -65,7 +65,7 @@ class AdminSideCategoryPage extends StatelessWidget {
             const Spacer(
               flex: 3,
             ),
-            const Expanded(flex: 22, child: CategoriesList()),
+            const Expanded(flex: 22, child: AdminSideCategoriesList()),
             const Expanded(flex: 10, child: HomePagePreviousServiceText()),
             const Expanded(flex: 27, child: PreviousWorkImages()),
           ],

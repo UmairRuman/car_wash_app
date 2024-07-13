@@ -1,25 +1,26 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-class Timeslot {
-  String serviceId;
-  String currentDate;
-  List<TimeSlotsInfo> timeslots;
-  Timeslot({
-    required this.serviceId,
+class TimeSlots {
+  String serviceName;
+  DateTime currentDate;
+  List<String> timeslots;
+  TimeSlots({
+    required this.serviceName,
     required this.currentDate,
     required this.timeslots,
   });
 
-  Timeslot copyWith({
-    String? serviceId,
-    String? currentDate,
-    List<TimeSlotsInfo>? timeslots,
+  TimeSlots copyWith({
+    String? serviceName,
+    DateTime? currentDate,
+    List<String>? timeslots,
   }) {
-    return Timeslot(
-      serviceId: serviceId ?? this.serviceId,
+    return TimeSlots(
+      serviceName: serviceName ?? this.serviceName,
       currentDate: currentDate ?? this.currentDate,
       timeslots: timeslots ?? this.timeslots,
     );
@@ -27,45 +28,42 @@ class Timeslot {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'serviceId': serviceId,
-      'currentDate': currentDate,
-      'timeslots': timeslots.map((x) => x.toMap()).toList(),
+      'serviceName': serviceName,
+      'currentDate': Timestamp.fromDate(currentDate),
+      'timeslots': timeslots,
     };
   }
 
-  factory Timeslot.fromMap(Map<String, dynamic> map) {
-    return Timeslot(
-      serviceId: map['serviceId'] as String,
-      currentDate: map['currentDate'] as String,
-      timeslots: List<TimeSlotsInfo>.from(
-        (map['timeslots'] as List<int>).map<TimeSlotsInfo>(
-          (x) => TimeSlotsInfo.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
+  factory TimeSlots.fromMap(Map<String, dynamic> map) {
+    return TimeSlots(
+      serviceName: map['serviceName'] as String,
+      currentDate: (map['currentDate'] as Timestamp).toDate(),
+      timeslots: List<String>.from(
+          (map['timeslots'] as List<dynamic>)), // Casting here
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Timeslot.fromJson(String source) =>
-      Timeslot.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory TimeSlots.fromJson(String source) =>
+      TimeSlots.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() =>
-      'Timeslot(serviceId: $serviceId, currentDate: $currentDate, timeslots: $timeslots)';
+      'TimeSlots(serviceName: $serviceName, currentDate: $currentDate, timeslots: $timeslots)';
 
   @override
-  bool operator ==(covariant Timeslot other) {
+  bool operator ==(covariant TimeSlots other) {
     if (identical(this, other)) return true;
 
-    return other.serviceId == serviceId &&
+    return other.serviceName == serviceName &&
         other.currentDate == currentDate &&
         listEquals(other.timeslots, timeslots);
   }
 
   @override
   int get hashCode =>
-      serviceId.hashCode ^ currentDate.hashCode ^ timeslots.hashCode;
+      serviceName.hashCode ^ currentDate.hashCode ^ timeslots.hashCode;
 }
 
 class TimeSlotsInfo {

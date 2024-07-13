@@ -1,56 +1,78 @@
-import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
+import 'dart:developer';
+
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_time_slot_dialog.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TimeSlot extends ConsumerWidget {
-  const TimeSlot({super.key});
+class AdminSideTimeSlot extends ConsumerWidget {
+  const AdminSideTimeSlot({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return LayoutBuilder(
-        builder: (context, constraints) => ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: listOfTimeSlots.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    height: constraints.maxHeight / 2,
-                    width: constraints.maxWidth / 4,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromARGB(255, 167, 204, 234),
-                              offset: Offset(3, 3),
-                              blurRadius: 3)
-                        ],
-                        borderRadius:
-                            BorderRadius.all(Radius.elliptical(15, 15))),
-                    child: Text(
-                      listOfTimeSlots[index],
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                );
-              },
-            ));
+    var state = ref.watch(timeSlotsStateProvider);
+    return LayoutBuilder(builder: (context, constraints) {
+      if (state is TimeSlotInitialState) {
+        return const Center(
+          child: Text("No Time slot added"),
+        );
+      } else if (state is TimeSlotLoadedState) {
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: state.list.length,
+          itemBuilder: (context, index) {
+            log("list of String ${state.list[index]}");
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                height: constraints.maxHeight / 2,
+                width: constraints.maxWidth / 4,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(255, 167, 204, 234),
+                          offset: Offset(3, 3),
+                          blurRadius: 3)
+                    ],
+                    borderRadius: BorderRadius.all(Radius.elliptical(15, 15))),
+                child: Text(
+                  state.list[index],
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            );
+          },
+        );
+      } else if (state is TimeSlotErrorState) {
+        return Center(
+          child: Text("Error : ${state.error}"),
+        );
+      }
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    });
   }
 }
 
-class TextChooseTimeSlot extends StatelessWidget {
-  const TextChooseTimeSlot({super.key});
+class AdminSideTextChooseTimeSlot extends StatelessWidget {
+  final String serviceName;
+  final int serviceId;
+
+  const AdminSideTextChooseTimeSlot(
+      {super.key, required this.serviceId, required this.serviceName});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Spacer(
+        const Spacer(
           flex: 5,
         ),
-        Expanded(
+        const Expanded(
           flex: 22,
           child: FittedBox(
             child: Text(
@@ -59,11 +81,26 @@ class TextChooseTimeSlot extends StatelessWidget {
             ),
           ),
         ),
-        Spacer(
+        const Spacer(
           flex: 55,
         ),
-        Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
-        Spacer(
+        Expanded(
+          flex: 15,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+              onTap: () {
+                dialogForEditTimeSlot(context, serviceName, serviceId);
+              },
+              child: Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 201, 218, 232),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: const Icon(Icons.timer_sharp)),
+            ),
+          ),
+        ),
+        const Spacer(
           flex: 3,
         )
       ],

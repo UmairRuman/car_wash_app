@@ -30,7 +30,7 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
             child: FittedBox(
                 child: Text(
               serviceName,
-              style: TextStyle(
+              style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 24, 103, 167)),
             ))),

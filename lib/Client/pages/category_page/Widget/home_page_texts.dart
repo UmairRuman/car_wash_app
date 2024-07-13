@@ -1,3 +1,4 @@
+import 'package:car_wash_app/Admin/Pages/category_page/Widget/dialog_for_adding_category.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,9 @@ class HomePageServiceText extends StatelessWidget {
         Expanded(
             flex: 15,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                dialogForAddingServiceCategory(context);
+              },
               child: Container(
                   decoration: const BoxDecoration(
                       color: Color.fromARGB(255, 201, 218, 232),

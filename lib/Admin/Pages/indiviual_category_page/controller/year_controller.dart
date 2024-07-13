@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class YearController extends Notifier<int> {
@@ -9,6 +10,7 @@ class YearController extends Notifier<int> {
 
   onChangeYear(int newYear) {
     state = newYear;
+    intialYear = newYear;
   }
 }
 

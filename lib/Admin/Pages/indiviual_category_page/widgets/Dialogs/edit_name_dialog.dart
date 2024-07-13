@@ -2,8 +2,11 @@ import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dial
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-String? imageFilePath;
-bool isClickedOnCamera = false;
+class EditNameVariables {
+  static String? imageFilePath;
+  static bool isClickedOnCamera = false;
+}
+
 void dialogOnEditNameClick(BuildContext context) {
   showDialog(
       useSafeArea: true,
@@ -50,6 +53,9 @@ void dialogOnEditNameClick(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
+                                  ref
+                                      .read(serviceNameProvider.notifier)
+                                      .disposeController();
                                   Navigator.of(context).pop();
                                 },
                                 backgroundColor: const Color(0xFF1BC0C5),
@@ -66,6 +72,9 @@ void dialogOnEditNameClick(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
+                                  ref
+                                      .read(serviceNameProvider.notifier)
+                                      .disposeController();
                                   var nameTEC = ref
                                       .read(serviceNameProvider.notifier)
                                       .serviceNameTEC;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
+import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +24,7 @@ void dialogForEditCarInfo(BuildContext context) {
               borderRadius: BorderRadius.circular(20.0)), //this right here
           child: StatefulBuilder(
             builder: (context, setState) => Container(
-              height: MediaQuery.of(context).size.height / 2.5,
+              height: MediaQuery.of(context).size.height / 2,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Consumer(
@@ -37,12 +38,16 @@ void dialogForEditCarInfo(BuildContext context) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                            flex: 40,
+                            flex: 30,
                             child: Builder(builder: (context) {
                               if (CarInfoVariables.isClickedOnCamera &&
                                   CarInfoVariables.imageFilePath != null) {
                                 ref.read(carInfoProvider.notifier).isPickImage =
                                     true;
+                                ref
+                                    .read(carInfoProvider.notifier)
+                                    .onChangeCarPic(
+                                        CarInfoVariables.imageFilePath!);
                                 return Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -106,7 +111,7 @@ void dialogForEditCarInfo(BuildContext context) {
                               );
                             })),
                         Expanded(
-                          flex: 25,
+                          flex: 15,
                           child: TextField(
                             controller:
                                 ref.read(carInfoProvider.notifier).carNameTEC,
@@ -122,14 +127,14 @@ void dialogForEditCarInfo(BuildContext context) {
                           ),
                         ),
                         Expanded(
-                            flex: 25,
+                            flex: 50,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Column(
                                   children: <Widget>[
                                     Expanded(
-                                      flex: 70,
+                                      flex: 75,
                                       child: NumberPicker(
                                         selectedTextStyle: const TextStyle(
                                             fontSize: 25,
@@ -148,7 +153,7 @@ void dialogForEditCarInfo(BuildContext context) {
                                       ),
                                     ),
                                     Expanded(
-                                        flex: 30,
+                                        flex: 20,
                                         child: FittedBox(
                                             child: Text(
                                                 'Price: $carCurrentPrice\$'))),
@@ -157,7 +162,7 @@ void dialogForEditCarInfo(BuildContext context) {
                               ],
                             )),
                         Expanded(
-                          flex: 20,
+                          flex: 15,
                           child: Row(
                             children: [
                               const Spacer(
@@ -187,6 +192,14 @@ void dialogForEditCarInfo(BuildContext context) {
                                 flex: 40,
                                 child: FloatingActionButton(
                                   onPressed: () {
+                                    setState(() {
+                                      CarInfoVariables.isClickedOnCamera =
+                                          false;
+                                    });
+                                    ref
+                                        .read(allServiceDataStateProvider
+                                            .notifier)
+                                        .addCars();
                                     ref
                                         .read(carInfoProvider.notifier)
                                         .onSaveButtonClick();

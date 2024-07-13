@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TimeSlotController extends Notifier<DateTime> {
+class TimeSlotInfoController extends Notifier<DateTime> {
   var initialTime = DateTime.now();
   @override
   DateTime build() {
@@ -13,5 +13,5 @@ class TimeSlotController extends Notifier<DateTime> {
   }
 }
 
-final timeSlotProvider =
-    NotifierProvider<TimeSlotController, DateTime>(TimeSlotController.new);
+final timeSlotInfoProvider = NotifierProvider<TimeSlotInfoController, DateTime>(
+    TimeSlotInfoController.new);

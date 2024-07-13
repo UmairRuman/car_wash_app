@@ -4,19 +4,22 @@ import 'dart:io';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_service_info.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IndiviualCategoryImageAndDescription extends ConsumerWidget {
+class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
   final String imagePath;
-  const IndiviualCategoryImageAndDescription(
-      {super.key, required this.imagePath});
+  final String description;
+  const AdminSideIndiviualCategoryImageAndDescription(
+      {super.key, required this.imagePath, required this.description});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var serviceDescription =
         ref.read(serviceInfoProvider.notifier).intialServiceDescription;
     var changedImagePath = ref.watch(serviceInfoProvider);
+    var phoneNumber = ref.read(serviceInfoProvider.notifier).phoneNo;
     log("Image path :  $changedImagePath");
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -38,9 +41,9 @@ class IndiviualCategoryImageAndDescription extends ConsumerWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                          image: changedImagePath == ""
+                          image: imagePath == ""
                               ? AssetImage(emptyImage)
-                              : FileImage(File(changedImagePath)),
+                              : FileImage(File(imagePath)),
                           fit: BoxFit.fill)),
                 )),
             const Spacer(
@@ -51,11 +54,30 @@ class IndiviualCategoryImageAndDescription extends ConsumerWidget {
                 flex: 20,
                 child: Column(
                   children: [
+                    Row(
+                      children: [
+                        const Expanded(
+                            flex: 25,
+                            child: Icon(
+                              Icons.phone,
+                              color: Colors.green,
+                            )),
+                        Expanded(
+                            flex: 75,
+                            child: FittedBox(
+                                child: Text(
+                              FirebaseAuth.instance.currentUser!.phoneNumber!,
+                              style: const TextStyle(
+                                  color:
+                                      const Color.fromARGB(255, 16, 66, 108)),
+                            ))),
+                      ],
+                    ),
                     const Spacer(
-                      flex: 75,
+                      flex: 40,
                     ),
                     Expanded(
-                      flex: 25,
+                      flex: 30,
                       child: Center(
                         child: LayoutBuilder(
                           builder: (context, constraints) => InkWell(

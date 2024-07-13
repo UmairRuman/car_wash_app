@@ -1,7 +1,7 @@
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/View/categoryPage.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/view/home_page.dart';
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/indiviual_category_page.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/Client/pages/ErrorPage/error_page.dart';
 import 'package:car_wash_app/Client/pages/booking_page/view/booking_page.dart';
@@ -37,7 +37,7 @@ Route? onGenerateRoute(RouteSettings settings) {
     AdminSideProfilePage.pageName =>
       myPageBuilder(const AdminSideProfilePage()),
     AdminSideIndiviualCategoryPage.pageName =>
-      myPageBuilder(const AdminSideIndiviualCategoryPage()),
+      myPageBuilder(const AdminSideIndiviualCategoryPage(), settings),
     _ => myPageBuilder(const ErrorPage())
   };
 }

@@ -51,14 +51,14 @@ void dialogForEditYear(BuildContext context) {
                               ],
                             )),
                         Expanded(
-                            flex: 50,
+                            flex: 70,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Column(
                                   children: <Widget>[
                                     Expanded(
-                                      flex: 70,
+                                      flex: 75,
                                       child: NumberPicker(
                                         value: currentYear,
                                         minValue: YearVariables.minValue,
@@ -71,11 +71,8 @@ void dialogForEditYear(BuildContext context) {
                                         }),
                                       ),
                                     ),
-                                    const Spacer(
-                                      flex: 10,
-                                    ),
                                     Expanded(
-                                        flex: 20,
+                                        flex: 25,
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: FittedBox(
@@ -86,9 +83,6 @@ void dialogForEditYear(BuildContext context) {
                                 ),
                               ],
                             )),
-                        const Spacer(
-                          flex: 15,
-                        ),
                         Expanded(
                           flex: 20,
                           child: Row(
@@ -131,9 +125,6 @@ void dialogForEditYear(BuildContext context) {
                             ],
                           ),
                         ),
-                        const Spacer(
-                          flex: 5,
-                        )
                       ],
                     );
                   },

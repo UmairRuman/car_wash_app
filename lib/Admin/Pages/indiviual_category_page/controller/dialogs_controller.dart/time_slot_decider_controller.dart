@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class TimeSlotDeciderController extends Notifier<String> {
   String intialStartTime = "";
   String intialEndTime = "";
+  int startIndex = 0;
+  int endIndex = 0;
   bool isStartTimeChanged = false;
   bool isEndTimeChanged = false;
   @override
@@ -38,6 +40,14 @@ class TimeSlotDeciderController extends Notifier<String> {
     if (isEndTimeChanged && isStartTimeChanged) {
       state = "changed";
     }
+  }
+
+  findStartIndex(int newStartIndex) {
+    startIndex = newStartIndex;
+  }
+
+  findEndIndex(int newEndIndex) {
+    endIndex = newEndIndex;
   }
 }
 

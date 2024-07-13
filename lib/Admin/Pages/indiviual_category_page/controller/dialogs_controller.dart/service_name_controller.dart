@@ -11,6 +11,15 @@ class ServiceNameController extends Notifier<String> {
 
   onchangeTitle(String changeTitle) {
     state = changeTitle;
+    serviceTitle = changeTitle;
+  }
+
+  disposeController() {
+    ref.onDispose(
+      () {
+        serviceNameTEC.dispose();
+      },
+    );
   }
 }
 

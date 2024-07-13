@@ -10,12 +10,6 @@ class CarModelContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var imagePath = ref.read(carInfoProvider.notifier).carImagePath;
-    var carServicePrice = ref.read(carInfoProvider.notifier).carCurrentPrice;
-    var carName = ref.read(carInfoProvider.notifier).carName;
-    log("Car Image path $imagePath");
-    log("Car Service Price $carServicePrice");
-    log("Car name : $carName");
     return LayoutBuilder(
       builder: (context, constraints) => ListView.builder(
         scrollDirection: Axis.horizontal,

@@ -30,7 +30,7 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                          flex: 40,
+                          flex: 35,
                           child: Builder(builder: (context) {
                             if (ServiceClassVariables.isClickedOnCamera &&
                                 ServiceClassVariables.imageFilePath != null) {
@@ -95,11 +95,24 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                               ],
                             );
                           })),
-                      const Spacer(
-                        flex: 5,
+                      Expanded(
+                        flex: 15,
+                        child: TextField(
+                          controller:
+                              ref.read(serviceInfoProvider.notifier).phoneNoTEC,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 1.5),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(30),
+                                ),
+                              ),
+                              hintText: 'Phone no'),
+                        ),
                       ),
                       Expanded(
-                        flex: 40,
+                        flex: 30,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
@@ -143,6 +156,10 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
+                                  setState(() {
+                                    ServiceClassVariables.isClickedOnCamera =
+                                        false;
+                                  });
                                   var serviceDescription = ref
                                       .read(serviceInfoProvider.notifier)
                                       .serviceDescriptionTEC
@@ -176,9 +193,6 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                           ],
                         ),
                       ),
-                      const Spacer(
-                        flex: 5,
-                      )
                     ],
                   ),
                 ),

@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddingPreviousDataVariables {
+class ServiceCategoryVariables {
   static String? imageFilePath;
   static bool isClickedOnCamera = false;
 }
 
-void dialogForAddingPreviousData(BuildContext context) {
+void dialogForAddingServiceCategory(BuildContext context) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -32,20 +32,22 @@ void dialogForAddingPreviousData(BuildContext context) {
                       Expanded(
                           flex: 50,
                           child: Builder(builder: (context) {
-                            if (AddingPreviousDataVariables.isClickedOnCamera &&
-                                AddingPreviousDataVariables.imageFilePath !=
+                            if (ServiceCategoryVariables.isClickedOnCamera &&
+                                ServiceCategoryVariables.imageFilePath !=
                                     null) {
                               ref
-                                  .read(previousServiceStateProvider.notifier)
-                                  .setNewPreviousImage(
-                                      AddingPreviousDataVariables
-                                          .imageFilePath!);
+                                  .read(serviceAddtionStateProvider.notifier)
+                                  .isIconPicked = true;
+                              ref
+                                  .read(serviceAddtionStateProvider.notifier)
+                                  .onChangeIconUrl(
+                                      ServiceCategoryVariables.imageFilePath!);
                               return Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     image: DecorationImage(
                                       image: FileImage(File(
-                                          AddingPreviousDataVariables
+                                          ServiceCategoryVariables
                                               .imageFilePath!)),
                                     )),
                               );
@@ -64,7 +66,7 @@ void dialogForAddingPreviousData(BuildContext context) {
                                         child: InkWell(
                                             onTap: () async {
                                               setState(() {
-                                                AddingPreviousDataVariables
+                                                ServiceCategoryVariables
                                                     .isClickedOnCamera = true;
                                               });
 
@@ -75,16 +77,16 @@ void dialogForAddingPreviousData(BuildContext context) {
 
                                               if (file == null) {
                                                 setState(() {
-                                                  AddingPreviousDataVariables
+                                                  ServiceCategoryVariables
                                                           .isClickedOnCamera =
                                                       false;
                                                 });
                                               } else {
                                                 setState(() {
-                                                  AddingPreviousDataVariables
+                                                  ServiceCategoryVariables
                                                           .imageFilePath =
                                                       file.path;
-                                                  AddingPreviousDataVariables
+                                                  ServiceCategoryVariables
                                                       .isClickedOnCamera = true;
                                                 });
                                               }
@@ -92,7 +94,7 @@ void dialogForAddingPreviousData(BuildContext context) {
                                             child: Image.asset(cameraImage))),
                                     const Expanded(
                                         flex: 20,
-                                        child: Text("Click To pic image")),
+                                        child: Text("Click To service Icon")),
                                     const Spacer(
                                       flex: 20,
                                     )
@@ -108,8 +110,8 @@ void dialogForAddingPreviousData(BuildContext context) {
                         flex: 30,
                         child: TextField(
                           controller: ref
-                              .read(previousServiceStateProvider.notifier)
-                              .previousServiceNameTEC,
+                              .read(serviceAddtionStateProvider.notifier)
+                              .serviecNameTEC,
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(
                                 borderSide:
@@ -134,8 +136,8 @@ void dialogForAddingPreviousData(BuildContext context) {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                   setState(() {
-                                    AddingPreviousDataVariables
-                                        .isClickedOnCamera = false;
+                                    ServiceCategoryVariables.isClickedOnCamera =
+                                        false;
                                   });
                                 },
                                 backgroundColor: const Color(0xFF1BC0C5),
@@ -152,15 +154,11 @@ void dialogForAddingPreviousData(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
+                                  Navigator.of(context).pop();
                                   ref
                                       .read(
-                                          previousServiceStateProvider.notifier)
-                                      .insertPreviousData();
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    AddingPreviousDataVariables
-                                        .isClickedOnCamera = false;
-                                  });
+                                          serviceAddtionStateProvider.notifier)
+                                      .onSaveBtnClick();
                                 },
                                 backgroundColor: const Color(0xFF1BC0C5),
                                 child: const Text(

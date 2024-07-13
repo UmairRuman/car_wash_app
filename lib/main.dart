@@ -6,6 +6,7 @@ import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/auth_state_change_notifier.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
+import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/navigation/navigation.dart';
 import 'package:car_wash_app/utils/images_path.dart';
@@ -14,22 +15,40 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const String adminInfoKey = "AdminId";
+getPosition() async {
+  await determinePosition();
+}
+
+Future<String?> getAdminIdFromPrefs() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString(adminInfoKey);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await determinePosition();
-  currentUserPostion = await determinePosition();
-
-  log("position $currentUserPostion");
-  runApp(const ProviderScope(child: MyApp()));
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  runApp(ProviderScope(
+      child: MyApp(
+    prefs: prefs,
+  )));
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+  final SharedPreferences prefs;
+  const MyApp({super.key, required this.prefs});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    SchedulerBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        await initializeAdminInfo(ref, prefs);
+        getPosition();
+      },
+    );
     for (var imagespath in listOfPreviousWorkImages) {
       precacheImage(AssetImage(imagespath), context);
     }

@@ -4,20 +4,21 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class Services {
-  String serviceId;
+  int serviceId;
   String adminId;
-  String name;
+  String serviceName;
   String description;
   String iconUrl;
-  bool isFavourite;
+  bool? isFavourite;
   List<Car> cars;
   String imageUrl;
   List<DateTime> availableDates;
   String adminPhoneNo;
+
   Services({
     required this.serviceId,
     required this.adminId,
-    required this.name,
+    required this.serviceName,
     required this.description,
     required this.iconUrl,
     required this.isFavourite,
@@ -28,9 +29,9 @@ class Services {
   });
 
   Services copyWith({
-    String? serviceId,
+    int? serviceId,
     String? adminId,
-    String? name,
+    String? serviceName,
     String? description,
     String? iconUrl,
     bool? isFavourite,
@@ -42,7 +43,7 @@ class Services {
     return Services(
       serviceId: serviceId ?? this.serviceId,
       adminId: adminId ?? this.adminId,
-      name: name ?? this.name,
+      serviceName: serviceName ?? this.serviceName,
       description: description ?? this.description,
       iconUrl: iconUrl ?? this.iconUrl,
       isFavourite: isFavourite ?? this.isFavourite,
@@ -57,7 +58,7 @@ class Services {
     return <String, dynamic>{
       'serviceId': serviceId,
       'adminId': adminId,
-      'name': name,
+      'serviceName': serviceName,
       'description': description,
       'iconUrl': iconUrl,
       'isFavourite': isFavourite,
@@ -71,20 +72,21 @@ class Services {
 
   factory Services.fromMap(Map<String, dynamic> map) {
     return Services(
-      serviceId: map['serviceId'] as String,
+      serviceId: map['serviceId'] as int,
       adminId: map['adminId'] as String,
-      name: map['name'] as String,
+      serviceName: map['serviceName'] as String,
       description: map['description'] as String,
       iconUrl: map['iconUrl'] as String,
-      isFavourite: map['isFavourite'] as bool,
+      isFavourite:
+          map['isFavourite'] != null ? map['isFavourite'] as bool : null,
       cars: List<Car>.from(
-        (map['cars'] as List<int>).map<Car>(
+        (map['cars']).map<Car>(
           (x) => Car.fromMap(x as Map<String, dynamic>),
         ),
       ),
       imageUrl: map['imageUrl'] as String,
       availableDates: List<DateTime>.from(
-        (map['availableDates'] as List<int>).map<DateTime>(
+        (map['availableDates']).map<DateTime>(
           (x) => DateTime.fromMillisecondsSinceEpoch(x),
         ),
       ),
@@ -99,7 +101,7 @@ class Services {
 
   @override
   String toString() {
-    return 'Services(serviceId: $serviceId, adminId: $adminId, name: $name, description: $description, iconUrl: $iconUrl, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo)';
+    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo)';
   }
 
   @override
@@ -108,7 +110,7 @@ class Services {
 
     return other.serviceId == serviceId &&
         other.adminId == adminId &&
-        other.name == name &&
+        other.serviceName == serviceName &&
         other.description == description &&
         other.iconUrl == iconUrl &&
         other.isFavourite == isFavourite &&
@@ -122,7 +124,7 @@ class Services {
   int get hashCode {
     return serviceId.hashCode ^
         adminId.hashCode ^
-        name.hashCode ^
+        serviceName.hashCode ^
         description.hashCode ^
         iconUrl.hashCode ^
         isFavourite.hashCode ^
@@ -137,21 +139,25 @@ class Car {
   String carName;
   String price;
   String url;
+  bool isAsset;
   Car({
     required this.carName,
     required this.price,
     required this.url,
+    required this.isAsset,
   });
 
   Car copyWith({
     String? carName,
     String? price,
     String? url,
+    bool? isAsset,
   }) {
     return Car(
       carName: carName ?? this.carName,
       price: price ?? this.price,
       url: url ?? this.url,
+      isAsset: isAsset ?? this.isAsset,
     );
   }
 
@@ -160,6 +166,7 @@ class Car {
       'carName': carName,
       'price': price,
       'url': url,
+      'isAsset': isAsset,
     };
   }
 
@@ -168,6 +175,7 @@ class Car {
       carName: map['carName'] as String,
       price: map['price'] as String,
       url: map['url'] as String,
+      isAsset: map['isAsset'] as bool,
     );
   }
 
@@ -177,15 +185,22 @@ class Car {
       Car.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'Car(carName: $carName, price: $price, url: $url)';
+  String toString() {
+    return 'Car(carName: $carName, price: $price, url: $url, isAsset: $isAsset)';
+  }
 
   @override
   bool operator ==(covariant Car other) {
     if (identical(this, other)) return true;
 
-    return other.carName == carName && other.price == price && other.url == url;
+    return other.carName == carName &&
+        other.price == price &&
+        other.url == url &&
+        other.isAsset == isAsset;
   }
 
   @override
-  int get hashCode => carName.hashCode ^ price.hashCode ^ url.hashCode;
+  int get hashCode {
+    return carName.hashCode ^ price.hashCode ^ url.hashCode ^ isAsset.hashCode;
+  }
 }

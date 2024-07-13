@@ -1,11 +1,14 @@
+import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ButtonSaveService extends StatelessWidget {
-  const ButtonSaveService({super.key});
+class ButtonSaveService extends ConsumerWidget {
+  final int serviceId;
+  const ButtonSaveService({super.key, required this.serviceId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         const Spacer(
@@ -14,7 +17,11 @@ class ButtonSaveService extends StatelessWidget {
         Expanded(
           flex: 80,
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              ref
+                  .read(allServiceDataStateProvider.notifier)
+                  .updateService(serviceId);
+            },
             backgroundColor: Colors.blue,
             child: const Text(
               "Save Service",

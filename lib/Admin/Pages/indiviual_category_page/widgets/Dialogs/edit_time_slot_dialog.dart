@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/time_slot_decider_controller.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +10,8 @@ class TimeSlotVariables {
   static Time currentTime = Time(hour: 10, minute: 0);
 }
 
-void dialogForEditTimeSlot(BuildContext context) {
+void dialogForEditTimeSlot(
+    BuildContext context, String serviceName, int serviceId) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -89,7 +89,12 @@ void dialogForEditTimeSlot(BuildContext context) {
                                                   TimeSlotVariables
                                                           .currentTime =
                                                       selectedTime;
-
+                                                  ref
+                                                      .read(
+                                                          timeSlotTimingStateProvider
+                                                              .notifier)
+                                                      .findStartIndex(
+                                                          selectedTime.hour);
                                                   ref
                                                       .read(
                                                           timeSlotTimingStateProvider
@@ -112,13 +117,10 @@ void dialogForEditTimeSlot(BuildContext context) {
                                     ),
                                     Expanded(
                                         flex: 20,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: FittedBox(
-                                              child: Text(startTime == ""
-                                                  ? "Start time"
-                                                  : startTime)),
-                                        ))
+                                        child: FittedBox(
+                                            child: Text(startTime == ""
+                                                ? "Start time"
+                                                : startTime)))
                                   ],
                                 ),
                               ),
@@ -147,6 +149,12 @@ void dialogForEditTimeSlot(BuildContext context) {
                                                   120, // optional
                                               onChange: (selectedTime) {
                                                 setState(() {
+                                                  ref
+                                                      .read(
+                                                          timeSlotTimingStateProvider
+                                                              .notifier)
+                                                      .findEndIndex(
+                                                          selectedTime.hour);
                                                   TimeSlotVariables
                                                           .currentTime =
                                                       selectedTime;
@@ -209,6 +217,16 @@ void dialogForEditTimeSlot(BuildContext context) {
                                 flex: 40,
                                 child: FloatingActionButton(
                                   onPressed: () {
+                                    ref
+                                        .read(timeSlotsStateProvider.notifier)
+                                        .getTimeSlots(
+                                            DateTime(
+                                              DateTime.now().year,
+                                              DateTime.now().month,
+                                              DateTime.now().day,
+                                            ),
+                                            serviceId,
+                                            serviceName);
                                     Navigator.of(context).pop();
                                     ref
                                         .read(timeSlotTimingStateProvider

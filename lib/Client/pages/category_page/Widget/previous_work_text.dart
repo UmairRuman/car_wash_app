@@ -28,7 +28,7 @@ class HomePagePreviousServiceText extends ConsumerWidget {
             flex: 15,
             child: InkWell(
               onTap: () {
-                myDialog(context);
+                dialogForAddingPreviousData(context);
               },
               child: Container(
                   decoration: const BoxDecoration(

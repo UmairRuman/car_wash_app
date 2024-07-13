@@ -6,12 +6,16 @@ class CarInfoController extends Notifier<String> {
   String carName = "Car name";
   String carImagePath = "";
   int carIntialPrice = 1;
-  int carCurrentPrice = 0;
+  int carCurrentPrice = 1;
   bool isPickImage = false;
-  bool isChangeCarName = false;
   bool isChangeCarPrice = false;
   @override
   String build() {
+    ref.onDispose(
+      () {
+        carNameTEC.dispose();
+      },
+    );
     return carName;
   }
 
@@ -19,17 +23,13 @@ class CarInfoController extends Notifier<String> {
     carImagePath = newCarImagePath;
   }
 
-  onChangeCarName() {
-    carName = carNameTEC.text;
-    isChangeCarName = true;
-  }
-
   onChangeCarPrice(int carNewPrice) {
     carCurrentPrice = carNewPrice;
   }
 
   onSaveButtonClick() {
-    if (isPickImage && isChangeCarName && isChangeCarPrice) {
+    carName = carNameTEC.text;
+    if (isPickImage && isChangeCarPrice) {
       state = "Changed";
     }
   }
