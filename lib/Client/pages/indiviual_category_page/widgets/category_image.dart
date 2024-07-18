@@ -1,37 +1,84 @@
+import 'dart:io';
+
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class IndiviualCategoryImage extends StatelessWidget {
   final String imagePath;
-  const IndiviualCategoryImage({super.key, required this.imagePath});
+  final String description;
+  final bool isAssetImage;
+  const IndiviualCategoryImage(
+      {super.key,
+      required this.imagePath,
+      required this.description,
+      required this.isAssetImage});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 12, right: 12),
+      padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Colors.grey),
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 15.0, right: 15, bottom: 10, top: 10),
-          child: Container(
-            decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                      offset: Offset(8, 8),
-                      blurRadius: 8,
-                      color: Color.fromARGB(255, 216, 210, 210)),
-                  BoxShadow(
-                      offset: Offset(-8, -8),
-                      blurRadius: 8,
-                      color: Color.fromARGB(255, 216, 210, 210))
-                ],
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                image: DecorationImage(
-                    image: AssetImage(imagePath), fit: BoxFit.cover)),
-          ),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  offset: Offset(3, 3),
+                  color: Color.fromARGB(255, 151, 188, 219),
+                  blurRadius: 3)
+            ],
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: Row(
+          children: [
+            Expanded(
+                flex: 30,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                          image: isAssetImage
+                              ? AssetImage(imagePath)
+                              : imagePath == ""
+                                  ? AssetImage(emptyImage)
+                                  : NetworkImage(imagePath),
+                          fit: BoxFit.fill)),
+                )),
+            const Spacer(
+              flex: 5,
+            ),
+            Expanded(flex: 45, child: Text(description)),
+            Expanded(
+                flex: 20,
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 30,
+                      child: Row(
+                        children: [
+                          const Expanded(
+                              flex: 25,
+                              child: Icon(
+                                Icons.phone,
+                                color: Colors.green,
+                              )),
+                          Expanded(
+                              flex: 75,
+                              child: FittedBox(
+                                  child: Text(
+                                FirebaseAuth.instance.currentUser!.phoneNumber!,
+                                style: const TextStyle(
+                                    color:
+                                        const Color.fromARGB(255, 16, 66, 108)),
+                              ))),
+                        ],
+                      ),
+                    ),
+                    const Spacer(
+                      flex: 70,
+                    ),
+                  ],
+                ))
+          ],
         ),
       ),
     );

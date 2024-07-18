@@ -7,62 +7,87 @@ import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/date_t
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/selected_date.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/texts.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/top_row.dart';
-import 'package:car_wash_app/utils/categoryInfo.dart';
-import 'package:car_wash_app/utils/images_path.dart';
+import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IndiviualCategoryPage extends StatelessWidget {
+class IndiviualCategoryPage extends ConsumerWidget {
   static const String pageName = "/individualCategoryPage";
   const IndiviualCategoryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(allServiceDataStateProvider);
+
     var data =
         ModalRoute.of(context)!.settings.arguments as ImageAndServiceNameSender;
-
+    int serviceId = data.serviceID;
     String imagePath = data.imagePath;
     String serviceName = data.categoryName;
+    ref
+        .read(allServiceDataStateProvider.notifier)
+        .getServiceName(serviceName, imagePath);
     return SafeArea(
         child: Scaffold(
-      body: Column(
-        children: [
-          const Spacer(
-            flex: 3,
-          ),
-          Expanded(
-              flex: 5,
-              child: TopRowIndiviualCategoryPage(
-                serviceName: serviceName,
-              )),
-          const Spacer(
-            flex: 2,
-          ),
-          Expanded(
-              flex: 20,
-              child: IndiviualCategoryImage(
-                imagePath: imagePath,
-              )),
-          const Expanded(
-            flex: 5,
-            child: TextChooseYourCarModel(),
-          ),
-          const Expanded(flex: 15, child: CarModelContainer()),
-          const Spacer(
-            flex: 2,
-          ),
-          const Expanded(flex: 5, child: TextSelectDate()),
-          const Expanded(flex: 15, child: DateTimePicker()),
-          // const Expanded(flex: 5, child: AdminSideTextChooseTimeSlot()),
-          const Expanded(flex: 10, child: AdminSideTimeSlot()),
-          const Spacer(
-            flex: 3,
-          ),
-          const Expanded(flex: 8, child: ButtonBookAWash()),
-          const Spacer(
-            flex: 2,
-          )
-        ],
-      ),
+      resizeToAvoidBottomInset: false,
+      body: Builder(builder: (context) {
+        if (state is DataLoadedState) {
+          var serviceImage = state.service.imageUrl;
+          var serviceDescription = state.service.description;
+          var listOfDates = state.service.availableDates;
+          bool isAssetImage = state.service.isAssetImage;
+          List<Car> listOfCars = state.service.cars;
+          return Column(
+            children: [
+              const Spacer(
+                flex: 3,
+              ),
+              Expanded(
+                  flex: 5,
+                  child: TopRowIndiviualCategoryPage(
+                    serviceName: serviceName,
+                  )),
+              const Spacer(
+                flex: 2,
+              ),
+              Expanded(
+                  flex: 20,
+                  child: IndiviualCategoryImage(
+                    isAssetImage: isAssetImage,
+                    description: serviceDescription,
+                    imagePath: serviceImage,
+                  )),
+              const Expanded(
+                flex: 5,
+                child: TextChooseYourCarModel(),
+              ),
+              Expanded(
+                  flex: 15,
+                  child: CarModelContainer(
+                    listOfCars: listOfCars,
+                  )),
+              const Spacer(
+                flex: 2,
+              ),
+              const Expanded(flex: 5, child: TextSelectDate()),
+              const Expanded(flex: 15, child: DateTimePicker()),
+              const Expanded(flex: 5, child: TextChooseTimeSlot()),
+              const Expanded(flex: 10, child: AdminSideTimeSlot()),
+              const Spacer(
+                flex: 3,
+              ),
+              const Expanded(flex: 8, child: ButtonBookAWash()),
+              const Spacer(
+                flex: 2,
+              )
+            ],
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }),
     ));
   }
 }

@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_service_info.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,16 +9,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
   final String imagePath;
   final String description;
+  final String serviceName;
+  final int serviceId;
+  final bool isAssetImage;
   const AdminSideIndiviualCategoryImageAndDescription(
-      {super.key, required this.imagePath, required this.description});
+      {super.key,
+      required this.isAssetImage,
+      required this.imagePath,
+      required this.description,
+      required this.serviceId,
+      required this.serviceName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var serviceDescription =
-        ref.read(serviceInfoProvider.notifier).intialServiceDescription;
-    var changedImagePath = ref.watch(serviceInfoProvider);
-    var phoneNumber = ref.read(serviceInfoProvider.notifier).phoneNo;
-    log("Image path :  $changedImagePath");
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -41,15 +42,17 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                          image: imagePath == ""
-                              ? AssetImage(emptyImage)
-                              : FileImage(File(imagePath)),
+                          image: isAssetImage
+                              ? AssetImage(imagePath)
+                              : imagePath == ""
+                                  ? AssetImage(emptyImage)
+                                  : FileImage(File(imagePath)),
                           fit: BoxFit.fill)),
                 )),
             const Spacer(
               flex: 5,
             ),
-            Expanded(flex: 45, child: Text(serviceDescription)),
+            Expanded(flex: 45, child: Text(description)),
             Expanded(
                 flex: 20,
                 child: Column(
@@ -83,7 +86,7 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                           builder: (context, constraints) => InkWell(
                             onTap: () {
                               dialogForEdditingServiceImageAndDescription(
-                                  context);
+                                  context, serviceName, serviceId, imagePath);
                             },
                             child: Container(
                               height: constraints.maxHeight,

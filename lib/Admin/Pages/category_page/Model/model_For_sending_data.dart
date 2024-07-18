@@ -1,6 +1,9 @@
-class ImageAndServiceNameSender {
+class AdminSideImageAndServiceNameSender {
   String imagePath;
   String categoryName;
-  ImageAndServiceNameSender(
-      {required this.categoryName, required this.imagePath});
+  int serviceID;
+  AdminSideImageAndServiceNameSender(
+      {required this.categoryName,
+      required this.imagePath,
+      required this.serviceID});
 }

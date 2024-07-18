@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
+import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/car_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
+import 'package:car_wash_app/utils/categoryInfo.dart';
 import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,9 +36,9 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
   }
 
   onSaveBtnClick() async {
-    List<ServiceCounter> listOfServices = await serviceCounterCollection
-        .getAllServiceCount(FirebaseAuth.instance.currentUser!.uid);
-
+    String? adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    List<ServiceCounter> listOfServices =
+        await serviceCounterCollection.getAllServiceCount(adminId!);
     List<Car> listOfCars = [];
     for (int index = 0; index < listOfCarImages.length; index++) {
       listOfCars.add(
@@ -46,18 +49,20 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
             isAsset: true),
       );
     }
+
     if (isIconPicked) {
       log("Adding service");
       //Adding plus one in the counter collection
       serviceCounterCollection.addCount(
-          ServiceCounter(count: listOfServices.length + 1),
-          FirebaseAuth.instance.currentUser!.uid);
+          ServiceCounter(count: listOfServices.length + 1), adminId);
 
       serviceCollection.addNewService(Services(
+          isAssetImage: false,
           serviceId: listOfServices.length + 1,
-          adminId: FirebaseAuth.instance.currentUser!.uid,
+          adminId: adminId,
+          isAssetIcon: false,
           serviceName: serviecNameTEC.text,
-          description: "No Description",
+          description: "Click to add Description",
           iconUrl: iconUrl,
           isFavourite: false,
           cars: listOfCars,
@@ -70,10 +75,12 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
   }
 
   fetchAllDataFromFireStore() async {
+    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+
     state = ServiceDataLoadingState();
     try {
-      var listOfServices = await serviceCollection
-          .getAllServicesByAdmin(FirebaseAuth.instance.currentUser!.uid);
+      var listOfServices =
+          await serviceCollection.getAllServicesByAdmin(adminId!);
       state = ServiceDataLoadedState(services: listOfServices);
       log("List of services length : ${listOfServices.length}");
     } catch (e) {

@@ -5,21 +5,25 @@ class AdminInfo {
   String adminName;
   String adminId;
   int adminNo;
+  String adminPhoneNo;
   AdminInfo({
     required this.adminName,
     required this.adminId,
     required this.adminNo,
+    required this.adminPhoneNo,
   });
 
   AdminInfo copyWith({
     String? adminName,
     String? adminId,
     int? adminNo,
+    String? adminPhoneNo,
   }) {
     return AdminInfo(
       adminName: adminName ?? this.adminName,
       adminId: adminId ?? this.adminId,
       adminNo: adminNo ?? this.adminNo,
+      adminPhoneNo: adminPhoneNo ?? this.adminPhoneNo,
     );
   }
 
@@ -28,6 +32,7 @@ class AdminInfo {
       'adminName': adminName,
       'adminId': adminId,
       'adminNo': adminNo,
+      'adminPhoneNo': adminPhoneNo,
     };
   }
 
@@ -36,6 +41,7 @@ class AdminInfo {
       adminName: map['adminName'] as String,
       adminId: map['adminId'] as String,
       adminNo: map['adminNo'] as int,
+      adminPhoneNo: map['adminPhoneNo'] as String,
     );
   }
 
@@ -45,8 +51,9 @@ class AdminInfo {
       AdminInfo.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() =>
-      'AdminInfo(adminName: $adminName, adminId: $adminId, adminNo: $adminNo)';
+  String toString() {
+    return 'AdminInfo(adminName: $adminName, adminId: $adminId, adminNo: $adminNo, adminPhoneNo: $adminPhoneNo)';
+  }
 
   @override
   bool operator ==(covariant AdminInfo other) {
@@ -54,9 +61,15 @@ class AdminInfo {
 
     return other.adminName == adminName &&
         other.adminId == adminId &&
-        other.adminNo == adminNo;
+        other.adminNo == adminNo &&
+        other.adminPhoneNo == adminPhoneNo;
   }
 
   @override
-  int get hashCode => adminName.hashCode ^ adminId.hashCode ^ adminNo.hashCode;
+  int get hashCode {
+    return adminName.hashCode ^
+        adminId.hashCode ^
+        adminNo.hashCode ^
+        adminPhoneNo.hashCode;
+  }
 }

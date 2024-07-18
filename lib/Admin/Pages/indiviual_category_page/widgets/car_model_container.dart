@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,11 +11,6 @@ class AdminSideCarModelContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(carInfoProvider);
-    var imagePath = ref.read(carInfoProvider.notifier).carImagePath;
-    var carServicePrice = ref.read(carInfoProvider.notifier).carCurrentPrice;
-    var carName = ref.read(carInfoProvider.notifier).carName;
-
     return LayoutBuilder(
       builder: (context, constraints) => ListView.builder(
         scrollDirection: Axis.horizontal,

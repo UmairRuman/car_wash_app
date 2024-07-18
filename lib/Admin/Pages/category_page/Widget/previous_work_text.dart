@@ -1,8 +1,8 @@
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 
-class HomePagePreviousServiceText extends StatelessWidget {
-  const HomePagePreviousServiceText({super.key});
+class AdminHomePagePreviousServiceText extends StatelessWidget {
+  const AdminHomePagePreviousServiceText({super.key});
 
   @override
   Widget build(BuildContext context) {

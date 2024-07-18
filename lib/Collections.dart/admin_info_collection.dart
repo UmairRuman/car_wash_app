@@ -10,7 +10,7 @@ class AdminInfoCollection {
     return instance;
   }
 
-  Future<bool> insertAdminId(AdminInfo adminInfo) async {
+  Future<bool> insertAdminInfo(AdminInfo adminInfo) async {
     try {
       await adminInfoCollection
           .doc(adminInfo.adminNo.toString())
@@ -18,6 +18,16 @@ class AdminInfoCollection {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<AdminInfo> getAdminsInfoAtSpecificId(int id) async {
+    try {
+      var querrySnapShot = await adminInfoCollection.doc(id.toString()).get();
+      return AdminInfo.fromMap(querrySnapShot.data()!);
+    } catch (e) {
+      return AdminInfo(
+          adminName: "", adminId: "", adminNo: 0, adminPhoneNo: "");
     }
   }
 

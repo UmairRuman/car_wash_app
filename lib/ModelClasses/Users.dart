@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Users {
   String userId;
   String name;
@@ -61,7 +63,7 @@ class Users {
       'isServiceProvider': isServiceProvider,
       'bonusPoints': bonusPoints,
       'serviceConsumed': serviceConsumed,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'createdAt': Timestamp.fromDate(createdAt),
       'userLocation': userLocation,
     };
   }
@@ -75,8 +77,8 @@ class Users {
       phoneNumber: map['phoneNumber'] as String,
       isServiceProvider: map['isServiceProvider'] as bool,
       bonusPoints: map['bonusPoints'] as double,
-      serviceConsumed: map['serviceConsumed'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      serviceConsumed: map['serviceConsumed'] as double,
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
       userLocation: map['userLocation'] as String,
     );
   }

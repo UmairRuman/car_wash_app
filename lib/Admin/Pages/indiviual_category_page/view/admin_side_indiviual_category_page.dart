@@ -1,12 +1,12 @@
+import 'package:car_wash_app/Admin/Pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/buttons.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/car_model_container.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/categoryImage_and_description.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/date_time_line.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/selected_date.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/texts.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/time_slot.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/top_row.dart';
-import 'package:car_wash_app/Client/pages/category_page/Model/model_For_sending_data.dart';
-import 'package:car_wash_app/Client/pages/indiviual_category_page/widgets/texts.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +20,8 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(allServiceDataStateProvider);
 
-    var data =
-        ModalRoute.of(context)!.settings.arguments as ImageAndServiceNameSender;
+    var data = ModalRoute.of(context)!.settings.arguments
+        as AdminSideImageAndServiceNameSender;
     int serviceId = data.serviceID;
     String imagePath = data.imagePath;
     String serviceName = data.categoryName;
@@ -36,6 +36,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
           var serviceImage = state.service.imageUrl;
           var serviceDescription = state.service.description;
           var listOfDates = state.service.availableDates;
+          var isAssetImage = state.service.isAssetImage;
           List<Car> listOfCars = state.service.cars;
           return Column(
             children: [
@@ -53,12 +54,18 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 20,
                   child: AdminSideIndiviualCategoryImageAndDescription(
+                    isAssetImage: isAssetImage,
+                    serviceId: serviceId,
+                    serviceName: serviceName,
                     description: serviceDescription,
                     imagePath: serviceImage,
                   )),
-              const Expanded(
+              Expanded(
                 flex: 5,
-                child: TextChooseYourCarModel(),
+                child: AdminSideTextChooseYourCarModel(
+                  serviceId: serviceId,
+                  serviceName: serviceName,
+                ),
               ),
               Expanded(
                   flex: 15,
@@ -88,6 +95,8 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 8,
                   child: ButtonSaveService(
+                    imagePath: imagePath,
+                    serviceName: serviceName,
                     serviceId: serviceId,
                   )),
               const Spacer(

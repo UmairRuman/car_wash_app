@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
+import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,9 +12,11 @@ import 'package:image_picker/image_picker.dart';
 class ServiceClassVariables {
   static String? imageFilePath;
   static bool isClickedOnCamera = false;
+  static bool isImageModified = false;
 }
 
-void dialogForEdditingServiceImageAndDescription(BuildContext context) {
+void dialogForEdditingServiceImageAndDescription(
+    BuildContext context, String serviceName, int serviceId, String imagePath) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -75,11 +80,30 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                                                 });
                                               } else {
                                                 setState(() {
-                                                  ServiceClassVariables
-                                                          .imageFilePath =
-                                                      file.path;
-                                                  ServiceClassVariables
-                                                      .isClickedOnCamera = true;
+                                                  FirebaseStorage.instance
+                                                      .ref()
+                                                      .child("Images")
+                                                      .child(FirebaseAuth
+                                                          .instance
+                                                          .currentUser!
+                                                          .uid)
+                                                      .child("serviceImages")
+                                                      .child(serviceName)
+                                                      .putFile(File(file.path))
+                                                      .then((snapshot) async {
+                                                    var imagePath =
+                                                        await snapshot.ref
+                                                            .getDownloadURL();
+
+                                                    ServiceClassVariables
+                                                        .isImageModified = true;
+                                                    ServiceClassVariables
+                                                            .imageFilePath =
+                                                        file.path;
+                                                    ServiceClassVariables
+                                                            .isClickedOnCamera =
+                                                        true;
+                                                  });
                                                 });
                                               }
                                             },
@@ -96,23 +120,7 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                             );
                           })),
                       Expanded(
-                        flex: 15,
-                        child: TextField(
-                          controller:
-                              ref.read(serviceInfoProvider.notifier).phoneNoTEC,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.blue, width: 1.5),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(30),
-                                ),
-                              ),
-                              hintText: 'Phone no'),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 30,
+                        flex: 45,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
@@ -138,6 +146,7 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                   setState(() {
+                                    ServiceClassVariables.imageFilePath = null;
                                     ServiceClassVariables.isClickedOnCamera =
                                         false;
                                   });
@@ -156,10 +165,6 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
-                                  setState(() {
-                                    ServiceClassVariables.isClickedOnCamera =
-                                        false;
-                                  });
                                   var serviceDescription = ref
                                       .read(serviceInfoProvider.notifier)
                                       .serviceDescriptionTEC
@@ -167,17 +172,26 @@ void dialogForEdditingServiceImageAndDescription(BuildContext context) {
                                   ref
                                       .read(serviceInfoProvider.notifier)
                                       .onChangeText(serviceDescription);
-                                  if (ServiceClassVariables.imageFilePath !=
-                                      null) {
+                                  if (ServiceClassVariables.isImageModified) {
                                     ref
                                         .read(serviceInfoProvider.notifier)
                                         .onChangeImagePath(ServiceClassVariables
                                             .imageFilePath!);
                                   }
+                                  ref
+                                      .read(
+                                          allServiceDataStateProvider.notifier)
+                                      .updateService(serviceId, serviceName);
+                                  ref
+                                      .read(
+                                          allServiceDataStateProvider.notifier)
+                                      .fetchServiceData(serviceName, serviceId);
+
                                   Navigator.of(context).pop();
                                   setState(() {
                                     ServiceClassVariables.isClickedOnCamera =
                                         false;
+                                    ServiceClassVariables.imageFilePath = null;
                                   });
                                 },
                                 backgroundColor: const Color(0xFF1BC0C5),

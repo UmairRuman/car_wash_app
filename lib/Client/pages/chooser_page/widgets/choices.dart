@@ -48,7 +48,7 @@ class Choice1 extends ConsumerWidget {
                   .onClickOnCustomerChoice();
               ref
                   .read(userAdditionStateProvider.notifier)
-                  .listOfUserInfo[MapForUserInfo.userId] = false;
+                  .listOfUserInfo[MapForUserInfo.isServiceProvider] = false;
             },
             child: Container(
                 height: constraints.maxHeight,

@@ -1,5 +1,6 @@
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/time_slot_decider_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
+import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -217,6 +218,14 @@ void dialogForEditTimeSlot(
                                 flex: 40,
                                 child: FloatingActionButton(
                                   onPressed: () {
+                                    ref
+                                        .read(timeSlotsStateProvider.notifier)
+                                        .addTimeSlots(serviceId, serviceName);
+
+                                    ref
+                                        .read(allServiceDataStateProvider
+                                            .notifier)
+                                        .updateService(serviceId, serviceName);
                                     ref
                                         .read(timeSlotsStateProvider.notifier)
                                         .getTimeSlots(

@@ -6,9 +6,9 @@ class FavouritePageTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const Spacer(
+        Spacer(
           flex: 15,
         ),
         Expanded(
@@ -17,11 +17,10 @@ class FavouritePageTitle extends StatelessWidget {
               fit: BoxFit.none,
               child: Text(
                 stringFavouriteCarWashServices,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             )),
-        const Spacer(
+        Spacer(
           flex: 40,
         )
       ],

@@ -6,12 +6,12 @@ class TextChooseYourCarModel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const Spacer(
+        Spacer(
           flex: 5,
         ),
-        const Expanded(
+        Expanded(
           flex: 40,
           child: FittedBox(
             child: Text(
@@ -20,26 +20,52 @@ class TextChooseYourCarModel extends StatelessWidget {
             ),
           ),
         ),
-        const Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
-        const Spacer(
-          flex: 25,
+        Spacer(
+          flex: 35,
         ),
         Expanded(
             flex: 15,
-            child: InkWell(
-              onTap: () {
-                dialogForEditCarInfo(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                child: Container(
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 201, 218, 232),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: const Icon(Icons.add)),
-              ),
+            child: Padding(
+              padding: EdgeInsets.only(left: 8.0, right: 8),
+              child: Icon(Icons.arrow_forward),
             )),
-        const Spacer(
+        Spacer(
+          flex: 5,
+        )
+      ],
+    );
+  }
+}
+
+class TextChooseTimeSlot extends StatelessWidget {
+  const TextChooseTimeSlot({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Spacer(
+          flex: 5,
+        ),
+        Expanded(
+          flex: 40,
+          child: FittedBox(
+            child: Text(
+              "Choose Time Slot",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Spacer(
+          flex: 35,
+        ),
+        Expanded(
+            flex: 15,
+            child: Padding(
+              padding: EdgeInsets.only(left: 8.0, right: 8),
+              child: Icon(Icons.arrow_forward),
+            )),
+        Spacer(
           flex: 5,
         )
       ],

@@ -71,6 +71,7 @@ class EditIcon extends ConsumerWidget {
               .ref()
               .child("Images")
               .child(FirebaseAuth.instance.currentUser!.uid)
+              .child("userImage")
               .putFile(File(file.path))
               .then(
             (snapshot) async {

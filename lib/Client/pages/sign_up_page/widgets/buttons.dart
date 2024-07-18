@@ -45,10 +45,6 @@ class BtnCreateAccount extends ConsumerWidget {
                   log(FirebaseAuth.instance.currentUser?.displayName ??
                       'No Name');
                   log('[Updated successfully]');
-                  // await user.updateProfile(displayName: nameController.text);
-                  // log("Name : ${user.displayName}");
-                  // await user.reload();
-                  // user = FirebaseAuth.instance.currentUser;
                 }
               }
             },
@@ -62,9 +58,9 @@ class BtnCreateAccount extends ConsumerWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(24)),
                   gradient: gradientForButton),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              child: Text(
+              child: const Text(
                 stringCreateAccount,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

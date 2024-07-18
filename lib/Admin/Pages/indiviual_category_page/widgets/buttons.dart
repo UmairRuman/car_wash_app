@@ -5,7 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ButtonSaveService extends ConsumerWidget {
   final int serviceId;
-  const ButtonSaveService({super.key, required this.serviceId});
+  final String serviceName;
+  final String imagePath;
+  const ButtonSaveService(
+      {super.key,
+      required this.serviceId,
+      required this.serviceName,
+      required this.imagePath});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +26,7 @@ class ButtonSaveService extends ConsumerWidget {
             onPressed: () {
               ref
                   .read(allServiceDataStateProvider.notifier)
-                  .updateService(serviceId);
+                  .updateService(serviceId, serviceName);
             },
             backgroundColor: Colors.blue,
             child: const Text(

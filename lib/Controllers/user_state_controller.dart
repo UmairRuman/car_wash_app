@@ -1,15 +1,20 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/Users.dart';
+import 'package:car_wash_app/ModelClasses/admin_info.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final userAdditionStateProvider =
     NotifierProvider<UserStateNotifier, UserAdditionStates>(
         UserStateNotifier.new);
 
 class UserStateNotifier extends Notifier<UserAdditionStates> {
+  AdminInfoCollection adminInfoCollection = AdminInfoCollection();
   Map<String, dynamic> listOfUserInfo = {
     MapForUserInfo.userName: "",
     MapForUserInfo.email: "",
@@ -39,18 +44,32 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     log("Phone No ${listOfUserInfo[MapForUserInfo.phoneNumber]}");
 
     if (listOfUserInfo[MapForUserInfo.userId] != "" &&
-        listOfUserInfo[MapForUserInfo.userName] != "" &&
-        listOfUserInfo[MapForUserInfo.email] != "" &&
-        listOfUserInfo[MapForUserInfo.phoneNumber] != "" &&
-        listOfUserInfo[MapForUserInfo.userLocation] != "") {
+        listOfUserInfo[MapForUserInfo.userName] != "") {
+      var userName = listOfUserInfo[MapForUserInfo.userName];
+      var userId = listOfUserInfo[MapForUserInfo.userId];
+      var userPhoneNo = listOfUserInfo[MapForUserInfo.phoneNumber];
+
+      if (listOfUserInfo[MapForUserInfo.isServiceProvider]) {
+        adminInfoCollection.insertAdminInfo(AdminInfo(
+            adminName: userName,
+            adminId: userId,
+            adminNo: 1,
+            adminPhoneNo: userPhoneNo));
+      }
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      sharedPreferences.setBool(ShraedPreferncesConstants.isServiceProvider,
+          listOfUserInfo[MapForUserInfo.isServiceProvider]);
+      sharedPreferences.setString(ShraedPreferncesConstants.phoneNo,
+          listOfUserInfo[MapForUserInfo.phoneNumber]);
       log("All data added");
       isUserDataAdded = true;
       bool isUserAdd = await userCollection.addUser(Users(
-          userId: listOfUserInfo[MapForUserInfo.userId],
-          name: listOfUserInfo[MapForUserInfo.userName],
+          userId: userId,
+          name: userName,
           email: listOfUserInfo[MapForUserInfo.email],
           profilePicUrl: listOfUserInfo[MapForUserInfo.profilePicUrl],
-          phoneNumber: listOfUserInfo[MapForUserInfo.phoneNumber],
+          phoneNumber: userPhoneNo,
           isServiceProvider: listOfUserInfo[MapForUserInfo.isServiceProvider],
           bonusPoints: listOfUserInfo[MapForUserInfo.bonusPoints],
           serviceConsumed: listOfUserInfo[MapForUserInfo.serviceConsumed],
@@ -61,7 +80,9 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
   }
 
   void getUser(String userId) async {
+    await Future.delayed(const Duration(seconds: 3));
     state = AdditionLoadingState();
+
     try {
       var user = await userCollection.getUser(userId);
       state = AddittionLoadedState(user: user);

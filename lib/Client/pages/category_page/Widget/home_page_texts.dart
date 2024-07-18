@@ -1,4 +1,3 @@
-import 'package:car_wash_app/Admin/Pages/category_page/Widget/dialog_for_adding_category.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 
@@ -7,12 +6,12 @@ class HomePageServiceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const Spacer(
+        Spacer(
           flex: 5,
         ),
-        const Expanded(
+        Expanded(
             flex: 30,
             child: FittedBox(
               child: Text(
@@ -20,22 +19,11 @@ class HomePageServiceText extends StatelessWidget {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             )),
-        const Spacer(
+        Spacer(
           flex: 45,
         ),
-        Expanded(
-            flex: 15,
-            child: InkWell(
-              onTap: () {
-                dialogForAddingServiceCategory(context);
-              },
-              child: Container(
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 201, 218, 232),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: const Icon(Icons.add)),
-            )),
-        const Spacer(
+        Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
+        Spacer(
           flex: 5,
         )
       ],

@@ -14,6 +14,8 @@ class Services {
   String imageUrl;
   List<DateTime> availableDates;
   String adminPhoneNo;
+  bool isAssetIcon;
+  bool isAssetImage;
 
   Services({
     required this.serviceId,
@@ -26,6 +28,8 @@ class Services {
     required this.imageUrl,
     required this.availableDates,
     required this.adminPhoneNo,
+    required this.isAssetIcon,
+    required this.isAssetImage,
   });
 
   Services copyWith({
@@ -39,6 +43,8 @@ class Services {
     String? imageUrl,
     List<DateTime>? availableDates,
     String? adminPhoneNo,
+    bool? isAssetIcon,
+    bool? isAssetImage,
   }) {
     return Services(
       serviceId: serviceId ?? this.serviceId,
@@ -51,6 +57,8 @@ class Services {
       imageUrl: imageUrl ?? this.imageUrl,
       availableDates: availableDates ?? this.availableDates,
       adminPhoneNo: adminPhoneNo ?? this.adminPhoneNo,
+      isAssetIcon: isAssetIcon ?? this.isAssetIcon,
+      isAssetImage: isAssetImage ?? this.isAssetImage,
     );
   }
 
@@ -67,6 +75,8 @@ class Services {
       'availableDates':
           availableDates.map((x) => x.millisecondsSinceEpoch).toList(),
       'adminPhoneNo': adminPhoneNo,
+      'isAssetIcon': isAssetIcon,
+      'isAssetImage': isAssetImage,
     };
   }
 
@@ -91,6 +101,8 @@ class Services {
         ),
       ),
       adminPhoneNo: map['adminPhoneNo'] as String,
+      isAssetIcon: map['isAssetIcon'] as bool,
+      isAssetImage: map['isAssetImage'] as bool,
     );
   }
 
@@ -101,7 +113,7 @@ class Services {
 
   @override
   String toString() {
-    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo)';
+    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo, isAssetIcon: $isAssetIcon, isAssetImage: $isAssetImage)';
   }
 
   @override
@@ -117,7 +129,9 @@ class Services {
         listEquals(other.cars, cars) &&
         other.imageUrl == imageUrl &&
         listEquals(other.availableDates, availableDates) &&
-        other.adminPhoneNo == adminPhoneNo;
+        other.adminPhoneNo == adminPhoneNo &&
+        other.isAssetIcon == isAssetIcon &&
+        other.isAssetImage == isAssetImage;
   }
 
   @override
@@ -131,7 +145,9 @@ class Services {
         cars.hashCode ^
         imageUrl.hashCode ^
         availableDates.hashCode ^
-        adminPhoneNo.hashCode;
+        adminPhoneNo.hashCode ^
+        isAssetIcon.hashCode ^
+        isAssetImage.hashCode;
   }
 }
 

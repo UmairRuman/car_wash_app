@@ -1,6 +1,6 @@
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
-import 'package:car_wash_app/Admin/Pages/category_page/View/categoryPage.dart';
-import 'package:car_wash_app/Admin/Pages/home_page/view/home_page.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/View/admin_side_categoryPage.dart';
+import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/Client/pages/ErrorPage/error_page.dart';
@@ -24,14 +24,21 @@ Route? onGenerateRoute(RouteSettings settings) {
     FavouritePage.pageName => myPageBuilder(const FavouritePage()),
     BookingPage.pageName => myPageBuilder(const BookingPage()),
     HomePage.pageName => myPageBuilder(const HomePage()),
-    CategoryPage.pageName => myPageBuilder(const CategoryPage()),
+    CategoryPage.pageName => myPageBuilder(const CategoryPage(
+        location: "",
+        profilePic: "",
+        userName: "",
+      )),
     ProfilePage.pageName => myPageBuilder(const ProfilePage()),
     ChooserPage.pageName => myPageBuilder(const ChooserPage()),
     IndiviualCategoryPage.pageName =>
       myPageBuilder(const IndiviualCategoryPage(), settings),
     AdminSideHomePage.pageName => myPageBuilder(const AdminSideHomePage()),
-    AdminSideCategoryPage.pageName =>
-      myPageBuilder(const AdminSideCategoryPage()),
+    AdminSideCategoryPage.pageName => myPageBuilder(const AdminSideCategoryPage(
+        location: "",
+        profilePic: "",
+        userName: "",
+      )),
     AdminSideBookingPage.pageName =>
       myPageBuilder(const AdminSideBookingPage()),
     AdminSideProfilePage.pageName =>

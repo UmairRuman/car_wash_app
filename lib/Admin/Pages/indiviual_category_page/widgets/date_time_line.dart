@@ -15,6 +15,8 @@ class AdminSideDateTimePicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    DateTime focusDate =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     var selectedYear = ref.watch(yearStateProvider);
     return EasyInfiniteDateTimeLine(
         firstDate:
@@ -22,13 +24,15 @@ class AdminSideDateTimePicker extends ConsumerWidget {
         activeColor: Colors.blue,
         selectionMode: const SelectionMode.autoCenter(),
         showTimelineHeader: false,
-        focusDate: ref.read(dateProvider.notifier).focusDate,
+        focusDate: focusDate,
         onDateChange: (selectedDate) {
           log("Selected Date : ${DateTime(selectedDate.year, selectedDate.month, selectedDate.day)}");
           ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
               DateTime(selectedDate.year, selectedDate.month, selectedDate.day),
               serviceId,
               serviceName);
+          focusDate =
+              DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
           ref.read(dateProvider.notifier).onClickChangeDate(DateTime(
               selectedDate.year, selectedDate.month, selectedDate.day));
         },

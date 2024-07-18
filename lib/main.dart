@@ -1,13 +1,15 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Admin/Pages/home_page/view/home_page.dart';
+import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/view/chooser_page.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
+import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/auth_state_change_notifier.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/navigation/navigation.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,36 +19,27 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String adminInfoKey = "AdminId";
-getPosition() async {
-  await determinePosition();
-}
-
-Future<String?> getAdminIdFromPrefs() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString(adminInfoKey);
-}
-
+SharedPreferences? prefs;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  runApp(ProviderScope(
-      child: MyApp(
-    prefs: prefs,
-  )));
+  prefs = await SharedPreferences.getInstance();
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
-  final SharedPreferences prefs;
-  const MyApp({super.key, required this.prefs});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     SchedulerBinding.instance.addPostFrameCallback(
       (timeStamp) async {
-        await initializeAdminInfo(ref, prefs);
-        getPosition();
+        await getAdminIdFromFireStore();
+        var position = await determinePosition();
+        currentUserPostion = position;
+        log("Longitude ${currentUserPostion!.longitude}");
+        log("Lotitude ${currentUserPostion!.latitude}");
       },
     );
     for (var imagespath in listOfPreviousWorkImages) {
@@ -79,8 +72,16 @@ class AuthHandler extends ConsumerWidget {
       data: (user) {
         if (user == null) {
           return const FirstPage();
-        } else if (currentUser!.phoneNumber != null) {
+        } else if (currentUser!.phoneNumber != null &&
+            prefs!.getBool(ShraedPreferncesConstants.isServiceProvider) !=
+                null &&
+            prefs!.getBool(ShraedPreferncesConstants.isServiceProvider)!) {
           return const AdminSideHomePage();
+        } else if (currentUser.phoneNumber != null &&
+            prefs!.getBool(ShraedPreferncesConstants.isServiceProvider) !=
+                null &&
+            !prefs!.getBool(ShraedPreferncesConstants.isServiceProvider)!) {
+          return const HomePage();
         } else {
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {

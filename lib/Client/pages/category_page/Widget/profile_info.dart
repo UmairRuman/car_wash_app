@@ -1,41 +1,46 @@
 import 'package:car_wash_app/utils/images_path.dart';
-import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePic extends StatelessWidget {
-  const ProfilePic({super.key});
+  final String userProfilePic;
+  const ProfilePic({super.key, required this.userProfilePic});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image:
-              DecorationImage(image: AssetImage(profilePic), fit: BoxFit.fill)),
+          image: DecorationImage(
+              image: userProfilePic == ""
+                  ? AssetImage(emptyImage)
+                  : NetworkImage(userProfilePic),
+              fit: BoxFit.fill)),
     );
   }
 }
 
-class UserName extends StatelessWidget {
-  const UserName({super.key});
+// class UserName extends StatelessWidget {
+//   final String userName;
+//   const UserName({super.key, required this.userName});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Text(
-      stringUserName,
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Text(
+//       userName == "" ? "UserName" : userName,
+//       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//     );
+//   }
+// }
 
 class HomePageUserLocation extends StatelessWidget {
-  const HomePageUserLocation({super.key});
+  final String userLocation;
+  const HomePageUserLocation({super.key, required this.userLocation});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Expanded(
+        const Expanded(
             flex: 15,
             child: Icon(
               Icons.location_on_sharp,
@@ -44,9 +49,9 @@ class HomePageUserLocation extends StatelessWidget {
         Expanded(
             flex: 85,
             child: Text(
-              "Bahwalpur,Pakistan",
+              userLocation == "" ? "Location" : userLocation,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ))
       ],
     );
@@ -84,13 +89,14 @@ class HomePageSearchBar extends StatelessWidget {
 }
 
 class UserNameText extends StatelessWidget {
-  const UserNameText({super.key});
+  final String userName;
+  const UserNameText({super.key, required this.userName});
 
   @override
   Widget build(BuildContext context) {
     return FittedBox(
       child: Text(
-        stringUserName,
+        userName == "" ? "UserName" : userName,
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.white, fontSize: 22),
       ),

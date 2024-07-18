@@ -2,20 +2,23 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
-import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widgets/state_widgets.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Model/model_For_sending_data.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widgets/admin_side_state_widgets.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
-import 'package:car_wash_app/Client/pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminSideCategoriesList extends ConsumerWidget {
-  const AdminSideCategoriesList({super.key});
+  final List<Services> listOfServices;
+  const AdminSideCategoriesList({super.key, required this.listOfServices});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(serviceAddtionStateProvider);
-    log("Grid view Rebuild");
+
     return Row(
       children: [
         const Spacer(
@@ -25,9 +28,11 @@ class AdminSideCategoriesList extends ConsumerWidget {
           flex: 80,
           child: Builder(builder: (context) {
             if (state is ServiceDataIntialState) {
-              return const ServiceDataIntialStateWidget();
+              return AdminSideServiceDataIntialStateWidget(
+                listOfServices: listOfServices,
+              );
             } else if (state is ServiceDataLoadingState) {
-              return const ServiceDataLoadingStateWidget();
+              return const AdminSideServiceDataLoadingStateWidget();
             } else if (state is ServiceDataLoadedState) {
               return GridView.builder(
                 scrollDirection: Axis.horizontal,
@@ -43,9 +48,14 @@ class AdminSideCategoriesList extends ConsumerWidget {
                           .read(allServiceDataStateProvider.notifier)
                           .fetchServiceData(state.services[index].serviceName,
                               state.services[index].serviceId);
+                      ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
+                          DateTime(DateTime.now().year, DateTime.now().month,
+                              DateTime.now().day),
+                          state.services[index].serviceId,
+                          state.services[index].serviceName);
                       Navigator.of(context).pushNamed(
                           AdminSideIndiviualCategoryPage.pageName,
-                          arguments: ImageAndServiceNameSender(
+                          arguments: AdminSideImageAndServiceNameSender(
                               serviceID: state.services[index].serviceId,
                               categoryName: state.services[index].serviceName,
                               imagePath: state.services[index].iconUrl));
@@ -58,8 +68,10 @@ class AdminSideCategoriesList extends ConsumerWidget {
                         ),
                         Expanded(
                             flex: 40,
-                            child: Image.file(
-                                File(state.services[index].iconUrl))),
+                            child: state.services[index].isAssetIcon
+                                ? Image.asset(state.services[index].iconUrl)
+                                : Image.file(
+                                    File(state.services[index].iconUrl))),
                         Expanded(
                             flex: 40,
                             child: FittedBox(

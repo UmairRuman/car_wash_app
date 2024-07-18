@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/ModelClasses/Users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -52,7 +54,7 @@ class UserCollection {
     var snapshot = await userCollection.doc(userId).get();
 
     var singleUserData = Users.fromMap(snapshot.data()!);
-
+    log(snapshot.data()!.toString());
     return singleUserData;
   }
 }

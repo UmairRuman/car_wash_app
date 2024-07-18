@@ -14,7 +14,8 @@ class CarInfoVariables {
   static bool isClickedOnCamera = false;
 }
 
-void dialogForEditCarInfo(BuildContext context) {
+void dialogForEditCarInfo(
+    BuildContext context, String serviceName, int serviceId) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -199,7 +200,16 @@ void dialogForEditCarInfo(BuildContext context) {
                                     ref
                                         .read(allServiceDataStateProvider
                                             .notifier)
-                                        .addCars();
+                                        .addCars(serviceId, serviceName);
+                                    ref
+                                        .read(allServiceDataStateProvider
+                                            .notifier)
+                                        .updateService(serviceId, serviceName);
+                                    // ref
+                                    //     .read(allServiceDataStateProvider
+                                    //         .notifier)
+                                    //     .fetchServiceData(
+                                    //         serviceName, serviceId);
                                     ref
                                         .read(carInfoProvider.notifier)
                                         .onSaveButtonClick();

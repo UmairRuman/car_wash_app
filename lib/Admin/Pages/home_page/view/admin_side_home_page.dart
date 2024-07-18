@@ -1,21 +1,17 @@
-import 'dart:developer';
-
-import 'package:car_wash_app/Client/pages/booking_page/view/booking_page.dart';
-import 'package:car_wash_app/Client/pages/category_page/View/categoryPage.dart';
-import 'package:car_wash_app/Client/pages/favourite_page/view/favourite_page.dart';
+import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/View/admin_side_categoryPage.dart';
+import 'package:car_wash_app/Admin/Pages/home_page/Widget/bottom_bar_widget.dart';
+import 'package:car_wash_app/Admin/Pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
-import 'package:car_wash_app/Client/pages/home_page/Widget/bottom_bar_widget.dart';
-import 'package:car_wash_app/Client/pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class HomePage extends ConsumerWidget {
-  static const String pageName = '/homePage';
-  const HomePage({super.key});
+class AdminSideHomePage extends ConsumerWidget {
+  static const String pageName = '/adminSideHomePage';
+  const AdminSideHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,23 +24,17 @@ class HomePage extends ConsumerWidget {
 
         if (state is AddittionLoadedState) {
           return Scaffold(
-              bottomNavigationBar: const HomePageBottomNavigationBar(),
-              body: Builder(
-                builder: (context) {
-                  if (currentIndex == 0) {
-                    return CategoryPage(
-                        location: state.user.userLocation,
-                        profilePic: state.user.profilePicUrl,
-                        userName: state.user.name);
-                  } else if (currentIndex == 1) {
-                    return const BookingPage();
-                  } else if (currentIndex == 2) {
-                    return const FavouritePage();
-                  } else {
-                    return const ProfilePage();
-                  }
-                },
-              ));
+            bottomNavigationBar: const AdminSideHomePageBottomNavigationBar(),
+            body: currentIndex == 0
+                ? AdminSideCategoryPage(
+                    location: state.user.userLocation,
+                    profilePic: state.user.profilePicUrl,
+                    userName: state.user.name,
+                  )
+                : currentIndex == 1
+                    ? const AdminSideBookingPage()
+                    : const AdminSideProfilePage(),
+          );
         } else if (state is AdditionErrorState) {
           return Scaffold(
             body: Center(

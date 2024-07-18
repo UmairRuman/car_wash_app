@@ -38,8 +38,7 @@ class TimeSlots {
     return TimeSlots(
       serviceName: map['serviceName'] as String,
       currentDate: (map['currentDate'] as Timestamp).toDate(),
-      timeslots: List<String>.from(
-          (map['timeslots'] as List<dynamic>)), // Casting here
+      timeslots: List<String>.from((map['timeslots'] as List<dynamic>)),
     );
   }
 

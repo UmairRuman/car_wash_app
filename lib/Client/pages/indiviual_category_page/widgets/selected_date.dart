@@ -8,12 +8,12 @@ class TextSelectDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const Spacer(
+        Spacer(
           flex: 5,
         ),
-        const Expanded(
+        Expanded(
           flex: 25,
           child: FittedBox(
             child: Text(
@@ -22,23 +22,12 @@ class TextSelectDate extends StatelessWidget {
             ),
           ),
         ),
-        const Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
-        const Spacer(
+        Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
+        Spacer(
           flex: 40,
         ),
-        Expanded(
-            flex: 15,
-            child: InkWell(
-              onTap: () {
-                dialogForEditYear(context);
-              },
-              child: Container(
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 201, 218, 232),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: const Icon(Icons.date_range_rounded)),
-            )),
-        const Spacer(
+        Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
+        Spacer(
           flex: 5,
         )
       ],

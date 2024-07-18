@@ -53,18 +53,17 @@ class ServiceCollection {
     }
   }
 
-  Future<List<Car>> getAllCars(String adminId) async {
+  Future<List<Car>> getAllCarsAtSpecificDocument(
+      String adminId, int serviceId, String serviceName) async {
     try {
       var snapshot = await UserCollection.userCollection
           .doc(adminId)
           .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
           .get();
-      var listOfCars = snapshot.docs
-          .map(
-            (e) => Services.fromMap(e.data()).cars,
-          )
-          .toList();
-      return listOfCars.first;
+
+      var listOfCars = Services.fromMap(snapshot.data()!).cars;
+      return listOfCars;
     } catch (e) {
       return [];
     }

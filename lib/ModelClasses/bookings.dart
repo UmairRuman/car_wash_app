@@ -1,28 +1,31 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class Bookings {
   String bookingId;
   String userId;
   String serviceId;
-  String carName;
+  String carType;
   DateTime carWashdate;
   double price;
   String bookingStatus;
   DateTime bookingDate;
+  String serviceImageUrl;
   String serviceName;
-  Map<String, String> timeSlot;
+  String timeSlot;
   Bookings({
     required this.bookingId,
     required this.userId,
     required this.serviceId,
-    required this.carName,
+    required this.carType,
     required this.carWashdate,
     required this.price,
     required this.bookingStatus,
     required this.bookingDate,
+    required this.serviceImageUrl,
     required this.serviceName,
     required this.timeSlot,
   });
@@ -31,23 +34,25 @@ class Bookings {
     String? bookingId,
     String? userId,
     String? serviceId,
-    String? carName,
+    String? carType,
     DateTime? carWashdate,
     double? price,
     String? bookingStatus,
     DateTime? bookingDate,
+    String? serviceImageUrl,
     String? serviceName,
-    Map<String, String>? timeSlot,
+    String? timeSlot,
   }) {
     return Bookings(
       bookingId: bookingId ?? this.bookingId,
       userId: userId ?? this.userId,
       serviceId: serviceId ?? this.serviceId,
-      carName: carName ?? this.carName,
+      carType: carType ?? this.carType,
       carWashdate: carWashdate ?? this.carWashdate,
       price: price ?? this.price,
       bookingStatus: bookingStatus ?? this.bookingStatus,
       bookingDate: bookingDate ?? this.bookingDate,
+      serviceImageUrl: serviceImageUrl ?? this.serviceImageUrl,
       serviceName: serviceName ?? this.serviceName,
       timeSlot: timeSlot ?? this.timeSlot,
     );
@@ -58,11 +63,12 @@ class Bookings {
       'bookingId': bookingId,
       'userId': userId,
       'serviceId': serviceId,
-      'carName': carName,
-      'carWashdate': carWashdate.millisecondsSinceEpoch,
+      'carType': carType,
+      'carWashdate': Timestamp.fromDate(carWashdate),
       'price': price,
       'bookingStatus': bookingStatus,
-      'bookingDate': bookingDate.millisecondsSinceEpoch,
+      'bookingDate': Timestamp.fromDate(bookingDate),
+      'serviceImageUrl': serviceImageUrl,
       'serviceName': serviceName,
       'timeSlot': timeSlot,
     };
@@ -70,20 +76,18 @@ class Bookings {
 
   factory Bookings.fromMap(Map<String, dynamic> map) {
     return Bookings(
-        bookingId: map['bookingId'] as String,
-        userId: map['userId'] as String,
-        serviceId: map['serviceId'] as String,
-        carName: map['carName'] as String,
-        carWashdate:
-            DateTime.fromMillisecondsSinceEpoch(map['carWashdate'] as int),
-        price: map['price'] as double,
-        bookingStatus: map['bookingStatus'] as String,
-        bookingDate:
-            DateTime.fromMillisecondsSinceEpoch(map['bookingDate'] as int),
-        serviceName: map['serviceName'] as String,
-        timeSlot: Map<String, String>.from(
-          (map['timeSlot'] as Map<String, String>),
-        ));
+      bookingId: map['bookingId'] as String,
+      userId: map['userId'] as String,
+      serviceId: map['serviceId'] as String,
+      carType: map['carType'] as String,
+      carWashdate: (map['carWashdate'] as Timestamp).toDate(),
+      price: map['price'] as double,
+      bookingStatus: map['bookingStatus'] as String,
+      bookingDate: (map['bookingDate'] as Timestamp).toDate(),
+      serviceImageUrl: map['serviceImageUrl'] as String,
+      serviceName: map['serviceName'] as String,
+      timeSlot: map['timeSlot'] as String,
+    );
   }
 
   String toJson() => json.encode(toMap());
@@ -93,7 +97,7 @@ class Bookings {
 
   @override
   String toString() {
-    return 'Bookings(bookingId: $bookingId, userId: $userId, serviceId: $serviceId, carName: $carName, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, serviceName: $serviceName, timeSlot: $timeSlot)';
+    return 'Bookings(bookingId: $bookingId, userId: $userId, serviceId: $serviceId, carType: $carType, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, serviceImageUrl: $serviceImageUrl, serviceName: $serviceName, timeSlot: $timeSlot)';
   }
 
   @override
@@ -103,13 +107,14 @@ class Bookings {
     return other.bookingId == bookingId &&
         other.userId == userId &&
         other.serviceId == serviceId &&
-        other.carName == carName &&
+        other.carType == carType &&
         other.carWashdate == carWashdate &&
         other.price == price &&
         other.bookingStatus == bookingStatus &&
         other.bookingDate == bookingDate &&
+        other.serviceImageUrl == serviceImageUrl &&
         other.serviceName == serviceName &&
-        mapEquals(other.timeSlot, timeSlot);
+        other.timeSlot == timeSlot;
   }
 
   @override
@@ -117,11 +122,12 @@ class Bookings {
     return bookingId.hashCode ^
         userId.hashCode ^
         serviceId.hashCode ^
-        carName.hashCode ^
+        carType.hashCode ^
         carWashdate.hashCode ^
         price.hashCode ^
         bookingStatus.hashCode ^
         bookingDate.hashCode ^
+        serviceImageUrl.hashCode ^
         serviceName.hashCode ^
         timeSlot.hashCode;
   }

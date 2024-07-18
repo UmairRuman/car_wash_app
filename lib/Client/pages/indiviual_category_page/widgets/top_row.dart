@@ -1,5 +1,4 @@
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_name_controller.dart';
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_name_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,21 +36,7 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
         const Spacer(
           flex: 15,
         ),
-        Expanded(
-            flex: 15,
-            child: InkWell(
-              onTap: () {
-                dialogOnEditNameClick(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                child: Container(
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 201, 218, 232),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: const Icon(Icons.edit)),
-              ),
-            )),
+        const Expanded(flex: 15, child: Icon(Icons.favorite_border_rounded)),
         const Spacer(
           flex: 5,
         )

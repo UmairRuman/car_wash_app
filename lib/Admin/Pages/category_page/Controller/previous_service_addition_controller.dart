@@ -1,7 +1,9 @@
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/previous_service_collection_couter.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/previous_work_collection.dart';
+import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/previous_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/previous_work_model.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,10 +26,10 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
   }
 
   Future<void> insertPreviousData() async {
-    if (FirebaseAuth.instance.currentUser != null && isNewPathSet) {
-      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    if (getAdminIdFromPrefs() != null && isNewPathSet) {
+      String? currentUserId = await getAdminIdFromPrefs();
       var listOfServiceCount = await previousServiceCounterCollection
-          .getAllPreviousServiceCount(currentUserId);
+          .getAllPreviousServiceCount(currentUserId!);
 
       previousWorkCollection.addPreviousData(
           currentUserId,

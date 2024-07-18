@@ -37,7 +37,7 @@ class TimeSlotDeciderController extends Notifier<String> {
   }
 
   onSaveButtonClick() {
-    if (isEndTimeChanged && isStartTimeChanged) {
+    if (isEndTimeChanged || isStartTimeChanged) {
       state = "changed";
     }
   }

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/ModelClasses/admin_info.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,24 +11,40 @@ class AdminInfoController extends Notifier<AdminInfo> {
 
   @override
   AdminInfo build() {
-    return AdminInfo(adminName: "", adminId: "", adminNo: 0);
+    return AdminInfo(adminName: "", adminId: "", adminNo: 0, adminPhoneNo: "");
   }
 
-  Future<void> setAdminInfo({
-    required String adminId,
-    required String adminName,
-    required int adminNo,
-  }) async {
+  Future<void> setAdminInfo(
+      {required String adminId,
+      required String adminName,
+      required int adminNo,
+      required String adminPhoneNo}) async {
     AdminInfo adminInfo = AdminInfo(
+      adminPhoneNo: adminPhoneNo,
       adminName: adminName,
       adminId: adminId,
       adminNo: adminNo,
     );
-    await adminInfoCollection.insertAdminId(adminInfo);
+    await adminInfoCollection.insertAdminInfo(adminInfo);
     state = adminInfo;
   }
 
-  Future<String> getAdminInfo() async {
+  Future<AdminInfo> getAdminInfoWithId(int id) async {
+    var adminData;
+    try {
+      log("adding adminInfo");
+      adminData = await getAdminInfoWithId(id);
+    } catch (e) {
+      log("Eror in fetcching admin info :$e");
+    }
+    return AdminInfo(
+        adminName: adminData.adminName,
+        adminId: adminData.adminId,
+        adminNo: adminData.adminNo,
+        adminPhoneNo: adminData.adminPhoneNo);
+  }
+
+  Future<String> getAdminsInfo() async {
     var adminInfoList = await adminInfoCollection.getAdminId();
     if (adminInfoList.isNotEmpty) {
       state = adminInfoList[0];
@@ -36,9 +54,13 @@ class AdminInfoController extends Notifier<AdminInfo> {
     }
   }
 
-  void setStoredAdminInfo(String adminInfoJson) {
-    Map<String, dynamic> adminInfoMap = jsonDecode(adminInfoJson);
-    state = AdminInfo.fromMap(adminInfoMap);
+  void setStoredAdminInfo(String adminId, String adminPhoneNo) {
+    state = AdminInfo(
+      adminId: adminId,
+      adminPhoneNo: adminPhoneNo,
+      adminName: "Umair Ruman", // Use the stored admin name if needed
+      adminNo: 1, // Use the stored admin number if needed
+    );
   }
 }
 
