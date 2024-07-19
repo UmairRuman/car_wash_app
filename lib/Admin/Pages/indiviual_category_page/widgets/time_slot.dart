@@ -48,7 +48,7 @@ class AdminSideTimeSlot extends ConsumerWidget {
         );
       } else if (state is TimeSlotErrorState) {
         return Center(
-          child: Text("Error : ${state.error}"),
+          child: Text(state.error),
         );
       }
       return const Center(
@@ -61,9 +61,12 @@ class AdminSideTimeSlot extends ConsumerWidget {
 class AdminSideTextChooseTimeSlot extends StatelessWidget {
   final String serviceName;
   final int serviceId;
-
+  final bool isFavourite;
   const AdminSideTextChooseTimeSlot(
-      {super.key, required this.serviceId, required this.serviceName});
+      {super.key,
+      required this.serviceId,
+      required this.serviceName,
+      required this.isFavourite});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +76,7 @@ class AdminSideTextChooseTimeSlot extends StatelessWidget {
           flex: 5,
         ),
         const Expanded(
-          flex: 22,
+          flex: 35,
           child: FittedBox(
             child: Text(
               stringChooseTimeSlot,
@@ -81,8 +84,9 @@ class AdminSideTextChooseTimeSlot extends StatelessWidget {
             ),
           ),
         ),
+        const Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
         const Spacer(
-          flex: 55,
+          flex: 32,
         ),
         Expanded(
           flex: 15,
@@ -90,7 +94,8 @@ class AdminSideTextChooseTimeSlot extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                dialogForEditTimeSlot(context, serviceName, serviceId);
+                dialogForEditTimeSlot(
+                    context, serviceName, serviceId, isFavourite);
               },
               child: Container(
                   decoration: const BoxDecoration(

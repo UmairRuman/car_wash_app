@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_service_info.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,8 +10,10 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
   final String serviceName;
   final int serviceId;
   final bool isAssetImage;
+  final bool isFavourite;
   const AdminSideIndiviualCategoryImageAndDescription(
       {super.key,
+      required this.isFavourite,
       required this.isAssetImage,
       required this.imagePath,
       required this.description,
@@ -46,7 +46,7 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                               ? AssetImage(imagePath)
                               : imagePath == ""
                                   ? AssetImage(emptyImage)
-                                  : FileImage(File(imagePath)),
+                                  : NetworkImage(imagePath),
                           fit: BoxFit.fill)),
                 )),
             const Spacer(
@@ -86,7 +86,12 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                           builder: (context, constraints) => InkWell(
                             onTap: () {
                               dialogForEdditingServiceImageAndDescription(
-                                  context, serviceName, serviceId, imagePath);
+                                  context,
+                                  serviceName,
+                                  serviceId,
+                                  imagePath,
+                                  ref,
+                                  isFavourite);
                             },
                             child: Container(
                               height: constraints.maxHeight,

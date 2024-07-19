@@ -39,6 +39,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
         );
       }
       serviceCollection.addNewService(Services(
+          rating: 5.0,
           isAssetImage: true,
           serviceId: listOfServices.length,
           adminId: adminId,

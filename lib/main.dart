@@ -7,7 +7,7 @@ import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/auth_state_change_notifier.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
-import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
+import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/navigation/navigation.dart';

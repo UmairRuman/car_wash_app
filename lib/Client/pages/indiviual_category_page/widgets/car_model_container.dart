@@ -41,7 +41,7 @@ class CarModelContainer extends ConsumerWidget {
                       flex: 55,
                       child: (listOfCars[index].isAsset
                           ? Image.asset(listOfCars[index].url)
-                          : Image.file(File(listOfCars[index].url)))),
+                          : Image.network(listOfCars[index].url))),
                   Expanded(
                       flex: 25,
                       child: Text(

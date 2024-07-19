@@ -8,11 +8,13 @@ class IndiviualCategoryImage extends StatelessWidget {
   final String imagePath;
   final String description;
   final bool isAssetImage;
+  final String adminPhoneNumber;
   const IndiviualCategoryImage(
       {super.key,
       required this.imagePath,
       required this.description,
-      required this.isAssetImage});
+      required this.isAssetImage,
+      required this.adminPhoneNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +58,16 @@ class IndiviualCategoryImage extends StatelessWidget {
                       child: Row(
                         children: [
                           const Expanded(
-                              flex: 25,
+                              flex: 20,
                               child: Icon(
                                 Icons.phone,
                                 color: Colors.green,
                               )),
                           Expanded(
-                              flex: 75,
+                              flex: 80,
                               child: FittedBox(
                                   child: Text(
-                                FirebaseAuth.instance.currentUser!.phoneNumber!,
+                                adminPhoneNumber,
                                 style: const TextStyle(
                                     color:
                                         const Color.fromARGB(255, 16, 66, 108)),

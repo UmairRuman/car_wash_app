@@ -16,7 +16,12 @@ class ServiceClassVariables {
 }
 
 void dialogForEdditingServiceImageAndDescription(
-    BuildContext context, String serviceName, int serviceId, String imagePath) {
+    BuildContext context,
+    String serviceName,
+    int serviceId,
+    String imagePath,
+    WidgetRef ref,
+    bool isFavourite) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -29,186 +34,173 @@ void dialogForEdditingServiceImageAndDescription(
               height: MediaQuery.of(context).size.height / 2,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Consumer(
-                  builder: (context, ref, child) => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                          flex: 35,
-                          child: Builder(builder: (context) {
-                            if (ServiceClassVariables.isClickedOnCamera &&
-                                ServiceClassVariables.imageFilePath != null) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    image: DecorationImage(
-                                      image: FileImage(File(
-                                          ServiceClassVariables
-                                              .imageFilePath!)),
-                                    )),
-                              );
-                            }
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Spacer(
-                                      flex: 20,
-                                    ),
-                                    Expanded(
-                                        flex: 40,
-                                        child: InkWell(
-                                            onTap: () async {
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        flex: 35,
+                        child: Builder(builder: (context) {
+                          if (ServiceClassVariables.isClickedOnCamera &&
+                              ServiceClassVariables.imageFilePath != null) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                    image: FileImage(File(
+                                        ServiceClassVariables.imageFilePath!)),
+                                  )),
+                            );
+                          }
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Spacer(
+                                    flex: 20,
+                                  ),
+                                  Expanded(
+                                      flex: 40,
+                                      child: InkWell(
+                                          onTap: () async {
+                                            setState(() {
+                                              ServiceClassVariables
+                                                  .isClickedOnCamera = true;
+                                            });
+
+                                            var file = await ImagePicker()
+                                                .pickImage(
+                                                    source:
+                                                        ImageSource.gallery);
+
+                                            if (file == null) {
                                               setState(() {
                                                 ServiceClassVariables
-                                                    .isClickedOnCamera = true;
+                                                    .isClickedOnCamera = false;
                                               });
-
-                                              var file = await ImagePicker()
-                                                  .pickImage(
-                                                      source:
-                                                          ImageSource.gallery);
-
-                                              if (file == null) {
-                                                setState(() {
-                                                  ServiceClassVariables
-                                                          .isClickedOnCamera =
-                                                      false;
+                                            } else {
+                                              setState(() {
+                                                ServiceClassVariables
+                                                    .isImageModified = true;
+                                                ServiceClassVariables
+                                                    .imageFilePath = file.path;
+                                                ServiceClassVariables
+                                                    .isClickedOnCamera = true;
+                                                FirebaseStorage.instance
+                                                    .ref()
+                                                    .child("Images")
+                                                    .child(FirebaseAuth.instance
+                                                        .currentUser!.uid)
+                                                    .child("serviceImages")
+                                                    .child(serviceName)
+                                                    .putFile(File(file.path))
+                                                    .then((snapshot) async {
+                                                  var imagePath = await snapshot
+                                                      .ref
+                                                      .getDownloadURL();
+                                                  ref
+                                                      .read(serviceInfoProvider
+                                                          .notifier)
+                                                      .onChangeImagePath(
+                                                          imagePath);
                                                 });
-                                              } else {
-                                                setState(() {
-                                                  FirebaseStorage.instance
-                                                      .ref()
-                                                      .child("Images")
-                                                      .child(FirebaseAuth
-                                                          .instance
-                                                          .currentUser!
-                                                          .uid)
-                                                      .child("serviceImages")
-                                                      .child(serviceName)
-                                                      .putFile(File(file.path))
-                                                      .then((snapshot) async {
-                                                    var imagePath =
-                                                        await snapshot.ref
-                                                            .getDownloadURL();
-
-                                                    ServiceClassVariables
-                                                        .isImageModified = true;
-                                                    ServiceClassVariables
-                                                            .imageFilePath =
-                                                        file.path;
-                                                    ServiceClassVariables
-                                                            .isClickedOnCamera =
-                                                        true;
-                                                  });
-                                                });
-                                              }
-                                            },
-                                            child: Image.asset(cameraImage))),
-                                    const Expanded(
-                                        flex: 20,
-                                        child: Text("Click To pic image")),
-                                    const Spacer(
+                                              });
+                                            }
+                                          },
+                                          child: Image.asset(cameraImage))),
+                                  const Expanded(
                                       flex: 20,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            );
-                          })),
-                      Expanded(
-                        flex: 45,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextField(
-                            controller: ref
-                                .read(serviceInfoProvider.notifier)
-                                .serviceDescriptionTEC,
-                            decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Service Descrption'),
+                                      child: Text("Click To pic image")),
+                                  const Spacer(
+                                    flex: 20,
+                                  )
+                                ],
+                              ),
+                            ],
+                          );
+                        })),
+                    Expanded(
+                      flex: 45,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: ref
+                              .read(serviceInfoProvider.notifier)
+                              .serviceDescriptionTEC,
+                          decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Service Descrption'),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 20,
+                      child: Row(
+                        children: [
+                          const Spacer(
+                            flex: 6,
                           ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 20,
-                        child: Row(
-                          children: [
-                            const Spacer(
-                              flex: 6,
-                            ),
-                            Expanded(
-                              flex: 40,
-                              child: FloatingActionButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    ServiceClassVariables.imageFilePath = null;
-                                    ServiceClassVariables.isClickedOnCamera =
-                                        false;
-                                  });
-                                },
-                                backgroundColor: const Color(0xFF1BC0C5),
-                                child: const Text(
-                                  "Cancel",
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                          Expanded(
+                            flex: 40,
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  ServiceClassVariables.imageFilePath = null;
+                                  ServiceClassVariables.isClickedOnCamera =
+                                      false;
+                                });
+                              },
+                              backgroundColor: const Color(0xFF1BC0C5),
+                              child: const Text(
+                                "Cancel",
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
-                            const Spacer(
-                              flex: 8,
-                            ),
-                            Expanded(
-                              flex: 40,
-                              child: FloatingActionButton(
-                                onPressed: () {
-                                  var serviceDescription = ref
-                                      .read(serviceInfoProvider.notifier)
-                                      .serviceDescriptionTEC
-                                      .text;
-                                  ref
-                                      .read(serviceInfoProvider.notifier)
-                                      .onChangeText(serviceDescription);
-                                  if (ServiceClassVariables.isImageModified) {
-                                    ref
-                                        .read(serviceInfoProvider.notifier)
-                                        .onChangeImagePath(ServiceClassVariables
-                                            .imageFilePath!);
-                                  }
-                                  ref
-                                      .read(
-                                          allServiceDataStateProvider.notifier)
-                                      .updateService(serviceId, serviceName);
-                                  ref
-                                      .read(
-                                          allServiceDataStateProvider.notifier)
-                                      .fetchServiceData(serviceName, serviceId);
+                          ),
+                          const Spacer(
+                            flex: 8,
+                          ),
+                          Expanded(
+                            flex: 40,
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                var serviceDescription = ref
+                                    .read(serviceInfoProvider.notifier)
+                                    .serviceDescriptionTEC
+                                    .text;
+                                ref
+                                    .read(serviceInfoProvider.notifier)
+                                    .onChangeText(serviceDescription);
 
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    ServiceClassVariables.isClickedOnCamera =
-                                        false;
-                                    ServiceClassVariables.imageFilePath = null;
-                                  });
-                                },
-                                backgroundColor: const Color(0xFF1BC0C5),
-                                child: const Text(
-                                  "Save",
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                                ref
+                                    .read(allServiceDataStateProvider.notifier)
+                                    .updateService(
+                                        serviceId, serviceName, isFavourite);
+
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  ServiceClassVariables.isClickedOnCamera =
+                                      false;
+                                  ServiceClassVariables.imageFilePath = null;
+                                });
+                              },
+                              backgroundColor: const Color(0xFF1BC0C5),
+                              child: const Text(
+                                "Save",
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
-                            const Spacer(
-                              flex: 6,
-                            ),
-                          ],
-                        ),
+                          ),
+                          const Spacer(
+                            flex: 6,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/default_services_controller.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/categories_list_view.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/home_page_texts.dart';
@@ -5,7 +7,6 @@ import 'package:car_wash_app/Client/pages/category_page/Widget/previous_work_ima
 import 'package:car_wash_app/Client/pages/category_page/Widget/previous_work_text.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/profile_info.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/top_container.dart';
-import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -24,6 +25,7 @@ class CategoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(defaultServicesStateProvider);
+    log("Category Page build");
     return SafeArea(
       child: Scaffold(
         body: Builder(builder: (context) {

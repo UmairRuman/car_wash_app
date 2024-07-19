@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,8 +16,8 @@ class CarInfoVariables {
   static bool isClickedOnCamera = false;
 }
 
-void dialogForEditCarInfo(
-    BuildContext context, String serviceName, int serviceId) {
+void dialogForEditCarInfo(BuildContext context, String serviceName,
+    int serviceId, WidgetRef ref, bool isFavourite) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -24,17 +26,16 @@ void dialogForEditCarInfo(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0)), //this right here
           child: StatefulBuilder(
-            builder: (context, setState) => Container(
-              height: MediaQuery.of(context).size.height / 2,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    var carIntitalPrice =
-                        ref.read(carInfoProvider.notifier).carIntialPrice;
-                    var carCurrentPrice =
-                        ref.read(carInfoProvider.notifier).carCurrentPrice;
-                    return Column(
+            builder: (context, setState) {
+              var carIntitalPrice =
+                  ref.read(carInfoProvider.notifier).carIntialPrice;
+              var carCurrentPrice =
+                  ref.read(carInfoProvider.notifier).carCurrentPrice;
+              return Container(
+                height: MediaQuery.of(context).size.height / 2,
+                child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -45,10 +46,7 @@ void dialogForEditCarInfo(
                                   CarInfoVariables.imageFilePath != null) {
                                 ref.read(carInfoProvider.notifier).isPickImage =
                                     true;
-                                ref
-                                    .read(carInfoProvider.notifier)
-                                    .onChangeCarPic(
-                                        CarInfoVariables.imageFilePath!);
+
                                 return Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -95,6 +93,36 @@ void dialogForEditCarInfo(
                                                     CarInfoVariables
                                                             .isClickedOnCamera =
                                                         true;
+
+                                                    FirebaseStorage.instance
+                                                        .ref()
+                                                        .child("Images")
+                                                        .child(FirebaseAuth
+                                                            .instance
+                                                            .currentUser!
+                                                            .uid)
+                                                        .child("serviceImages")
+                                                        .child(serviceName)
+                                                        .child("carImages")
+                                                        .child(ref
+                                                            .read(
+                                                                carInfoProvider
+                                                                    .notifier)
+                                                            .carNameTEC
+                                                            .text)
+                                                        .putFile(
+                                                            File(file.path))
+                                                        .then((snapshot) async {
+                                                      var imagePath =
+                                                          await snapshot.ref
+                                                              .getDownloadURL();
+
+                                                      ref
+                                                          .read(carInfoProvider
+                                                              .notifier)
+                                                          .onChangeCarPic(
+                                                              imagePath);
+                                                    });
                                                   });
                                                 }
                                               },
@@ -175,6 +203,7 @@ void dialogForEditCarInfo(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     setState(() {
+                                      // CarInfoVariables.imageFilePath = null;
                                       CarInfoVariables.isClickedOnCamera =
                                           false;
                                     });
@@ -196,23 +225,18 @@ void dialogForEditCarInfo(
                                     setState(() {
                                       CarInfoVariables.isClickedOnCamera =
                                           false;
+                                      CarInfoVariables.imageFilePath = null;
                                     });
-                                    ref
-                                        .read(allServiceDataStateProvider
-                                            .notifier)
-                                        .addCars(serviceId, serviceName);
-                                    ref
-                                        .read(allServiceDataStateProvider
-                                            .notifier)
-                                        .updateService(serviceId, serviceName);
-                                    // ref
-                                    //     .read(allServiceDataStateProvider
-                                    //         .notifier)
-                                    //     .fetchServiceData(
-                                    //         serviceName, serviceId);
+
                                     ref
                                         .read(carInfoProvider.notifier)
                                         .onSaveButtonClick();
+                                    ref
+                                        .read(allServiceDataStateProvider
+                                            .notifier)
+                                        .updateService(serviceId, serviceName,
+                                            isFavourite);
+
                                     Navigator.of(context).pop();
                                   },
                                   backgroundColor: const Color(0xFF1BC0C5),
@@ -229,11 +253,9 @@ void dialogForEditCarInfo(
                           ),
                         ),
                       ],
-                    );
-                  },
-                ),
-              ),
-            ),
+                    )),
+              );
+            },
           ),
         );
       });

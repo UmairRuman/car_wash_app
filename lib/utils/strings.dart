@@ -16,4 +16,4 @@ const stringBookButton = "Book";
 const stringChooseYourCarModel = "Choose your Car model";
 const stringSelectDate = "Select Date";
 const stringBookAWash = "Book A Wash";
-const stringChooseTimeSlot = "Time slots";
+const stringChooseTimeSlot = "Choose Time slots";

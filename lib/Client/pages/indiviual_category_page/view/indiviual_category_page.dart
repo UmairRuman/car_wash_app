@@ -33,10 +33,13 @@ class IndiviualCategoryPage extends ConsumerWidget {
       resizeToAvoidBottomInset: false,
       body: Builder(builder: (context) {
         if (state is DataLoadedState) {
+          var name = state.service.serviceName;
           var serviceImage = state.service.imageUrl;
           var serviceDescription = state.service.description;
           var listOfDates = state.service.availableDates;
+          var phoneNumber = state.service.adminPhoneNo;
           bool isAssetImage = state.service.isAssetImage;
+          bool isFavourite = state.service.isFavourite!;
           List<Car> listOfCars = state.service.cars;
           return Column(
             children: [
@@ -46,7 +49,9 @@ class IndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 5,
                   child: TopRowIndiviualCategoryPage(
-                    serviceName: serviceName,
+                    serviceId: serviceId,
+                    isFavourite: isFavourite,
+                    serviceName: name,
                   )),
               const Spacer(
                 flex: 2,
@@ -54,6 +59,7 @@ class IndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 20,
                   child: IndiviualCategoryImage(
+                    adminPhoneNumber: phoneNumber,
                     isAssetImage: isAssetImage,
                     description: serviceDescription,
                     imagePath: serviceImage,
@@ -71,16 +77,25 @@ class IndiviualCategoryPage extends ConsumerWidget {
                 flex: 2,
               ),
               const Expanded(flex: 5, child: TextSelectDate()),
-              const Expanded(flex: 15, child: DateTimePicker()),
+              Expanded(
+                  flex: 15,
+                  child: DateTimePicker(
+                    serviceId: serviceId,
+                    serviceName: serviceName,
+                  )),
               const Expanded(flex: 5, child: TextChooseTimeSlot()),
               const Expanded(flex: 10, child: AdminSideTimeSlot()),
               const Spacer(
-                flex: 3,
-              ),
-              const Expanded(flex: 8, child: ButtonBookAWash()),
-              const Spacer(
                 flex: 2,
-              )
+              ),
+              Expanded(
+                  flex: 12,
+                  child: ButtonBookAWash(
+                    isfavourite: isFavourite,
+                    serviceId: serviceId,
+                    serviceImageUrl: serviceImage,
+                    serviceName: serviceName,
+                  )),
             ],
           );
         }

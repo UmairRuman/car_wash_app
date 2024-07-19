@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widgets/admin_side_state_widgets.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Client/pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/state_widgets.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/view/indiviual_category_page.dart';
@@ -48,12 +48,18 @@ class CategoriesList extends ConsumerWidget {
                   crossAxisCount: 2,
                 ),
                 itemBuilder: (BuildContext context, int index) {
+                  log("Is asset Icon : ${state.services[index].isAssetIcon}");
                   return InkWell(
                     onTap: () {
                       ref
                           .read(allServiceDataStateProvider.notifier)
                           .fetchServiceData(state.services[index].serviceName,
                               state.services[index].serviceId);
+                      ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
+                          DateTime(DateTime.now().year, DateTime.now().month,
+                              DateTime.now().day),
+                          state.services[index].serviceId,
+                          state.services[index].serviceName);
                       Navigator.of(context).pushNamed(
                           IndiviualCategoryPage.pageName,
                           arguments: ImageAndServiceNameSender(
@@ -69,8 +75,9 @@ class CategoriesList extends ConsumerWidget {
                         ),
                         Expanded(
                             flex: 40,
-                            child: Image.file(
-                                File(state.services[index].iconUrl))),
+                            child: state.services[index].isAssetIcon
+                                ? Image.asset(state.services[index].iconUrl)
+                                : Image.network(state.services[index].iconUrl)),
                         Expanded(
                             flex: 40,
                             child: FittedBox(

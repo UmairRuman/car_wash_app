@@ -1,6 +1,6 @@
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/previous_service_collection_couter.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/previous_work_collection.dart';
-import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
+import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/previous_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/previous_work_model.dart';
 import 'package:car_wash_app/main.dart';

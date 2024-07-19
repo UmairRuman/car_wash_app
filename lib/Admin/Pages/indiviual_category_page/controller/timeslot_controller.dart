@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/time_slot_decider_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
-import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
+import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/ModelClasses/time_slot.dart';
 import 'package:car_wash_app/main.dart';

@@ -39,7 +39,7 @@ class AdminSideTopRowIndiviualCategoryPage extends StatelessWidget {
             flex: 15,
             child: InkWell(
               onTap: () {
-                dialogOnEditNameClick(context);
+                dialogForRating(context);
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8),
@@ -47,7 +47,10 @@ class AdminSideTopRowIndiviualCategoryPage extends StatelessWidget {
                     decoration: const BoxDecoration(
                         color: Color.fromARGB(255, 201, 218, 232),
                         borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: const Icon(Icons.edit)),
+                    child: const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    )),
               ),
             )),
         const Spacer(

@@ -12,7 +12,7 @@ class TimeSlotVariables {
 }
 
 void dialogForEditTimeSlot(
-    BuildContext context, String serviceName, int serviceId) {
+    BuildContext context, String serviceName, int serviceId, bool isFavourite) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -225,7 +225,8 @@ void dialogForEditTimeSlot(
                                     ref
                                         .read(allServiceDataStateProvider
                                             .notifier)
-                                        .updateService(serviceId, serviceName);
+                                        .updateService(serviceId, serviceName,
+                                            isFavourite);
                                     ref
                                         .read(timeSlotsStateProvider.notifier)
                                         .getTimeSlots(

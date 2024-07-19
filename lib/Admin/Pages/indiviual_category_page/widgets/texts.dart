@@ -1,16 +1,20 @@
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_car_model_info.dart';
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_service_info.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AdminSideTextChooseYourCarModel extends StatelessWidget {
+class AdminSideTextChooseYourCarModel extends ConsumerWidget {
   final String serviceName;
   final int serviceId;
+  final bool isFavourite;
   const AdminSideTextChooseYourCarModel(
-      {super.key, required this.serviceId, required this.serviceName});
+      {super.key,
+      required this.serviceId,
+      required this.serviceName,
+      required this.isFavourite});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         const Spacer(
@@ -25,8 +29,9 @@ class AdminSideTextChooseYourCarModel extends StatelessWidget {
             ),
           ),
         ),
+        const Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
         const Spacer(
-          flex: 35,
+          flex: 25,
         ),
         Expanded(
           flex: 15,
@@ -34,7 +39,8 @@ class AdminSideTextChooseYourCarModel extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                dialogForEditCarInfo(context, serviceName, serviceId);
+                dialogForEditCarInfo(
+                    context, serviceName, serviceId, ref, isFavourite);
               },
               child: Container(
                   decoration: const BoxDecoration(

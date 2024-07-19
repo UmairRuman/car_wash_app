@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,7 +36,7 @@ class AdminSideCarModelContainer extends ConsumerWidget {
                       flex: 55,
                       child: (listOfCars[index].isAsset
                           ? Image.asset(listOfCars[index].url)
-                          : Image.file(File(listOfCars[index].url)))),
+                          : Image.network(listOfCars[index].url))),
                   Expanded(
                       flex: 25,
                       child: Text(

@@ -6,7 +6,9 @@ class FavouriteCollection {
   static final FavouriteCollection instance = FavouriteCollection._internal();
   FavouriteCollection._internal();
   static const String favouriteCollection = "Favourite Collection";
-
+  factory FavouriteCollection() {
+    return instance;
+  }
   Future<bool> addServiceToFavourite(FavouriteSerivces service) async {
     try {
       UserCollection.userCollection

@@ -48,10 +48,12 @@ class HomePageUserLocation extends StatelessWidget {
             )),
         Expanded(
             flex: 85,
-            child: Text(
-              userLocation == "" ? "Location" : userLocation,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white),
+            child: FittedBox(
+              child: Text(
+                userLocation == "" ? "Location" : userLocation,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white),
+              ),
             ))
       ],
     );

@@ -41,7 +41,7 @@ class AdminSideServiceDataIntialStateWidget extends ConsumerWidget {
                   flex: 40,
                   child: listOfServices[index].isAssetIcon
                       ? Image.asset(listOfServices[index].iconUrl)
-                      : Image.file(File(listOfServices[index].iconUrl))),
+                      : Image.network(listOfServices[index].iconUrl)),
               Expanded(
                   flex: 40,
                   child: FittedBox(

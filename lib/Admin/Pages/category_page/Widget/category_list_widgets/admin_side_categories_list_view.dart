@@ -70,8 +70,7 @@ class AdminSideCategoriesList extends ConsumerWidget {
                             flex: 40,
                             child: state.services[index].isAssetIcon
                                 ? Image.asset(state.services[index].iconUrl)
-                                : Image.file(
-                                    File(state.services[index].iconUrl))),
+                                : Image.network(state.services[index].iconUrl)),
                         Expanded(
                             flex: 40,
                             child: FittedBox(

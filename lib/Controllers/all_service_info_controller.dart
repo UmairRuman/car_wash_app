@@ -11,6 +11,7 @@ import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,8 +19,8 @@ final initializationProvider = FutureProvider<void>((ref) async {
   final sharedPreferences = await SharedPreferences.getInstance();
   final adminkey =
       sharedPreferences.getString(ShraedPreferncesConstants.adminkey)!;
-
-  ref.read(userAdditionStateProvider.notifier).getUser(adminkey);
+  final userKey = FirebaseAuth.instance.currentUser!.uid;
+  ref.read(userAdditionStateProvider.notifier).getUser(userKey);
   await ref
       .read(defaultServicesStateProvider.notifier)
       .fetchingAllServicesFirstTime();
@@ -31,7 +32,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
       ServiceCounterCollection();
   TimeSlotCollection timeSlotCollection = TimeSlotCollection();
   String iconUrl = "";
-
+  bool isFavourite = false;
   String serviceName = "";
   List<Car> cars = [];
 
@@ -57,11 +58,15 @@ class AllServiceInfoController extends Notifier<DataStates> {
     if (carPicUrl != "" && carName != "" && carPrice != "") {
       log("Car added");
       cars.add(Car(
-          carName: carName, price: carPrice, url: carPicUrl, isAsset: false));
+          carName: carName,
+          price: "$carPrice\$",
+          url: carPicUrl,
+          isAsset: false));
     }
   }
 
-  void updateService(int serviceId, String serviceName) async {
+  void updateService(
+      int serviceId, String serviceName, bool isFavourite) async {
     var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
     var service = await serviceCollection.getSpecificService(
         adminId!, serviceName, serviceId);
@@ -80,9 +85,6 @@ class AllServiceInfoController extends Notifier<DataStates> {
     var serviceDescription =
         ref.read(serviceInfoProvider.notifier).intialServiceDescription;
 
-    if (serviceDescription == "") {
-      serviceDescription = service.description;
-    }
     String imageUrl = ref.read(serviceInfoProvider.notifier).imagePath;
 
     if (imageUrl == "") {
@@ -113,6 +115,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
       //Adding dates in date List
 
       serviceCollection.updateNewService(Services(
+          rating: 5,
           isAssetImage: isAssetImage,
           isAssetIcon: isAssetIcon,
           serviceId: serviceId,
@@ -120,12 +123,13 @@ class AllServiceInfoController extends Notifier<DataStates> {
           serviceName: serviceName,
           description: serviceDescription,
           iconUrl: iconUrl,
-          isFavourite: false,
+          isFavourite: isFavourite,
           cars: cars,
           imageUrl: imageUrl,
           availableDates: listOfDates,
           adminPhoneNo: phoneNo!));
     }
+    await fetchServiceData(serviceName, serviceId);
   }
 
   Future<void> fetchServiceData(String serviceName, int serviceID) async {

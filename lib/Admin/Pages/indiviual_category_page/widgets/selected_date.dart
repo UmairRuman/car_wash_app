@@ -14,7 +14,7 @@ class AdminSideTextSelectDate extends StatelessWidget {
           flex: 5,
         ),
         const Expanded(
-          flex: 25,
+          flex: 20,
           child: FittedBox(
             child: Text(
               "Select Year",
@@ -24,11 +24,11 @@ class AdminSideTextSelectDate extends StatelessWidget {
         ),
         const Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
         const Spacer(
-          flex: 10,
+          flex: 12,
         ),
         const Expanded(flex: 20, child: AdminSideSelectedDate()),
         const Spacer(
-          flex: 10,
+          flex: 13,
         ),
         Expanded(
             flex: 15,

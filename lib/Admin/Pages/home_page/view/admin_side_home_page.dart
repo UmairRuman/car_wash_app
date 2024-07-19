@@ -16,7 +16,7 @@ class AdminSideHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final initializationState = ref.watch(initializationProvider);
-    // ref.read(defaultServicesStateProvider.notifier).addDefaultService();
+
     return initializationState.when(
       data: (_) {
         var state = ref.watch(userAdditionStateProvider);

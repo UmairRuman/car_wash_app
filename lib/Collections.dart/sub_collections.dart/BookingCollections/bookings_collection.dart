@@ -14,7 +14,7 @@ class BookingCollection {
       await UserCollection.userCollection
           .doc(userId)
           .collection(bookingCollection)
-          .doc(bookings.bookingId)
+          .doc(bookings.userBookingId.toString())
           .set(bookings.toMap());
       return true;
     } catch (e) {
@@ -27,7 +27,7 @@ class BookingCollection {
       await UserCollection.userCollection
           .doc(userId)
           .collection(bookingCollection)
-          .doc(bookings.bookingId)
+          .doc(bookings.userBookingId.toString())
           .delete();
       return true;
     } catch (e) {
@@ -40,7 +40,7 @@ class BookingCollection {
       await UserCollection.userCollection
           .doc(userId)
           .collection(bookingCollection)
-          .doc(bookings.bookingId)
+          .doc(bookings.userBookingId.toString())
           .update(bookings.toMap());
       return true;
     } catch (e) {

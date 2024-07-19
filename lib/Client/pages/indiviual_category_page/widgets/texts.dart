@@ -15,7 +15,7 @@ class TextChooseYourCarModel extends StatelessWidget {
           flex: 40,
           child: FittedBox(
             child: Text(
-              "Add new Car model",
+              "Choose your Car type",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),

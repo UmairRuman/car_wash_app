@@ -33,6 +33,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
       resizeToAvoidBottomInset: false,
       body: Builder(builder: (context) {
         if (state is DataLoadedState) {
+          var isFavourite = state.service.isFavourite;
           var serviceImage = state.service.imageUrl;
           var serviceDescription = state.service.description;
           var listOfDates = state.service.availableDates;
@@ -54,6 +55,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 20,
                   child: AdminSideIndiviualCategoryImageAndDescription(
+                    isFavourite: isFavourite!,
                     isAssetImage: isAssetImage,
                     serviceId: serviceId,
                     serviceName: serviceName,
@@ -63,6 +65,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                 flex: 5,
                 child: AdminSideTextChooseYourCarModel(
+                  isFavourite: isFavourite!,
                   serviceId: serviceId,
                   serviceName: serviceName,
                 ),
@@ -85,23 +88,21 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 5,
                   child: AdminSideTextChooseTimeSlot(
+                    isFavourite: isFavourite,
                     serviceId: serviceId,
                     serviceName: serviceName,
                   )),
               const Expanded(flex: 10, child: AdminSideTimeSlot()),
               const Spacer(
-                flex: 3,
+                flex: 2,
               ),
               Expanded(
-                  flex: 8,
-                  child: ButtonSaveService(
+                  flex: 11,
+                  child: AdminSideLowerContainer(
                     imagePath: imagePath,
                     serviceName: serviceName,
                     serviceId: serviceId,
                   )),
-              const Spacer(
-                flex: 2,
-              )
             ],
           );
         }

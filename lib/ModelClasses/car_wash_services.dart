@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class Services {
@@ -9,7 +10,8 @@ class Services {
   String serviceName;
   String description;
   String iconUrl;
-  bool? isFavourite;
+  double rating;
+  bool isFavourite;
   List<Car> cars;
   String imageUrl;
   List<DateTime> availableDates;
@@ -23,6 +25,7 @@ class Services {
     required this.serviceName,
     required this.description,
     required this.iconUrl,
+    required this.rating,
     required this.isFavourite,
     required this.cars,
     required this.imageUrl,
@@ -38,6 +41,7 @@ class Services {
     String? serviceName,
     String? description,
     String? iconUrl,
+    double? rating,
     bool? isFavourite,
     List<Car>? cars,
     String? imageUrl,
@@ -52,6 +56,7 @@ class Services {
       serviceName: serviceName ?? this.serviceName,
       description: description ?? this.description,
       iconUrl: iconUrl ?? this.iconUrl,
+      rating: rating ?? this.rating,
       isFavourite: isFavourite ?? this.isFavourite,
       cars: cars ?? this.cars,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -69,11 +74,12 @@ class Services {
       'serviceName': serviceName,
       'description': description,
       'iconUrl': iconUrl,
+      'rating': rating,
       'isFavourite': isFavourite,
       'cars': cars.map((x) => x.toMap()).toList(),
       'imageUrl': imageUrl,
       'availableDates':
-          availableDates.map((x) => x.millisecondsSinceEpoch).toList(),
+          availableDates.map((x) => Timestamp.fromDate(x)).toList(),
       'adminPhoneNo': adminPhoneNo,
       'isAssetIcon': isAssetIcon,
       'isAssetImage': isAssetImage,
@@ -87,8 +93,8 @@ class Services {
       serviceName: map['serviceName'] as String,
       description: map['description'] as String,
       iconUrl: map['iconUrl'] as String,
-      isFavourite:
-          map['isFavourite'] != null ? map['isFavourite'] as bool : null,
+      rating: map['rating'] as double,
+      isFavourite: map['isFavourite'] as bool,
       cars: List<Car>.from(
         (map['cars']).map<Car>(
           (x) => Car.fromMap(x as Map<String, dynamic>),
@@ -97,7 +103,7 @@ class Services {
       imageUrl: map['imageUrl'] as String,
       availableDates: List<DateTime>.from(
         (map['availableDates']).map<DateTime>(
-          (x) => DateTime.fromMillisecondsSinceEpoch(x),
+          (x) => (x as Timestamp).toDate(),
         ),
       ),
       adminPhoneNo: map['adminPhoneNo'] as String,
@@ -113,7 +119,7 @@ class Services {
 
   @override
   String toString() {
-    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo, isAssetIcon: $isAssetIcon, isAssetImage: $isAssetImage)';
+    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, rating: $rating, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo, isAssetIcon: $isAssetIcon, isAssetImage: $isAssetImage)';
   }
 
   @override
@@ -125,6 +131,7 @@ class Services {
         other.serviceName == serviceName &&
         other.description == description &&
         other.iconUrl == iconUrl &&
+        other.rating == rating &&
         other.isFavourite == isFavourite &&
         listEquals(other.cars, cars) &&
         other.imageUrl == imageUrl &&
@@ -141,6 +148,7 @@ class Services {
         serviceName.hashCode ^
         description.hashCode ^
         iconUrl.hashCode ^
+        rating.hashCode ^
         isFavourite.hashCode ^
         cars.hashCode ^
         imageUrl.hashCode ^

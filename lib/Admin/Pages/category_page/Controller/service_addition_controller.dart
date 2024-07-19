@@ -2,12 +2,10 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
-import 'package:car_wash_app/ModelClasses/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/car_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
-import 'package:car_wash_app/utils/categoryInfo.dart';
 import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +37,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
     String? adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
     List<ServiceCounter> listOfServices =
         await serviceCounterCollection.getAllServiceCount(adminId!);
+    log("List length : ${listOfServices.length}");
     List<Car> listOfCars = [];
     for (int index = 0; index < listOfCarImages.length; index++) {
       listOfCars.add(
@@ -57,6 +56,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
           ServiceCounter(count: listOfServices.length + 1), adminId);
 
       serviceCollection.addNewService(Services(
+          rating: 5,
           isAssetImage: false,
           serviceId: listOfServices.length + 1,
           adminId: adminId,
@@ -83,6 +83,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
           await serviceCollection.getAllServicesByAdmin(adminId!);
       state = ServiceDataLoadedState(services: listOfServices);
       log("List of services length : ${listOfServices.length}");
+      log("Is asset Icon : ${listOfServices[0].isAssetIcon}");
     } catch (e) {
       state = ServiceDataErrorState(error: e.toString());
     }

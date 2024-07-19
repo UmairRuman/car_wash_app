@@ -1,13 +1,15 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_name_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EditNameVariables {
-  static String? imageFilePath;
-  static bool isClickedOnCamera = false;
+  static double currentRating = 1;
 }
 
-void dialogOnEditNameClick(BuildContext context) {
+void dialogForRating(BuildContext context) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -17,7 +19,7 @@ void dialogOnEditNameClick(BuildContext context) {
               borderRadius: BorderRadius.circular(20.0)), //this right here
           child: StatefulBuilder(
             builder: (context, setState) => Container(
-              height: MediaQuery.of(context).size.height / 4,
+              height: MediaQuery.of(context).size.height / 4.5,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Consumer(
@@ -25,25 +27,55 @@ void dialogOnEditNameClick(BuildContext context) {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Spacer(
+                        flex: 10,
+                      ),
                       Expanded(
-                        flex: 50,
-                        child: TextField(
-                          controller: ref
-                              .read(serviceNameProvider.notifier)
-                              .serviceNameTEC,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.blue, width: 1.5),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(30),
-                                ),
-                              ),
-                              hintText: 'Service Name'),
+                        flex: 40,
+                        child: RatingBar.builder(
+                          initialRating: 1,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemPadding:
+                              const EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) {
+                            return const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            );
+                          },
+                          onRatingUpdate: (rating) {
+                            setState(() {
+                              EditNameVariables.currentRating = rating;
+                            });
+                          },
                         ),
                       ),
                       Expanded(
-                        flex: 45,
+                          flex: 20,
+                          child: Row(
+                            children: [
+                              const Spacer(
+                                flex: 35,
+                              ),
+                              Expanded(
+                                  flex: 30,
+                                  child: FittedBox(
+                                      child: Text(
+                                    EditNameVariables.currentRating.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
+                              const Spacer(
+                                flex: 35,
+                              )
+                            ],
+                          )),
+                      Expanded(
+                        flex: 30,
                         child: Row(
                           children: [
                             const Spacer(
@@ -53,6 +85,7 @@ void dialogOnEditNameClick(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
+                                  EditNameVariables.currentRating = 1;
                                   ref
                                       .read(serviceNameProvider.notifier)
                                       .disposeController();
@@ -75,12 +108,7 @@ void dialogOnEditNameClick(BuildContext context) {
                                   ref
                                       .read(serviceNameProvider.notifier)
                                       .disposeController();
-                                  var nameTEC = ref
-                                      .read(serviceNameProvider.notifier)
-                                      .serviceNameTEC;
-                                  ref
-                                      .watch(serviceNameProvider.notifier)
-                                      .onchangeTitle(nameTEC.text);
+
                                   Navigator.of(context).pop();
                                 },
                                 backgroundColor: const Color(0xFF1BC0C5),

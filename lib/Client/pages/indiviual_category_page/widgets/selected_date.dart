@@ -17,14 +17,13 @@ class TextSelectDate extends StatelessWidget {
           flex: 25,
           child: FittedBox(
             child: Text(
-              "Select Year",
+              "Select Date",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
-        Expanded(flex: 10, child: Icon(Icons.arrow_forward)),
         Spacer(
-          flex: 40,
+          flex: 50,
         ),
         Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
         Spacer(
