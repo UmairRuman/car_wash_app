@@ -4,11 +4,13 @@ import 'package:car_wash_app/Admin/Pages/category_page/Controller/default_servic
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
+import 'package:car_wash_app/ModelClasses/favourite_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,6 +30,8 @@ final initializationProvider = FutureProvider<void>((ref) async {
 
 class AllServiceInfoController extends Notifier<DataStates> {
   ServiceCollection serviceCollection = ServiceCollection();
+  FavouriteServicesCounterCollection favouriteServicesCounterCollection =
+      FavouriteServicesCounterCollection();
   ServiceCounterCollection serviceCounterCollection =
       ServiceCounterCollection();
   TimeSlotCollection timeSlotCollection = TimeSlotCollection();
@@ -68,6 +72,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
   void updateService(
       int serviceId, String serviceName, bool isFavourite) async {
     var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    var userId = FirebaseAuth.instance.currentUser!.uid;
     var service = await serviceCollection.getSpecificService(
         adminId!, serviceName, serviceId);
     bool isAssetImage = false;
@@ -86,6 +91,14 @@ class AllServiceInfoController extends Notifier<DataStates> {
         ref.read(serviceInfoProvider.notifier).intialServiceDescription;
 
     String imageUrl = ref.read(serviceInfoProvider.notifier).imagePath;
+
+    var favouriteServiceCount = await favouriteServicesCounterCollection
+        .getAllUserBookingsCount(userId);
+    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
+    var favouriteServiceId = "$favouriteServiceIdCount";
+    if (favouriteServiceIdCount < 10) {
+      favouriteServiceId = "0$favouriteServiceIdCount";
+    }
 
     if (imageUrl == "") {
       imageUrl = service.imageUrl;
@@ -115,6 +128,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
       //Adding dates in date List
 
       serviceCollection.updateNewService(Services(
+          serviceFavouriteId: favouriteServiceId,
           rating: 5,
           isAssetImage: isAssetImage,
           isAssetIcon: isAssetIcon,

@@ -7,7 +7,7 @@ class BookedInfoContainer extends StatelessWidget {
   final double width;
   final String imagePath;
   final String bookingServiceName;
-  final String bookingDate;
+  final DateTime bookingDate;
   final String timeSlot;
   final String washPrice;
   final String bookingStatus;
@@ -59,7 +59,7 @@ class BookedInfoContainer extends StatelessWidget {
                     Expanded(
                       flex: 18,
                       child: TextBookingDate(
-                        bookingDate: bookingDate,
+                        bookingDate: "$bookingDate",
                       ),
                     ),
                     Expanded(

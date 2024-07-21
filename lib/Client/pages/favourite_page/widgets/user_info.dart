@@ -64,3 +64,20 @@ class FavouritePageUserInfo extends StatelessWidget {
     );
   }
 }
+
+class FavouriteCategoryPic extends StatelessWidget {
+  final String favouriteCategoryimagePath;
+  const FavouriteCategoryPic(
+      {super.key, required this.favouriteCategoryimagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(favouriteCategoryimagePath), fit: BoxFit.cover),
+          color: const Color.fromARGB(255, 239, 233, 233),
+          borderRadius: const BorderRadius.all(Radius.circular(30))),
+    );
+  }
+}

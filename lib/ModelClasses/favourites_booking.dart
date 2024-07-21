@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class FavouriteSerivces {
-  int favouriteServiceId;
+  String favouriteServiceId;
   String serviceName;
   String userId;
   double serviceRating;
@@ -18,7 +18,7 @@ class FavouriteSerivces {
   });
 
   FavouriteSerivces copyWith({
-    int? favouriteServiceId,
+    String? favouriteServiceId,
     String? serviceName,
     String? userId,
     double? serviceRating,
@@ -48,7 +48,7 @@ class FavouriteSerivces {
 
   factory FavouriteSerivces.fromMap(Map<String, dynamic> map) {
     return FavouriteSerivces(
-      favouriteServiceId: map['favouriteServiceId'] as int,
+      favouriteServiceId: map['favouriteServiceId'] as String,
       serviceName: map['serviceName'] as String,
       userId: map['userId'] as String,
       serviceRating: map['serviceRating'] as double,

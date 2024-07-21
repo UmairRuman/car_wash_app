@@ -1,4 +1,5 @@
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,10 +7,14 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
   final String serviceName;
   final int serviceId;
   bool isFavourite;
+  final String serviceImageUrl;
+  final String favouriteServiceId;
   TopRowIndiviualCategoryPage(
       {super.key,
+      required this.serviceImageUrl,
       required this.serviceName,
       required this.isFavourite,
+      required this.favouriteServiceId,
       required this.serviceId});
 
   @override
@@ -50,6 +55,10 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                     setState(() {
                       isFavourite = true;
                       ref
+                          .read(favouriteServiceProvider.notifier)
+                          .addToFavourite(
+                              serviceName, serviceImageUrl, favouriteServiceId);
+                      ref
                           .read(allServiceDataStateProvider.notifier)
                           .updateService(serviceId, serviceName, isFavourite);
                     });
@@ -64,6 +73,9 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                   onTap: () {
                     setState(() {
                       isFavourite = false;
+                      ref
+                          .read(favouriteServiceProvider.notifier)
+                          .deleteFavouriteService(favouriteServiceId);
                       ref
                           .read(allServiceDataStateProvider.notifier)
                           .updateService(serviceId, serviceName, isFavourite);

@@ -1,9 +1,8 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/admin_booking_collection_count.dart';
-
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/user_booking_count_collection.dart';
-import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/bookings_collection.dart';
 import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/bookings.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
@@ -18,7 +17,7 @@ final bookingStateProvider =
 class BookingController extends Notifier<BookingStates> {
   String? carType;
   DateTime? carWashDate;
-  double? carPrice;
+  String? carPrice;
   String? timeSlot;
   BookingCollection bookingCollection = BookingCollection();
   AdminBookingCollectionCount adminBookingCollectionCount =
@@ -44,27 +43,49 @@ class BookingController extends Notifier<BookingStates> {
           carType != null &&
           carPrice != null &&
           timeSlot != null) {
-        bookingCollection.addBooking(
-            userId,
-            Bookings(
-                adminBookingId: adminBookingsTotalCount.length,
-                userBookingId: userBookingsTotalCount.length,
-                userId: userId,
-                serviceId: serviceId.toString(),
-                carType: carType!,
-                carWashdate: carWashDate!,
-                price: carPrice!,
-                bookingStatus: BookingStatus.pending,
-                bookingDate: DateTime.now(),
-                serviceImageUrl: serviceImageUrl,
-                serviceName: serviceName,
-                timeSlot: timeSlot!));
+        //Adding Booking in client Collection
+        bookingCollection.addBooking(Bookings(
+            userBookingId: userBookingsTotalCount.length + 1,
+            userId: userId,
+            serviceId: serviceId.toString(),
+            carType: carType!,
+            carWashdate: carWashDate!,
+            price: carPrice!,
+            bookingStatus: BookingStatus.pending,
+            bookingDate: DateTime.now(),
+            serviceImageUrl: serviceImageUrl,
+            serviceName: serviceName,
+            timeSlot: timeSlot!));
+        //Adding booking at Admin Collection
+        bookingCollection.addBooking(Bookings(
+            userBookingId: userBookingsTotalCount.length + 1,
+            userId: adminId,
+            serviceId: serviceId.toString(),
+            carType: carType!,
+            carWashdate: carWashDate!,
+            price: carPrice!,
+            bookingStatus: BookingStatus.pending,
+            bookingDate: DateTime.now(),
+            serviceImageUrl: serviceImageUrl,
+            serviceName: serviceName,
+            timeSlot: timeSlot!));
 
-        adminBookingCollectionCount.addAdminBookingCount(
-            FavouriteServicesCounter(
-                userId: adminId, count: adminBookingsTotalCount.length + 1));
-        userBookingCountCollection.addUserBookingCount(UserBookingCounter(
-            userId: userId, count: userBookingsTotalCount.length + 1));
+        if (adminBookingsTotalCount.length < 9) {
+          adminBookingCollectionCount.addAdminBookingCount(AdminServiceCounter(
+              userId: userId, count: "0${adminBookingsTotalCount.length + 1}"));
+        } else {
+          adminBookingCollectionCount.addAdminBookingCount(AdminServiceCounter(
+              userId: userId, count: "${adminBookingsTotalCount.length + 1}"));
+        }
+
+        if (userBookingsTotalCount.length < 9) {
+          userBookingCountCollection.addUserBookingCount(UserBookingCounter(
+              userId: userId, count: "0${userBookingsTotalCount.length + 1}"));
+        } else {
+          userBookingCountCollection.addUserBookingCount(UserBookingCounter(
+              userId: userId, count: "${userBookingsTotalCount.length + 1}"));
+        }
+        await getBookings(userId);
       }
     } catch (e) {
       log("Error in adding Booking : ${e.toString()} ");
@@ -72,10 +93,15 @@ class BookingController extends Notifier<BookingStates> {
   }
 
   Future<void> getBookings(String userId) async {
+    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
     state = BookingLoadingState();
     try {
-      var listOfBookings = await bookingCollection.getAllBookings(userId);
-      state = BookingLoadedState(listOfBookings: listOfBookings);
+      var listOfClientBookings = await bookingCollection.getAllBookings(userId);
+      var listOfAdminBookings =
+          await bookingCollection.getAllBookings(adminId!);
+      state = BookingLoadedState(
+          listOfClientBookings: listOfClientBookings,
+          listOfAdminBookings: listOfAdminBookings);
     } catch (e) {
       state = BookingErrorState(error: e.toString());
     }
@@ -89,8 +115,10 @@ class BookingIntialState extends BookingStates {}
 class BookingLoadingState extends BookingStates {}
 
 class BookingLoadedState extends BookingStates {
-  final List<Bookings> listOfBookings;
-  BookingLoadedState({required this.listOfBookings});
+  final List<Bookings> listOfClientBookings;
+  final List<Bookings> listOfAdminBookings;
+  BookingLoadedState(
+      {required this.listOfClientBookings, required this.listOfAdminBookings});
 }
 
 class BookingErrorState extends BookingStates {

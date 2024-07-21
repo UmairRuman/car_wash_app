@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/ModelClasses/car_service_counter.dart';
@@ -9,10 +10,13 @@ import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/utils/categoryInfo.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DefaultServicesController extends Notifier<DefaultServicesStates> {
   ServiceCollection serviceCollection = ServiceCollection();
+  FavouriteServicesCounterCollection favouriteServicesCounterCollection =
+      FavouriteServicesCounterCollection();
   ServiceCounterCollection serviceCounterCollection =
       ServiceCounterCollection();
   @override
@@ -21,6 +25,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
   }
 
   addDefaultService() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     String? adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
     String? adminPhoneNumber =
         prefs!.getString(ShraedPreferncesConstants.phoneNo);
@@ -38,8 +43,17 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
               isAsset: true),
         );
       }
+
+      var favouriteServiceCount = await favouriteServicesCounterCollection
+          .getAllUserBookingsCount(userId);
+      var favouriteServiceIdCount = favouriteServiceCount.length + 1;
+      var favouriteServiceId = "$favouriteServiceIdCount";
+      if (favouriteServiceIdCount < 10) {
+        favouriteServiceId = "0$favouriteServiceIdCount";
+      }
       serviceCollection.addNewService(Services(
-          rating: 5.0,
+          serviceFavouriteId: favouriteServiceId,
+          rating: 5,
           isAssetImage: true,
           serviceId: listOfServices.length,
           adminId: adminId,

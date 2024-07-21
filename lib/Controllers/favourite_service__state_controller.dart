@@ -4,7 +4,6 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_col
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/favourites_booking.dart';
-import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,25 +22,67 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
     return FavouriteServiceIntialState();
   }
 
-  Future<void> addToFavourite(
-      String serviceId, String serviceName, String serviceImageUrl) async {
+  // Deleting favourite Service
+  Future<void> deleteFavouriteService(String favouriteServiceId) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    var favouriteServiceCount = await favouriteServicesCounterCollection
+        .getAllUserBookingsCount(userId);
+    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
+    var favouriteServiceId = "$favouriteServiceIdCount";
+    if (favouriteServiceIdCount < 9) {
+      favouriteServiceId = "0$favouriteServiceIdCount";
+    }
+    try {
+      await favouriteCollection.deleteFavouriteService(
+          userId, favouriteServiceId);
+    } catch (e) {
+      log("failed to delete Favourite service :  ${e.toString()}");
+    }
+  }
+
+  //Adding Favourite Service
+  Future<void> addToFavourite(String serviceName, String serviceImageUrl,
+      String favouriteServiceId) async {
     final String userId = FirebaseAuth.instance.currentUser!.uid;
     var favouriteServiceCount = await favouriteServicesCounterCollection
         .getAllUserBookingsCount(userId);
+    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
+    var favouriteServiceId = "${favouriteServiceCount.length + 1}";
+    if (favouriteServiceIdCount < 10) {
+      favouriteServiceId = "0$favouriteServiceIdCount";
+    }
+    serviceRating = 5;
+    servicePrice = 50;
     try {
       if (servicePrice != null && serviceRating != null) {
         await favouriteCollection.addServiceToFavourite(FavouriteSerivces(
-            favouriteServiceId: favouriteServiceCount.length,
+            favouriteServiceId: favouriteServiceId,
             serviceName: serviceName,
             userId: userId,
             serviceRating: serviceRating!,
             serviceImageUrl: serviceImageUrl,
             servicePrice: servicePrice!));
-        favouriteServiceCount.add(FavouriteServicesCounter(
-            userId: userId, count: favouriteServiceCount.length + 1));
+        favouriteServicesCounterCollection.addAdminBookingCount(
+            AdminServiceCounter(userId: userId, count: favouriteServiceId));
       }
+
+      await getAllFavouriteService(userId);
     } catch (e) {
       log("Error in adding favourite service : ${e.toString()}");
+    }
+  }
+
+  // Getting all Services
+  Future<void> getAllFavouriteService(String userId) async {
+    state = FavouriteServiceLoadingState();
+    try {
+      var listOfFavouriteServices =
+          await favouriteCollection.fetchAllServices(userId);
+      state = FavouriteServiceLoadedState(
+          listOfFavouriteServices: listOfFavouriteServices);
+    } catch (e) {
+      log("Error in fetching favourite services ${e.toString()}");
+      state = FavouriteServiceErrorState(error: e.toString());
     }
   }
 }

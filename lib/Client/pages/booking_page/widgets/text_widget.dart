@@ -119,10 +119,12 @@ class ActualBookingDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      bookingDate,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 13),
+    return FittedBox(
+      child: Text(
+        bookingDate,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 13),
+      ),
     );
   }
 }
@@ -133,10 +135,12 @@ class ActualBookingTimeSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      timeSlot,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 13),
+    return FittedBox(
+      child: Text(
+        timeSlot,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 13),
+      ),
     );
   }
 }
@@ -147,10 +151,12 @@ class ActualBookingWashPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      washPrice,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 13),
+    return FittedBox(
+      child: Text(
+        washPrice,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 13),
+      ),
     );
   }
 }
@@ -161,10 +167,12 @@ class ActualBookingStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      bookingStatus,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 13),
+    return FittedBox(
+      child: Text(
+        bookingStatus,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 13),
+      ),
     );
   }
 }
@@ -175,10 +183,12 @@ class ActualBookedServiceName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      serviceName,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 13),
+    return FittedBox(
+      child: Text(
+        serviceName,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 13),
+      ),
     );
   }
 }

@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class FavouriteServiceCounter {
-  int count;
+  String count;
   String userId;
   FavouriteServiceCounter({
     required this.count,
@@ -10,7 +10,7 @@ class FavouriteServiceCounter {
   });
 
   FavouriteServiceCounter copyWith({
-    int? count,
+    String? count,
     String? userId,
   }) {
     return FavouriteServiceCounter(
@@ -28,7 +28,7 @@ class FavouriteServiceCounter {
 
   factory FavouriteServiceCounter.fromMap(Map<String, dynamic> map) {
     return FavouriteServiceCounter(
-      count: map['count'] as int,
+      count: map['count'] as String,
       userId: map['userId'] as String,
     );
   }

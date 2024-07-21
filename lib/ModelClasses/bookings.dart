@@ -6,12 +6,12 @@ import 'package:flutter/foundation.dart';
 
 class Bookings {
   int userBookingId;
-  int adminBookingId;
+
   String userId;
   String serviceId;
   String carType;
   DateTime carWashdate;
-  double price;
+  String price;
   String bookingStatus;
   DateTime bookingDate;
   String serviceImageUrl;
@@ -19,7 +19,6 @@ class Bookings {
   String timeSlot;
   Bookings({
     required this.userBookingId,
-    required this.adminBookingId,
     required this.userId,
     required this.serviceId,
     required this.carType,
@@ -34,12 +33,11 @@ class Bookings {
 
   Bookings copyWith({
     int? userBookingId,
-    int? adminBookingId,
     String? userId,
     String? serviceId,
     String? carType,
     DateTime? carWashdate,
-    double? price,
+    String? price,
     String? bookingStatus,
     DateTime? bookingDate,
     String? serviceImageUrl,
@@ -48,7 +46,6 @@ class Bookings {
   }) {
     return Bookings(
       userBookingId: userBookingId ?? this.userBookingId,
-      adminBookingId: adminBookingId ?? this.adminBookingId,
       userId: userId ?? this.userId,
       serviceId: serviceId ?? this.serviceId,
       carType: carType ?? this.carType,
@@ -65,7 +62,6 @@ class Bookings {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'userBookingId': userBookingId,
-      'adminBookingId': adminBookingId,
       'userId': userId,
       'serviceId': serviceId,
       'carType': carType,
@@ -82,12 +78,11 @@ class Bookings {
   factory Bookings.fromMap(Map<String, dynamic> map) {
     return Bookings(
       userBookingId: map['userBookingId'] as int,
-      adminBookingId: map['adminBookingId'] as int,
       userId: map['userId'] as String,
       serviceId: map['serviceId'] as String,
       carType: map['carType'] as String,
       carWashdate: (map['carWashdate'] as Timestamp).toDate(),
-      price: map['price'] as double,
+      price: map['price'] as String,
       bookingStatus: map['bookingStatus'] as String,
       bookingDate: (map['bookingDate'] as Timestamp).toDate(),
       serviceImageUrl: map['serviceImageUrl'] as String,
@@ -103,7 +98,7 @@ class Bookings {
 
   @override
   String toString() {
-    return 'Bookings(userBookingId: $userBookingId, adminBookingId: $adminBookingId, userId: $userId, serviceId: $serviceId, carType: $carType, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, serviceImageUrl: $serviceImageUrl, serviceName: $serviceName, timeSlot: $timeSlot)';
+    return 'Bookings(userBookingId: $userBookingId, userId: $userId, serviceId: $serviceId, carType: $carType, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, serviceImageUrl: $serviceImageUrl, serviceName: $serviceName, timeSlot: $timeSlot)';
   }
 
   @override
@@ -111,7 +106,6 @@ class Bookings {
     if (identical(this, other)) return true;
 
     return other.userBookingId == userBookingId &&
-        other.adminBookingId == adminBookingId &&
         other.userId == userId &&
         other.serviceId == serviceId &&
         other.carType == carType &&
@@ -127,7 +121,6 @@ class Bookings {
   @override
   int get hashCode {
     return userBookingId.hashCode ^
-        adminBookingId.hashCode ^
         userId.hashCode ^
         serviceId.hashCode ^
         carType.hashCode ^

@@ -1,18 +1,23 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/ModelClasses/car_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
+import 'package:car_wash_app/ModelClasses/favourite_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ServiceAdditionController extends Notifier<ServiceDataStates> {
   String iconUrl = "";
   ServiceCollection serviceCollection = ServiceCollection();
+  FavouriteServicesCounterCollection favouriteServicesCounterCollection =
+      FavouriteServicesCounterCollection();
   ServiceCounterCollection serviceCounterCollection =
       ServiceCounterCollection();
   TextEditingController serviecNameTEC = TextEditingController();
@@ -34,6 +39,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
   }
 
   onSaveBtnClick() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     String? adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
     List<ServiceCounter> listOfServices =
         await serviceCounterCollection.getAllServiceCount(adminId!);
@@ -49,6 +55,14 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
       );
     }
 
+    var favouriteServiceCount = await favouriteServicesCounterCollection
+        .getAllUserBookingsCount(userId);
+    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
+    var favouriteServiceId = "$favouriteServiceIdCount";
+    if (favouriteServiceIdCount < 10) {
+      favouriteServiceId = "0$favouriteServiceIdCount";
+    }
+
     if (isIconPicked) {
       log("Adding service");
       //Adding plus one in the counter collection
@@ -56,6 +70,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
           ServiceCounter(count: listOfServices.length + 1), adminId);
 
       serviceCollection.addNewService(Services(
+          serviceFavouriteId: favouriteServiceId,
           rating: 5,
           isAssetImage: false,
           serviceId: listOfServices.length + 1,

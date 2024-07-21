@@ -7,10 +7,9 @@ class ButtonBookAWash extends ConsumerWidget {
   final String serviceName;
   final int serviceId;
   final String serviceImageUrl;
-  bool isfavourite;
-  ButtonBookAWash(
+
+  const ButtonBookAWash(
       {super.key,
-      required this.isfavourite,
       required this.serviceId,
       required this.serviceImageUrl,
       required this.serviceName});

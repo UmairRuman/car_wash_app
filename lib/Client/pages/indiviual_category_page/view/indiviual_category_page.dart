@@ -33,13 +33,14 @@ class IndiviualCategoryPage extends ConsumerWidget {
       resizeToAvoidBottomInset: false,
       body: Builder(builder: (context) {
         if (state is DataLoadedState) {
+          var favouriteServiceId = state.service.serviceFavouriteId;
           var name = state.service.serviceName;
           var serviceImage = state.service.imageUrl;
           var serviceDescription = state.service.description;
           var listOfDates = state.service.availableDates;
           var phoneNumber = state.service.adminPhoneNo;
           bool isAssetImage = state.service.isAssetImage;
-          bool isFavourite = state.service.isFavourite!;
+          bool isFavourite = state.service.isFavourite;
           List<Car> listOfCars = state.service.cars;
           return Column(
             children: [
@@ -49,6 +50,8 @@ class IndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 5,
                   child: TopRowIndiviualCategoryPage(
+                    serviceImageUrl: serviceImage,
+                    favouriteServiceId: favouriteServiceId,
                     serviceId: serviceId,
                     isFavourite: isFavourite,
                     serviceName: name,
@@ -91,7 +94,6 @@ class IndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 12,
                   child: ButtonBookAWash(
-                    isfavourite: isFavourite,
                     serviceId: serviceId,
                     serviceImageUrl: serviceImage,
                     serviceName: serviceName,

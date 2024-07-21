@@ -9,10 +9,10 @@ class BookingCollection {
   }
   static const bookingCollection = "Booking Collection";
 
-  Future<bool> addBooking(String userId, Bookings bookings) async {
+  Future<bool> addBooking(Bookings bookings) async {
     try {
       await UserCollection.userCollection
-          .doc(userId)
+          .doc(bookings.userId)
           .collection(bookingCollection)
           .doc(bookings.userBookingId.toString())
           .set(bookings.toMap());
@@ -22,10 +22,10 @@ class BookingCollection {
     }
   }
 
-  Future<bool> deleteBooking(String userId, Bookings bookings) async {
+  Future<bool> deleteBooking(Bookings bookings) async {
     try {
       await UserCollection.userCollection
-          .doc(userId)
+          .doc(bookings.userId)
           .collection(bookingCollection)
           .doc(bookings.userBookingId.toString())
           .delete();
@@ -35,10 +35,10 @@ class BookingCollection {
     }
   }
 
-  Future<bool> updateBooking(String userId, Bookings bookings) async {
+  Future<bool> updateBooking(Bookings bookings) async {
     try {
       await UserCollection.userCollection
-          .doc(userId)
+          .doc(bookings.userId)
           .collection(bookingCollection)
           .doc(bookings.userBookingId.toString())
           .update(bookings.toMap());

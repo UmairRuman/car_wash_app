@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 class Services {
   int serviceId;
+  String serviceFavouriteId;
   String adminId;
   String serviceName;
   String description;
@@ -21,6 +22,7 @@ class Services {
 
   Services({
     required this.serviceId,
+    required this.serviceFavouriteId,
     required this.adminId,
     required this.serviceName,
     required this.description,
@@ -37,6 +39,7 @@ class Services {
 
   Services copyWith({
     int? serviceId,
+    String? serviceFavouriteId,
     String? adminId,
     String? serviceName,
     String? description,
@@ -52,6 +55,7 @@ class Services {
   }) {
     return Services(
       serviceId: serviceId ?? this.serviceId,
+      serviceFavouriteId: serviceFavouriteId ?? this.serviceFavouriteId,
       adminId: adminId ?? this.adminId,
       serviceName: serviceName ?? this.serviceName,
       description: description ?? this.description,
@@ -70,6 +74,7 @@ class Services {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'serviceId': serviceId,
+      'serviceFavouriteId': serviceFavouriteId,
       'adminId': adminId,
       'serviceName': serviceName,
       'description': description,
@@ -79,7 +84,7 @@ class Services {
       'cars': cars.map((x) => x.toMap()).toList(),
       'imageUrl': imageUrl,
       'availableDates':
-          availableDates.map((x) => Timestamp.fromDate(x)).toList(),
+          availableDates.map((x) => x.millisecondsSinceEpoch).toList(),
       'adminPhoneNo': adminPhoneNo,
       'isAssetIcon': isAssetIcon,
       'isAssetImage': isAssetImage,
@@ -89,6 +94,7 @@ class Services {
   factory Services.fromMap(Map<String, dynamic> map) {
     return Services(
       serviceId: map['serviceId'] as int,
+      serviceFavouriteId: map['serviceFavouriteId'] as String,
       adminId: map['adminId'] as String,
       serviceName: map['serviceName'] as String,
       description: map['description'] as String,
@@ -103,7 +109,7 @@ class Services {
       imageUrl: map['imageUrl'] as String,
       availableDates: List<DateTime>.from(
         (map['availableDates']).map<DateTime>(
-          (x) => (x as Timestamp).toDate(),
+          (x) => DateTime.fromMillisecondsSinceEpoch(x),
         ),
       ),
       adminPhoneNo: map['adminPhoneNo'] as String,
@@ -119,7 +125,7 @@ class Services {
 
   @override
   String toString() {
-    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, rating: $rating, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo, isAssetIcon: $isAssetIcon, isAssetImage: $isAssetImage)';
+    return 'Services(serviceId: $serviceId, serviceFavouriteId: $serviceFavouriteId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, rating: $rating, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo, isAssetIcon: $isAssetIcon, isAssetImage: $isAssetImage)';
   }
 
   @override
@@ -127,6 +133,7 @@ class Services {
     if (identical(this, other)) return true;
 
     return other.serviceId == serviceId &&
+        other.serviceFavouriteId == serviceFavouriteId &&
         other.adminId == adminId &&
         other.serviceName == serviceName &&
         other.description == description &&
@@ -144,6 +151,7 @@ class Services {
   @override
   int get hashCode {
     return serviceId.hashCode ^
+        serviceFavouriteId.hashCode ^
         adminId.hashCode ^
         serviceName.hashCode ^
         description.hashCode ^

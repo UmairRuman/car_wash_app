@@ -35,12 +35,13 @@ class FavouriteCollection {
     }
   }
 
-  Future<bool> deleteFavouriteService(FavouriteSerivces service) async {
+  Future<bool> deleteFavouriteService(
+      String userId, String favouriteServiceId) async {
     try {
       UserCollection.userCollection
-          .doc(service.userId)
+          .doc(userId)
           .collection(favouriteCollection)
-          .doc(service.favouriteServiceId.toString())
+          .doc(favouriteServiceId.toString())
           .delete();
       return true;
     } catch (e) {

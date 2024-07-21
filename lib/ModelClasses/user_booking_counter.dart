@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class UserBookingCounter {
   String userId;
-  int count;
+  String count;
   UserBookingCounter({
     required this.userId,
     required this.count,
@@ -11,7 +11,7 @@ class UserBookingCounter {
 
   UserBookingCounter copyWith({
     String? userId,
-    int? count,
+    String? count,
   }) {
     return UserBookingCounter(
       userId: userId ?? this.userId,
@@ -29,7 +29,7 @@ class UserBookingCounter {
   factory UserBookingCounter.fromMap(Map<String, dynamic> map) {
     return UserBookingCounter(
       userId: map['userId'] as String,
-      count: map['count'] as int,
+      count: map['count'] as String,
     );
   }
 

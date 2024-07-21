@@ -16,7 +16,9 @@ class TextBookingDate extends StatelessWidget {
             style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
           ),
         ),
-        Expanded(flex: 45, child: ActualBookingDate(bookingDate: bookingDate)),
+        Expanded(
+            flex: 45,
+            child: AdminSideActualBookingDate(bookingDate: bookingDate)),
       ],
     );
   }
@@ -38,7 +40,9 @@ class TextBookingTimeSlot extends StatelessWidget {
             style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
           ),
         ),
-        Expanded(flex: 45, child: ActualBookingTimeSlot(timeSlot: timeSlot)),
+        Expanded(
+            flex: 45,
+            child: AdminSideActualBookingTimeSlot(timeSlot: timeSlot)),
       ],
     );
   }
@@ -60,7 +64,9 @@ class TextBookingWashPrice extends StatelessWidget {
             style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
           ),
         ),
-        Expanded(flex: 45, child: ActualBookingWashPrice(washPrice: washPrice)),
+        Expanded(
+            flex: 45,
+            child: AdminSideActualBookingWashPrice(washPrice: washPrice)),
       ],
     );
   }
@@ -83,7 +89,8 @@ class BookingStatus extends StatelessWidget {
           ),
         ),
         Expanded(
-            flex: 45, child: ActualBookingStatus(bookingStatus: bookingStatus)),
+            flex: 45,
+            child: AdminSideActualBookingStatus(bookingStatus: bookingStatus)),
       ],
     );
   }
@@ -107,15 +114,16 @@ class BookedServiceName extends StatelessWidget {
         ),
         Expanded(
             flex: 45,
-            child: ActualBookedServiceName(serviceName: bookingServiceName)),
+            child: AdminSideActualBookedServiceName(
+                serviceName: bookingServiceName)),
       ],
     );
   }
 }
 
-class ActualBookingDate extends StatelessWidget {
+class AdminSideActualBookingDate extends StatelessWidget {
   final String bookingDate;
-  const ActualBookingDate({super.key, required this.bookingDate});
+  const AdminSideActualBookingDate({super.key, required this.bookingDate});
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +135,9 @@ class ActualBookingDate extends StatelessWidget {
   }
 }
 
-class ActualBookingTimeSlot extends StatelessWidget {
+class AdminSideActualBookingTimeSlot extends StatelessWidget {
   final String timeSlot;
-  const ActualBookingTimeSlot({super.key, required this.timeSlot});
+  const AdminSideActualBookingTimeSlot({super.key, required this.timeSlot});
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +149,9 @@ class ActualBookingTimeSlot extends StatelessWidget {
   }
 }
 
-class ActualBookingWashPrice extends StatelessWidget {
+class AdminSideActualBookingWashPrice extends StatelessWidget {
   final String washPrice;
-  const ActualBookingWashPrice({super.key, required this.washPrice});
+  const AdminSideActualBookingWashPrice({super.key, required this.washPrice});
 
   @override
   Widget build(BuildContext context) {
@@ -155,9 +163,9 @@ class ActualBookingWashPrice extends StatelessWidget {
   }
 }
 
-class ActualBookingStatus extends StatelessWidget {
+class AdminSideActualBookingStatus extends StatelessWidget {
   final String bookingStatus;
-  const ActualBookingStatus({super.key, required this.bookingStatus});
+  const AdminSideActualBookingStatus({super.key, required this.bookingStatus});
 
   @override
   Widget build(BuildContext context) {
@@ -169,9 +177,10 @@ class ActualBookingStatus extends StatelessWidget {
   }
 }
 
-class ActualBookedServiceName extends StatelessWidget {
+class AdminSideActualBookedServiceName extends StatelessWidget {
   final String serviceName;
-  const ActualBookedServiceName({super.key, required this.serviceName});
+  const AdminSideActualBookedServiceName(
+      {super.key, required this.serviceName});
 
   @override
   Widget build(BuildContext context) {
