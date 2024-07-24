@@ -20,7 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 final initializationProvider = FutureProvider<void>((ref) async {
   final sharedPreferences = await SharedPreferences.getInstance();
   final adminkey =
-      sharedPreferences.getString(ShraedPreferncesConstants.adminkey)!;
+      sharedPreferences.getString(SharedPreferncesConstants.adminkey)!;
   final userKey = FirebaseAuth.instance.currentUser!.uid;
   ref.read(userAdditionStateProvider.notifier).getUser(userKey);
   await ref
@@ -51,7 +51,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
   }
 
   Future<void> addCars(int serviceId, String serviceName) async {
-    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     cars = await serviceCollection.getAllCarsAtSpecificDocument(
         adminId!, serviceId, serviceName);
     // log("CarInfo : ${cars[0].carName}");
@@ -71,7 +71,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
   void updateService(
       int serviceId, String serviceName, bool isFavourite) async {
-    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     var userId = FirebaseAuth.instance.currentUser!.uid;
     var service = await serviceCollection.getSpecificService(
         adminId!, serviceName, serviceId);
@@ -121,7 +121,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
     if (adminId != null) {
       //Getting current user data
-      String? phoneNo = prefs!.getString(ShraedPreferncesConstants.phoneNo);
+      String? phoneNo = prefs!.getString(SharedPreferncesConstants.phoneNo);
 
       //Adding date in car list
 
@@ -147,7 +147,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
   }
 
   Future<void> fetchServiceData(String serviceName, int serviceID) async {
-    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     log("admin Id in fetch services $adminId");
     state = DataLoadingState();
     try {

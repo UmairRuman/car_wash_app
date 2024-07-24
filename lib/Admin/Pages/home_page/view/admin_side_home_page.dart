@@ -2,6 +2,7 @@ import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/View/admin_side_categoryPage.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/Widget/bottom_bar_widget.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/view/profile_page.dart';
+import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
 import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
@@ -16,6 +17,7 @@ class AdminSideHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final initializationState = ref.watch(initializationProvider);
+    ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings();
     // ref.read(defaultServicesStateProvider.notifier).addDefaultService();
     return initializationState.when(
       data: (_) {

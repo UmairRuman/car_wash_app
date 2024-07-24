@@ -18,7 +18,7 @@ class TimeslotController extends Notifier<TimeSlotStates> {
   }
 
   void addTimeSlots(int serviceId, String serviceName) {
-    String adminId = prefs!.getString(ShraedPreferncesConstants.adminkey)!;
+    String adminId = prefs!.getString(SharedPreferncesConstants.adminkey)!;
     var startTime = ref.read(timeSlotTimingStateProvider.notifier).startIndex;
     var endTime = ref.read(timeSlotTimingStateProvider.notifier).endIndex;
     DateTime now =
@@ -54,7 +54,7 @@ class TimeslotController extends Notifier<TimeSlotStates> {
 
   void getTimeSlots(
       DateTime dateTime, int serviceId, String serviceName) async {
-    String? adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     state = TimeSlotLoadingState();
     log("Loading state");
     try {

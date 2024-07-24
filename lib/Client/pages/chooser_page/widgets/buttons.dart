@@ -30,18 +30,22 @@ class BtnContinueChooserPage extends ConsumerWidget {
                 //On Click Continue button we will add the user in firestore
                 ref.read(userAdditionStateProvider.notifier).addUser();
                 //This will trigger when the user is added successfully
+                log("Is User Data Added Continue ${ref.read(userAdditionStateProvider.notifier).isUserDataAdded}");
                 if (ref
                     .read(userAdditionStateProvider.notifier)
                     .isUserDataAdded) {
+                  log("Entered Successfulyy");
                   //If Service provider is true then i take user to the admin home page
                   if (ref
                       .read(userAdditionStateProvider.notifier)
                       .listOfUserInfo[MapForUserInfo.isServiceProvider]) {
+                    log("Lets navigate to Admin home page ");
+                    Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
                     ref
                         .read(defaultServicesStateProvider.notifier)
                         .addDefaultService();
-                    Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
                   } else {
+                    log("Lets navigate to client home page ");
                     //If Service provider is false then i take user to the  home page
                     Navigator.of(context).pushNamed(HomePage.pageName);
                   }

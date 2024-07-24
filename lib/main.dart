@@ -6,22 +6,26 @@ import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/auth_state_change_notifier.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
-import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:car_wash_app/Functions/admin_info_function.dart';
+import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/firebase_notifications/notification_service.dart';
 import 'package:car_wash_app/navigation/navigation.dart';
+import 'package:car_wash_app/payment_methods/Stripe/constants.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences? prefs;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = stripePublishablekey;
   await Firebase.initializeApp();
   prefs = await SharedPreferences.getInstance();
 
@@ -60,27 +64,53 @@ class MyApp extends ConsumerWidget {
   }
 }
 
-class AuthHandler extends ConsumerWidget {
+class AuthHandler extends ConsumerStatefulWidget {
   const AuthHandler({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  AuthHandlerState createState() => AuthHandlerState();
+}
+
+class AuthHandlerState extends ConsumerState<AuthHandler> {
+  NotificationServices notificationServices = NotificationServices();
+  @override
+  void initState() {
+    super.initState();
+    notificationServices.requestPermission();
+    notificationServices.getMessageOnAppOnOpen(context);
+    notificationServices.redirectWhenAppInBgOrTermianted(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    notificationServices.messaging.onTokenRefresh.listen(
+      (token) {
+        log("Device Token : $token ");
+        if (FirebaseAuth.instance.currentUser != null) {
+          ref
+              .read(userAdditionStateProvider.notifier)
+              .updateUserToken(FirebaseAuth.instance.currentUser!.uid, token);
+        }
+      },
+    );
     final authState = ref.watch(authStateProvider);
     final currentUser = FirebaseAuth.instance.currentUser;
-    log("Auth Handeler Rebuild");
+    log("Auth Handler Rebuild");
     return authState.when(
       data: (user) {
         if (user == null) {
           return const FirstPage();
         } else if (currentUser!.phoneNumber != null &&
-            prefs!.getBool(ShraedPreferncesConstants.isServiceProvider) !=
+            prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
                 null &&
-            prefs!.getBool(ShraedPreferncesConstants.isServiceProvider)!) {
+            prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
+          //If the service provider is true then we will show him Admin Home Page
           return const AdminSideHomePage();
         } else if (currentUser.phoneNumber != null &&
-            prefs!.getBool(ShraedPreferncesConstants.isServiceProvider) !=
+            prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
                 null &&
-            !prefs!.getBool(ShraedPreferncesConstants.isServiceProvider)!) {
+            !prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
+          //If the
           return const HomePage();
         } else {
           SchedulerBinding.instance.addPostFrameCallback(
@@ -89,13 +119,15 @@ class AuthHandler extends ConsumerWidget {
             },
           );
 
-          log('User is authenticated: ${user.uid} ${user.email} ${user.displayName} ');
+          log('User is authenticated: ${user.uid} ${user.email} ${user.displayName}');
           ref
               .read(userAdditionStateProvider.notifier)
               .listOfUserInfo[MapForUserInfo.userId] = user.uid;
           ref
               .read(userAdditionStateProvider.notifier)
               .listOfUserInfo[MapForUserInfo.email] = user.email;
+          ref.read(userAdditionStateProvider.notifier).deviceToken =
+              notificationServices.getTokken();
           return const ChooserPage();
         }
       },

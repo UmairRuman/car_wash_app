@@ -65,7 +65,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                 flex: 5,
                 child: AdminSideTextChooseYourCarModel(
-                  isFavourite: isFavourite!,
+                  isFavourite: isFavourite,
                   serviceId: serviceId,
                   serviceName: serviceName,
                 ),

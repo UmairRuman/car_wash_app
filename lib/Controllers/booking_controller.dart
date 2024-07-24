@@ -19,6 +19,8 @@ class BookingController extends Notifier<BookingStates> {
   DateTime? carWashDate;
   String? carPrice;
   String? timeSlot;
+  bool? isCarAssetImage;
+  String? carImagePath;
   BookingCollection bookingCollection = BookingCollection();
   AdminBookingCollectionCount adminBookingCollectionCount =
       AdminBookingCollectionCount();
@@ -32,7 +34,7 @@ class BookingController extends Notifier<BookingStates> {
   Future<void> addBooking(
       int serviceId, String serviceName, String serviceImageUrl) async {
     try {
-      final adminId = prefs!.getString(ShraedPreferncesConstants.adminkey)!;
+      final adminId = prefs!.getString(SharedPreferncesConstants.adminkey)!;
       final userId = FirebaseAuth.instance.currentUser!.uid;
       var adminBookingsTotalCount =
           await adminBookingCollectionCount.getAllUserBookingsCount(adminId);
@@ -93,7 +95,7 @@ class BookingController extends Notifier<BookingStates> {
   }
 
   Future<void> getBookings(String userId) async {
-    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     state = BookingLoadingState();
     try {
       var listOfClientBookings = await bookingCollection.getAllBookings(userId);

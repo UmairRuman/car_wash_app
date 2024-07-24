@@ -12,6 +12,7 @@ final favouriteServiceProvider =
         FavouriteServiceStateController.new);
 
 class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
+  List<FavouriteSerivces> listOfFavouriteServices = [];
   double? servicePrice;
   double? serviceRating;
   FavouriteCollection favouriteCollection = FavouriteCollection();
@@ -20,6 +21,16 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
   @override
   FavouriteServiceStates build() {
     return FavouriteServiceIntialState();
+  }
+
+  Future<void> getAllIntialServices() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    try {
+      listOfFavouriteServices =
+          await favouriteCollection.fetchAllServices(userId);
+    } catch (e) {
+      log("Failed to get intial Services");
+    }
   }
 
   // Deleting favourite Service

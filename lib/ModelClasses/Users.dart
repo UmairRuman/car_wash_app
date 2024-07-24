@@ -14,6 +14,7 @@ class Users {
   num serviceConsumed;
   DateTime createdAt;
   String userLocation;
+  String deviceToken;
   Users({
     required this.userId,
     required this.name,
@@ -25,6 +26,7 @@ class Users {
     required this.serviceConsumed,
     required this.createdAt,
     required this.userLocation,
+    required this.deviceToken,
   });
 
   Users copyWith({
@@ -35,9 +37,10 @@ class Users {
     String? phoneNumber,
     bool? isServiceProvider,
     double? bonusPoints,
-    int? serviceConsumed,
+    num? serviceConsumed,
     DateTime? createdAt,
     String? userLocation,
+    String? deviceToken,
   }) {
     return Users(
       userId: userId ?? this.userId,
@@ -50,6 +53,7 @@ class Users {
       serviceConsumed: serviceConsumed ?? this.serviceConsumed,
       createdAt: createdAt ?? this.createdAt,
       userLocation: userLocation ?? this.userLocation,
+      deviceToken: deviceToken ?? this.deviceToken,
     );
   }
 
@@ -65,6 +69,7 @@ class Users {
       'serviceConsumed': serviceConsumed,
       'createdAt': Timestamp.fromDate(createdAt),
       'userLocation': userLocation,
+      'deviceToken': deviceToken,
     };
   }
 
@@ -77,9 +82,10 @@ class Users {
       phoneNumber: map['phoneNumber'] as String,
       isServiceProvider: map['isServiceProvider'] as bool,
       bonusPoints: map['bonusPoints'] as double,
-      serviceConsumed: map['serviceConsumed'] as double,
+      serviceConsumed: map['serviceConsumed'] as num,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       userLocation: map['userLocation'] as String,
+      deviceToken: map['deviceToken'] as String,
     );
   }
 
@@ -90,7 +96,7 @@ class Users {
 
   @override
   String toString() {
-    return 'Users(userId: $userId, name: $name, email: $email, profilePicUrl: $profilePicUrl, phoneNumber: $phoneNumber, isServiceProvider: $isServiceProvider, bonusPoints: $bonusPoints, serviceConsumed: $serviceConsumed, createdAt: $createdAt, userLocation: $userLocation)';
+    return 'Users(userId: $userId, name: $name, email: $email, profilePicUrl: $profilePicUrl, phoneNumber: $phoneNumber, isServiceProvider: $isServiceProvider, bonusPoints: $bonusPoints, serviceConsumed: $serviceConsumed, createdAt: $createdAt, userLocation: $userLocation, deviceToken: $deviceToken)';
   }
 
   @override
@@ -106,7 +112,8 @@ class Users {
         other.bonusPoints == bonusPoints &&
         other.serviceConsumed == serviceConsumed &&
         other.createdAt == createdAt &&
-        other.userLocation == userLocation;
+        other.userLocation == userLocation &&
+        other.deviceToken == deviceToken;
   }
 
   @override
@@ -120,6 +127,7 @@ class Users {
         bonusPoints.hashCode ^
         serviceConsumed.hashCode ^
         createdAt.hashCode ^
-        userLocation.hashCode;
+        userLocation.hashCode ^
+        deviceToken.hashCode;
   }
 }

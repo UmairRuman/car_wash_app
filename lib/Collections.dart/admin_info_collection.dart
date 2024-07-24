@@ -27,7 +27,11 @@ class AdminInfoCollection {
       return AdminInfo.fromMap(querrySnapShot.data()!);
     } catch (e) {
       return AdminInfo(
-          adminName: "", adminId: "", adminNo: 0, adminPhoneNo: "");
+          adminDeviceToken: "",
+          adminName: "",
+          adminId: "",
+          adminNo: 0,
+          adminPhoneNo: "");
     }
   }
 

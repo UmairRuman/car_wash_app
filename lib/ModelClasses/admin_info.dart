@@ -6,11 +6,13 @@ class AdminInfo {
   String adminId;
   int adminNo;
   String adminPhoneNo;
+  String adminDeviceToken;
   AdminInfo({
     required this.adminName,
     required this.adminId,
     required this.adminNo,
     required this.adminPhoneNo,
+    required this.adminDeviceToken,
   });
 
   AdminInfo copyWith({
@@ -18,12 +20,14 @@ class AdminInfo {
     String? adminId,
     int? adminNo,
     String? adminPhoneNo,
+    String? addminDeviceToken,
   }) {
     return AdminInfo(
       adminName: adminName ?? this.adminName,
       adminId: adminId ?? this.adminId,
       adminNo: adminNo ?? this.adminNo,
       adminPhoneNo: adminPhoneNo ?? this.adminPhoneNo,
+      adminDeviceToken: addminDeviceToken ?? this.adminDeviceToken,
     );
   }
 
@@ -33,6 +37,7 @@ class AdminInfo {
       'adminId': adminId,
       'adminNo': adminNo,
       'adminPhoneNo': adminPhoneNo,
+      'addminDeviceToken': adminDeviceToken,
     };
   }
 
@@ -42,6 +47,7 @@ class AdminInfo {
       adminId: map['adminId'] as String,
       adminNo: map['adminNo'] as int,
       adminPhoneNo: map['adminPhoneNo'] as String,
+      adminDeviceToken: map['addminDeviceToken'] as String,
     );
   }
 
@@ -52,7 +58,7 @@ class AdminInfo {
 
   @override
   String toString() {
-    return 'AdminInfo(adminName: $adminName, adminId: $adminId, adminNo: $adminNo, adminPhoneNo: $adminPhoneNo)';
+    return 'AdminInfo(adminName: $adminName, adminId: $adminId, adminNo: $adminNo, adminPhoneNo: $adminPhoneNo, addminDeviceToken: $adminDeviceToken)';
   }
 
   @override
@@ -62,7 +68,8 @@ class AdminInfo {
     return other.adminName == adminName &&
         other.adminId == adminId &&
         other.adminNo == adminNo &&
-        other.adminPhoneNo == adminPhoneNo;
+        other.adminPhoneNo == adminPhoneNo &&
+        other.adminDeviceToken == adminDeviceToken;
   }
 
   @override
@@ -70,6 +77,7 @@ class AdminInfo {
     return adminName.hashCode ^
         adminId.hashCode ^
         adminNo.hashCode ^
-        adminPhoneNo.hashCode;
+        adminPhoneNo.hashCode ^
+        adminDeviceToken.hashCode;
   }
 }

@@ -6,6 +6,7 @@ import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class AdminSideTimeSlot extends ConsumerWidget {
   const AdminSideTimeSlot({super.key});
@@ -22,53 +23,66 @@ class AdminSideTimeSlot extends ConsumerWidget {
         );
       } else if (state is TimeSlotLoadedState) {
         return StatefulBuilder(
-          builder: (context, setState) => ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: state.list.length,
-            itemBuilder: (context, index) {
-              log("list of String ${state.list[index]}");
-              return Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      if (isClicked && selectedIndex == index) {
-                        isClicked = false;
-                      } else {
-                        isClicked = true;
-                      }
-                      selectedIndex = index;
-                    });
-                    ref.read(bookingStateProvider.notifier).timeSlot = state.list[selectedIndex];
-                  },
-                  child: Container(
-                    height: constraints.maxHeight / 2,
-                    width: constraints.maxWidth / 4,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: isClicked && selectedIndex == index
-                            ? Colors.blue
-                            : Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Color.fromARGB(255, 167, 204, 234),
-                              offset: Offset(3, 3),
-                              blurRadius: 3)
-                        ],
-                        borderRadius:
-                            BorderRadius.all(Radius.elliptical(15, 15))),
-                    child: Text(
-                      state.list[index],
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isClicked && selectedIndex == index
-                              ? Colors.white
-                              : Colors.black),
+          builder: (context, setState) => AnimationLimiter(
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: state.list.length,
+              itemBuilder: (context, index) {
+                log("list of String ${state.list[index]}");
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(seconds: 1),
+                  child: SlideAnimation(
+                    verticalOffset: -50,
+                    horizontalOffset: 50,
+                    child: FadeInAnimation(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (isClicked && selectedIndex == index) {
+                                isClicked = false;
+                              } else {
+                                isClicked = true;
+                              }
+                              selectedIndex = index;
+                            });
+                            ref.read(bookingStateProvider.notifier).timeSlot =
+                                state.list[selectedIndex];
+                          },
+                          child: Container(
+                            height: constraints.maxHeight / 2,
+                            width: constraints.maxWidth / 4,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: isClicked && selectedIndex == index
+                                    ? Colors.blue
+                                    : Colors.white,
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 167, 204, 234),
+                                      offset: Offset(3, 3),
+                                      blurRadius: 3)
+                                ],
+                                borderRadius: BorderRadius.all(
+                                    Radius.elliptical(15, 15))),
+                            child: Text(
+                              state.list[index],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: isClicked && selectedIndex == index
+                                      ? Colors.white
+                                      : Colors.black),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         );
       } else if (state is TimeSlotErrorState) {

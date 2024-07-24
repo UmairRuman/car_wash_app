@@ -58,6 +58,13 @@ dependencies:
   flutter_spinkit: ^5.2.1
   flutter_rating_bar: ^4.0.1
   firebase_messaging: ^15.0.3
+  flutter_stripe: ^10.2.0
+  flutter_paypal_checkout: ^1.0.1
+  dio: ^5.5.0+1
+  googleapis_auth: ^1.4.1
+  flutter_local_notifications: ^17.2.1+2
+  http: ^0.13.6
+  flutter_staggered_animations: ^1.1.1
   
   
 

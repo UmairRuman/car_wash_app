@@ -14,6 +14,7 @@ import 'package:car_wash_app/Client/pages/indiviual_category_page/view/indiviual
 import 'package:car_wash_app/Client/pages/login_page/view/login_page.dart';
 import 'package:car_wash_app/Client/pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/view/sign_up_page.dart';
+import 'package:car_wash_app/payment_methods/view/payment_page.dart';
 import 'package:flutter/material.dart';
 
 Route? onGenerateRoute(RouteSettings settings) {
@@ -39,6 +40,7 @@ Route? onGenerateRoute(RouteSettings settings) {
         profilePic: "",
         userName: "",
       )),
+    PaymentPage.pageName => myPageBuilder(const PaymentPage(), settings),
     AdminSideBookingPage.pageName =>
       myPageBuilder(const AdminSideBookingPage()),
     AdminSideProfilePage.pageName =>

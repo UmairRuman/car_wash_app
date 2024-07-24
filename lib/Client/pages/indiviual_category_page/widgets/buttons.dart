@@ -1,5 +1,7 @@
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_name_dialog.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
+import 'package:car_wash_app/payment_methods/model/data_sender_model.dart';
+import 'package:car_wash_app/payment_methods/view/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,9 +39,40 @@ class ButtonBookAWash extends ConsumerWidget {
             flex: 60,
             child: FloatingActionButton(
               onPressed: () {
-                ref
-                    .read(bookingStateProvider.notifier)
-                    .addBooking(serviceId, serviceName, serviceImageUrl);
+                var carPrice = ref.read(bookingStateProvider.notifier).carPrice;
+                var isCarAssetImage =
+                    ref.read(bookingStateProvider.notifier).isCarAssetImage;
+                var carName = ref.read(bookingStateProvider.notifier).carType;
+                var selectedDate =
+                    ref.read(bookingStateProvider.notifier).carWashDate;
+                var carImage =
+                    ref.read(bookingStateProvider.notifier).carImagePath;
+                var timeSlot = ref.read(bookingStateProvider.notifier).timeSlot;
+                // ref
+                //     .read(bookingStateProvider.notifier)
+                //     .addBooking(serviceId, serviceName, serviceImageUrl);
+                if (carPrice != null &&
+                    isCarAssetImage != null &&
+                    carName != null &&
+                    selectedDate != null &&
+                    carImage != null &&
+                    timeSlot != null) {
+                  Navigator.of(context).pushNamed(PaymentPage.pageName,
+                      arguments: BookingPageDataSendingModel(
+                          serviceId: serviceId,
+                          serviceImagePath: serviceImageUrl,
+                          serviceName: serviceName,
+                          isCarAssetImage: isCarAssetImage,
+                          imagePath: carImage,
+                          carName: carName,
+                          price: carPrice,
+                          timeSlot: timeSlot,
+                          dateTime: selectedDate));
+                }
+                {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Kindly Choose all the given fields")));
+                }
               },
               backgroundColor: Colors.blue,
               child: const Text(

@@ -1,5 +1,6 @@
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -11,6 +12,16 @@ class SocialMediaIcons extends StatefulWidget {
 }
 
 class _SocialMediaIconsState extends State<SocialMediaIcons> {
+  Future<void> signInWithTwitter() async {
+    TwitterAuthProvider twitterProvider = TwitterAuthProvider();
+
+    if (kIsWeb) {
+      await FirebaseAuth.instance.signInWithPopup(twitterProvider);
+    } else {
+      await FirebaseAuth.instance.signInWithProvider(twitterProvider);
+    }
+  }
+
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn(
@@ -38,6 +49,10 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
     signInWithGoogle();
   }
 
+  onTapTwitterIcon() {
+    signInWithTwitter();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -52,7 +67,10 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
         const Spacer(
           flex: 10,
         ),
-        Expanded(flex: 20, child: Image.asset(twitterIconPath)),
+        Expanded(
+            flex: 20,
+            child: InkWell(
+                onTap: onTapTwitterIcon, child: Image.asset(twitterIconPath))),
         const Spacer(
           flex: 25,
         )

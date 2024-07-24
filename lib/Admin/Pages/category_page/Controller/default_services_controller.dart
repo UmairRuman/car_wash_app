@@ -26,9 +26,9 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
 
   addDefaultService() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    String? adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     String? adminPhoneNumber =
-        prefs!.getString(ShraedPreferncesConstants.phoneNo);
+        prefs!.getString(SharedPreferncesConstants.phoneNo);
 
     for (int index = 0; index < listOfCategoryIcons.length; index++) {
       List<ServiceCounter> listOfServices =
@@ -73,7 +73,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
   }
 
   fetchingAllServicesFirstTime() async {
-    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
 
     state = DefaultServicesLoadingState();
     try {

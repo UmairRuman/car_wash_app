@@ -31,6 +31,16 @@ class UserCollection {
     }
   }
 
+  Future<bool> updateSpecificField(String userId, String deviceTokken) async {
+    try {
+      await userCollection.doc(userId).update({"deviceToken": deviceTokken});
+      return true;
+    } catch (e) {
+      log("Error in updating specific user field ${e.toString()}");
+      return false;
+    }
+  }
+
   Future<bool> deleteUser(Users user) async {
     try {
       await userCollection.doc(user.userId).delete();

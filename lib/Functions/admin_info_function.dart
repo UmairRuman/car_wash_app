@@ -13,20 +13,19 @@ Future<String?> getAdminIdFromPrefs() async {
 
 Future<String?> getAdminPhoneNoFromPrefs() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getString(ShraedPreferncesConstants.phoneNo);
+  return prefs.getString(SharedPreferncesConstants.phoneNo);
 }
 
 Future<bool?> findIfServiceProvider() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getBool(ShraedPreferncesConstants.isServiceProvider);
+  return prefs.getBool(SharedPreferncesConstants.isServiceProvider);
 }
 
 Future<void> removeAdminIdFromPrefs() async {
   final prefs = await SharedPreferences.getInstance();
-  await prefs.remove(ShraedPreferncesConstants.adminkey);
-  await prefs.remove(ShraedPreferncesConstants.phoneNo);
-  await prefs.remove(ShraedPreferncesConstants
-      .isServiceProvider); // Also remove the phone number if needed
+  await prefs.remove(SharedPreferncesConstants.adminkey);
+  await prefs.remove(SharedPreferncesConstants.phoneNo);
+  await prefs.remove(SharedPreferncesConstants.isServiceProvider);
 }
 
 Future<void> getAdminIdFromFireStore() async {
@@ -36,10 +35,12 @@ Future<void> getAdminIdFromFireStore() async {
   log("(Admin ID ) : ${adminInfo.adminId} ");
 
   if (adminInfo.adminNo >= 1) {
-    String? storedAdminId = prefs.getString(ShraedPreferncesConstants.adminkey);
-
+    String? storedAdminId = prefs.getString(SharedPreferncesConstants.adminkey);
+    log("In Admin Info function");
     if (storedAdminId == null) {
-      prefs.setString(ShraedPreferncesConstants.adminkey, adminInfo.adminId);
+      prefs.setString(SharedPreferncesConstants.adminkey, adminInfo.adminId);
+      prefs.setString(
+          SharedPreferncesConstants.adminTokenKey, adminInfo.adminDeviceToken);
     }
   } else {
     removeAdminIdFromPrefs();

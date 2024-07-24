@@ -12,7 +12,11 @@ var picDashBoardCleaning = "assets/images/picDashBoardCleaning.jpg";
 var picEngineCleaning = "assets/images/picEngineCleaning.jpg";
 var picTireDressing = "assets/images/picTireDressing.jpg";
 var cameraImage = "assets/images/camera.png";
+var stripeImage = "assets/images/stripe.png";
+var paypalImage = "assets/images/paypal.png";
 
+var slotImage = "assets/images/slot.png";
+var dateImage = "assets/images/date.png";
 List<String> listOfPreviousWorkImages = [
   picCarWash,
   picCarPoolish,

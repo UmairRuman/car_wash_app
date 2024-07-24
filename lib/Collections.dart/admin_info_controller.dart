@@ -11,15 +11,22 @@ class AdminInfoController extends Notifier<AdminInfo> {
 
   @override
   AdminInfo build() {
-    return AdminInfo(adminName: "", adminId: "", adminNo: 0, adminPhoneNo: "");
+    return AdminInfo(
+        adminName: "",
+        adminId: "",
+        adminNo: 0,
+        adminPhoneNo: "",
+        adminDeviceToken: "");
   }
 
   Future<void> setAdminInfo(
       {required String adminId,
       required String adminName,
       required int adminNo,
+      required String adminDeviceToken,
       required String adminPhoneNo}) async {
     AdminInfo adminInfo = AdminInfo(
+      adminDeviceToken: adminDeviceToken,
       adminPhoneNo: adminPhoneNo,
       adminName: adminName,
       adminId: adminId,
@@ -38,6 +45,7 @@ class AdminInfoController extends Notifier<AdminInfo> {
       log("Eror in fetcching admin info :$e");
     }
     return AdminInfo(
+        adminDeviceToken: adminData.adminDeviceToken,
         adminName: adminData.adminName,
         adminId: adminData.adminId,
         adminNo: adminData.adminNo,
@@ -54,8 +62,10 @@ class AdminInfoController extends Notifier<AdminInfo> {
     }
   }
 
-  void setStoredAdminInfo(String adminId, String adminPhoneNo) {
+  void setStoredAdminInfo(
+      String adminId, String adminPhoneNo, String adminDeviceToken) {
     state = AdminInfo(
+      adminDeviceToken: adminDeviceToken,
       adminId: adminId,
       adminPhoneNo: adminPhoneNo,
       adminName: "Umair Ruman", // Use the stored admin name if needed

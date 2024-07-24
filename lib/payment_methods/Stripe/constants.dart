@@ -1,0 +1,5 @@
+//Contants of Stripe payemnt gateway
+const String stripePublishablekey =
+    "pk_test_51Pf3iw2KIoXSxHUfoB5mecJvsuDlmk1U0WKsDF8tR7pcDjBMTUbVMPHf4Uk3HP7IpRYUb6PxR1Ux86e08HkSnkm900JnpxaEeq";
+const String stripeSecretKey =
+    "sk_test_51Pf3iw2KIoXSxHUf4TF0OEiFky6LWMaV9rjyHbTVF6iruIzWjoBGFm1rVEeXqL2XW1itWRKr1cwIHFeYjLE1PQCq00dCdOHG4S";

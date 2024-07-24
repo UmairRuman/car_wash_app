@@ -15,6 +15,7 @@ final userAdditionStateProvider =
 
 class UserStateNotifier extends Notifier<UserAdditionStates> {
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
+  Future<String>? deviceToken;
   Map<String, dynamic> listOfUserInfo = {
     MapForUserInfo.userName: "",
     MapForUserInfo.email: "",
@@ -34,6 +35,14 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     return AdditionIntialState();
   }
 
+  Future<void> updateUserToken(String userId, String deviceToken) async {
+    try {
+      await userCollection.updateSpecificField(userId, deviceToken);
+    } catch (e) {
+      log("Failed to update device token ");
+    }
+  }
+
   void addUser() async {
     log("User name ${listOfUserInfo[MapForUserInfo.userName]}");
     log("User id ${listOfUserInfo[MapForUserInfo.userId]}");
@@ -43,28 +52,38 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     log("User Location ${listOfUserInfo[MapForUserInfo.userLocation]}");
     log("Phone No ${listOfUserInfo[MapForUserInfo.phoneNumber]}");
 
+    var realToken = await deviceToken;
+    log("Device Token $realToken");
+
     if (listOfUserInfo[MapForUserInfo.userId] != "" &&
-        listOfUserInfo[MapForUserInfo.userName] != "") {
+        listOfUserInfo[MapForUserInfo.userName] != "" &&
+        realToken != null) {
+      isUserDataAdded = true;
       var userName = listOfUserInfo[MapForUserInfo.userName];
       var userId = listOfUserInfo[MapForUserInfo.userId];
       var userPhoneNo = listOfUserInfo[MapForUserInfo.phoneNumber];
-
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
       if (listOfUserInfo[MapForUserInfo.isServiceProvider]) {
         adminInfoCollection.insertAdminInfo(AdminInfo(
+            adminDeviceToken: realToken,
             adminName: userName,
             adminId: userId,
             adminNo: 1,
             adminPhoneNo: userPhoneNo));
+        sharedPreferences.setString(
+            SharedPreferncesConstants.adminTokenKey, realToken);
       }
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setBool(ShraedPreferncesConstants.isServiceProvider,
+
+      sharedPreferences.setBool(SharedPreferncesConstants.isServiceProvider,
           listOfUserInfo[MapForUserInfo.isServiceProvider]);
-      sharedPreferences.setString(ShraedPreferncesConstants.phoneNo,
+      sharedPreferences.setString(SharedPreferncesConstants.phoneNo,
           listOfUserInfo[MapForUserInfo.phoneNumber]);
+
       log("All data added");
       isUserDataAdded = true;
       bool isUserAdd = await userCollection.addUser(Users(
+          deviceToken: realToken,
           userId: userId,
           name: userName,
           email: listOfUserInfo[MapForUserInfo.email],

@@ -40,7 +40,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
 
   onSaveBtnClick() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    String? adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     List<ServiceCounter> listOfServices =
         await serviceCounterCollection.getAllServiceCount(adminId!);
     log("List length : ${listOfServices.length}");
@@ -90,7 +90,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
   }
 
   fetchAllDataFromFireStore() async {
-    var adminId = prefs!.getString(ShraedPreferncesConstants.adminkey);
+    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
 
     state = ServiceDataLoadingState();
     try {
