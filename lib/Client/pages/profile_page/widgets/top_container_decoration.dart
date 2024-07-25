@@ -2,7 +2,10 @@ import 'package:car_wash_app/Client/pages/profile_page/widgets/top_container_cli
 import 'package:flutter/material.dart';
 
 class TopContainerDecorationProfilePage extends StatelessWidget {
-  const TopContainerDecorationProfilePage({super.key});
+  final String userImagePath;
+
+  const TopContainerDecorationProfilePage(
+      {super.key, required this.userImagePath});
 
   @override
   Widget build(BuildContext context) {

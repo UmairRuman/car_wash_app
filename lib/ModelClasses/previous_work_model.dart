@@ -1,26 +1,31 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PreviousWorkModel {
   String previousWorkImage;
   String serviceName;
-  num serviceRating;
+  double serviceRating;
   DateTime serviceProvideTime;
-  int id;
+  String id;
+  bool isAssetImage;
   PreviousWorkModel({
     required this.previousWorkImage,
     required this.serviceName,
     required this.serviceRating,
     required this.serviceProvideTime,
     required this.id,
+    required this.isAssetImage,
   });
 
   PreviousWorkModel copyWith({
     String? previousWorkImage,
     String? serviceName,
-    num? serviceRating,
+    double? serviceRating,
     DateTime? serviceProvideTime,
-    int? id,
+    String? id,
+    bool? isAssetImage,
   }) {
     return PreviousWorkModel(
       previousWorkImage: previousWorkImage ?? this.previousWorkImage,
@@ -28,6 +33,7 @@ class PreviousWorkModel {
       serviceRating: serviceRating ?? this.serviceRating,
       serviceProvideTime: serviceProvideTime ?? this.serviceProvideTime,
       id: id ?? this.id,
+      isAssetImage: isAssetImage ?? this.isAssetImage,
     );
   }
 
@@ -36,8 +42,9 @@ class PreviousWorkModel {
       'previousWorkImage': previousWorkImage,
       'serviceName': serviceName,
       'serviceRating': serviceRating,
-      'serviceProvideTime': serviceProvideTime.millisecondsSinceEpoch,
+      'serviceProvideTime': Timestamp.fromDate(serviceProvideTime),
       'id': id,
+      'isAssetImage': isAssetImage,
     };
   }
 
@@ -45,10 +52,10 @@ class PreviousWorkModel {
     return PreviousWorkModel(
       previousWorkImage: map['previousWorkImage'] as String,
       serviceName: map['serviceName'] as String,
-      serviceRating: map['serviceRating'] as num,
-      serviceProvideTime:
-          DateTime.fromMillisecondsSinceEpoch(map['serviceProvideTime'] as int),
-      id: map['id'] as int,
+      serviceRating: map['serviceRating'] as double,
+      serviceProvideTime: (map['serviceProvideTime'] as Timestamp).toDate(),
+      id: map['id'] as String,
+      isAssetImage: map['isAssetImage'] as bool,
     );
   }
 
@@ -59,7 +66,7 @@ class PreviousWorkModel {
 
   @override
   String toString() {
-    return 'PreviousWorkModel(previousWorkImage: $previousWorkImage, serviceName: $serviceName, serviceRating: $serviceRating, serviceProvideTime: $serviceProvideTime, id: $id)';
+    return 'PreviousWorkModel(previousWorkImage: $previousWorkImage, serviceName: $serviceName, serviceRating: $serviceRating, serviceProvideTime: $serviceProvideTime, id: $id, isAssetImage: $isAssetImage)';
   }
 
   @override
@@ -70,7 +77,8 @@ class PreviousWorkModel {
         other.serviceName == serviceName &&
         other.serviceRating == serviceRating &&
         other.serviceProvideTime == serviceProvideTime &&
-        other.id == id;
+        other.id == id &&
+        other.isAssetImage == isAssetImage;
   }
 
   @override
@@ -79,6 +87,7 @@ class PreviousWorkModel {
         serviceName.hashCode ^
         serviceRating.hashCode ^
         serviceProvideTime.hashCode ^
-        id.hashCode;
+        id.hashCode ^
+        isAssetImage.hashCode;
   }
 }

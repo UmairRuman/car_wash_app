@@ -5,7 +5,7 @@ import 'package:car_wash_app/payment_methods/view/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ButtonBookAWash extends ConsumerWidget {
+class ButtonBookAWash extends ConsumerStatefulWidget {
   final String serviceName;
   final int serviceId;
   final String serviceImageUrl;
@@ -17,7 +17,32 @@ class ButtonBookAWash extends ConsumerWidget {
       required this.serviceName});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ButtonBookAWash> createState() => _ButtonBookAWashState();
+}
+
+class _ButtonBookAWashState extends ConsumerState<ButtonBookAWash>
+    with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  late Animation<double> animationForSize;
+  Tween<double> tween = Tween(begin: 1.0, end: 0.9);
+  @override
+  void initState() {
+    super.initState();
+
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
+    animationForSize = tween.animate(animationController);
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double scale = 1.0;
     return Container(
       decoration: const BoxDecoration(
           boxShadow: [
@@ -37,48 +62,56 @@ class ButtonBookAWash extends ConsumerWidget {
           ),
           Expanded(
             flex: 60,
-            child: FloatingActionButton(
-              onPressed: () {
-                var carPrice = ref.read(bookingStateProvider.notifier).carPrice;
-                var isCarAssetImage =
-                    ref.read(bookingStateProvider.notifier).isCarAssetImage;
-                var carName = ref.read(bookingStateProvider.notifier).carType;
-                var selectedDate =
-                    ref.read(bookingStateProvider.notifier).carWashDate;
-                var carImage =
-                    ref.read(bookingStateProvider.notifier).carImagePath;
-                var timeSlot = ref.read(bookingStateProvider.notifier).timeSlot;
-                // ref
-                //     .read(bookingStateProvider.notifier)
-                //     .addBooking(serviceId, serviceName, serviceImageUrl);
-                if (carPrice != null &&
-                    isCarAssetImage != null &&
-                    carName != null &&
-                    selectedDate != null &&
-                    carImage != null &&
-                    timeSlot != null) {
-                  Navigator.of(context).pushNamed(PaymentPage.pageName,
-                      arguments: BookingPageDataSendingModel(
-                          serviceId: serviceId,
-                          serviceImagePath: serviceImageUrl,
-                          serviceName: serviceName,
-                          isCarAssetImage: isCarAssetImage,
-                          imagePath: carImage,
-                          carName: carName,
-                          price: carPrice,
-                          timeSlot: timeSlot,
-                          dateTime: selectedDate));
-                }
-                {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Kindly Choose all the given fields")));
-                }
-              },
-              backgroundColor: Colors.blue,
-              child: const Text(
-                "Book Service",
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            child: ScaleTransition(
+              scale: animationForSize,
+              child: FloatingActionButton(
+                onPressed: () async {
+                  await animationController.forward();
+                  await Future.delayed(const Duration(milliseconds: 100));
+                  await animationController.reverse();
+                  var carPrice =
+                      ref.read(bookingStateProvider.notifier).carPrice;
+                  var isCarAssetImage =
+                      ref.read(bookingStateProvider.notifier).isCarAssetImage;
+                  var carName = ref.read(bookingStateProvider.notifier).carType;
+                  var selectedDate =
+                      ref.read(bookingStateProvider.notifier).carWashDate;
+                  var carImage =
+                      ref.read(bookingStateProvider.notifier).carImagePath;
+                  var timeSlot =
+                      ref.read(bookingStateProvider.notifier).timeSlot;
+                  // ref
+                  //     .read(bookingStateProvider.notifier)
+                  //     .addBooking(serviceId, serviceName, serviceImageUrl);
+                  if (carPrice != null &&
+                      isCarAssetImage != null &&
+                      carName != null &&
+                      selectedDate != null &&
+                      carImage != null &&
+                      timeSlot != null) {
+                    Navigator.of(context).pushNamed(PaymentPage.pageName,
+                        arguments: BookingPageDataSendingModel(
+                            serviceId: widget.serviceId,
+                            serviceImagePath: widget.serviceImageUrl,
+                            serviceName: widget.serviceName,
+                            isCarAssetImage: isCarAssetImage,
+                            imagePath: carImage,
+                            carName: carName,
+                            price: carPrice,
+                            timeSlot: timeSlot,
+                            dateTime: selectedDate));
+                  }
+                  {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Kindly Choose all the given fields")));
+                  }
+                },
+                backgroundColor: Colors.blue,
+                child: const Text(
+                  "Book Service",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
               ),
             ),
           ),

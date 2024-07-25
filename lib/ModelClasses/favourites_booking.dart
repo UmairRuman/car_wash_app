@@ -1,14 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class FavouriteSerivces {
+class FavouriteServices {
   String favouriteServiceId;
   String serviceName;
   String userId;
   double serviceRating;
   String serviceImageUrl;
   double servicePrice;
-  FavouriteSerivces({
+  FavouriteServices({
     required this.favouriteServiceId,
     required this.serviceName,
     required this.userId,
@@ -17,7 +17,7 @@ class FavouriteSerivces {
     required this.servicePrice,
   });
 
-  FavouriteSerivces copyWith({
+  FavouriteServices copyWith({
     String? favouriteServiceId,
     String? serviceName,
     String? userId,
@@ -25,7 +25,7 @@ class FavouriteSerivces {
     String? serviceImageUrl,
     double? servicePrice,
   }) {
-    return FavouriteSerivces(
+    return FavouriteServices(
       favouriteServiceId: favouriteServiceId ?? this.favouriteServiceId,
       serviceName: serviceName ?? this.serviceName,
       userId: userId ?? this.userId,
@@ -46,8 +46,8 @@ class FavouriteSerivces {
     };
   }
 
-  factory FavouriteSerivces.fromMap(Map<String, dynamic> map) {
-    return FavouriteSerivces(
+  factory FavouriteServices.fromMap(Map<String, dynamic> map) {
+    return FavouriteServices(
       favouriteServiceId: map['favouriteServiceId'] as String,
       serviceName: map['serviceName'] as String,
       userId: map['userId'] as String,
@@ -59,8 +59,8 @@ class FavouriteSerivces {
 
   String toJson() => json.encode(toMap());
 
-  factory FavouriteSerivces.fromJson(String source) =>
-      FavouriteSerivces.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory FavouriteServices.fromJson(String source) =>
+      FavouriteServices.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -68,7 +68,7 @@ class FavouriteSerivces {
   }
 
   @override
-  bool operator ==(covariant FavouriteSerivces other) {
+  bool operator ==(covariant FavouriteServices other) {
     if (identical(this, other)) return true;
 
     return other.favouriteServiceId == favouriteServiceId &&

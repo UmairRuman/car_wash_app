@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/default_services_controller.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/controller/phone_authenticatio_notifier.dart';
@@ -40,10 +41,13 @@ class BtnContinueChooserPage extends ConsumerWidget {
                       .read(userAdditionStateProvider.notifier)
                       .listOfUserInfo[MapForUserInfo.isServiceProvider]) {
                     log("Lets navigate to Admin home page ");
-                    Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
+                    ref
+                        .read(previousServiceStateProvider.notifier)
+                        .addDefaultPreviousWorkCategories();
                     ref
                         .read(defaultServicesStateProvider.notifier)
                         .addDefaultService();
+                    Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
                   } else {
                     log("Lets navigate to client home page ");
                     //If Service provider is false then i take user to the  home page

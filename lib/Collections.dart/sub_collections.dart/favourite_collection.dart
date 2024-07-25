@@ -9,7 +9,7 @@ class FavouriteCollection {
   factory FavouriteCollection() {
     return instance;
   }
-  Future<bool> addServiceToFavourite(FavouriteSerivces service) async {
+  Future<bool> addServiceToFavourite(FavouriteServices service) async {
     try {
       UserCollection.userCollection
           .doc(service.userId)
@@ -22,7 +22,7 @@ class FavouriteCollection {
     }
   }
 
-  Future<bool> updateFavouriteService(FavouriteSerivces service) async {
+  Future<bool> updateFavouriteService(FavouriteServices service) async {
     try {
       UserCollection.userCollection
           .doc(service.userId)
@@ -49,7 +49,7 @@ class FavouriteCollection {
     }
   }
 
-  Future<List<FavouriteSerivces>> fetchAllServices(String userId) async {
+  Future<List<FavouriteServices>> fetchAllServices(String userId) async {
     try {
       var querrySnapshots = await UserCollection.userCollection
           .doc(userId)
@@ -57,7 +57,7 @@ class FavouriteCollection {
           .get();
       return querrySnapshots.docs
           .map(
-            (doc) => FavouriteSerivces.fromMap(doc.data()),
+            (doc) => FavouriteServices.fromMap(doc.data()),
           )
           .toList();
     } catch (e) {

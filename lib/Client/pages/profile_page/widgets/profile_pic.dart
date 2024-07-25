@@ -2,29 +2,31 @@ import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePagePic extends StatelessWidget {
-  const ProfilePagePic({super.key});
+  final String profileImageUrl;
+  const ProfilePagePic({super.key, required this.profileImageUrl});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image:
-              DecorationImage(image: AssetImage(profilePic), fit: BoxFit.fill)),
+          image: DecorationImage(
+              image: NetworkImage(profileImageUrl), fit: BoxFit.fill)),
     );
   }
 }
 
 class UserName extends StatelessWidget {
-  const UserName({super.key});
+  final String userName;
+  const UserName({super.key, required this.userName});
 
   @override
   Widget build(BuildContext context) {
-    return const FittedBox(
+    return FittedBox(
       child: Text(
-        "Umair Ruman",
+        userName,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
             color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
       ),
     );

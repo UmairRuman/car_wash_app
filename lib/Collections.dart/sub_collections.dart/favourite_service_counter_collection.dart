@@ -12,7 +12,7 @@ class FavouriteServicesCounterCollection {
       "Favourite Service Count Collection";
 
   Future<bool> addAdminBookingCount(
-      AdminServiceCounter favouriteServiceCounter) async {
+      FavouriteServiceCounter favouriteServiceCounter) async {
     try {
       UserCollection.userCollection
           .doc(favouriteServiceCounter.userId)
@@ -27,7 +27,7 @@ class FavouriteServicesCounterCollection {
   }
 
   Future<bool> deleteAdminBookingCount(
-      AdminServiceCounter favouriteServiceCounter) async {
+      FavouriteServiceCounter favouriteServiceCounter) async {
     try {
       UserCollection.userCollection
           .doc(favouriteServiceCounter.userId)
@@ -42,7 +42,7 @@ class FavouriteServicesCounterCollection {
   }
 
   Future<bool> updatingAdminBookCount(
-      AdminServiceCounter favouriteServiceCounter) async {
+      FavouriteServiceCounter favouriteServiceCounter) async {
     try {
       UserCollection.userCollection
           .doc(favouriteServiceCounter.userId)
@@ -56,7 +56,7 @@ class FavouriteServicesCounterCollection {
     }
   }
 
-  Future<List<AdminServiceCounter>> getAllUserBookingsCount(
+  Future<List<FavouriteServiceCounter>> getAllUserBookingsCount(
       String userId) async {
     try {
       var querrySnapshots = await UserCollection.userCollection
@@ -66,7 +66,7 @@ class FavouriteServicesCounterCollection {
           .get();
       return querrySnapshots.docs
           .map(
-            (doc) => AdminServiceCounter.fromMap(doc.data()),
+            (doc) => FavouriteServiceCounter.fromMap(doc.data()),
           )
           .toList();
     } catch (e) {

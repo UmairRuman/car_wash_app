@@ -44,9 +44,15 @@ class FavouriteServiceList extends ConsumerWidget {
                             rating: serviceRating,
                             carWashCategoryPrice: servicePrice,
                             carWashCategoryName: serviceName)),
-                    const Expanded(
+                    Expanded(
                         flex: 30,
-                        child: InkWell(child: FavouriteCategoryBookButton())),
+                        child: InkWell(
+                            child: FavouriteCategoryBookButton(
+                          serviceId:
+                              listOfFavouriteServices[index].favouriteServiceId,
+                          serviceName:
+                              listOfFavouriteServices[index].serviceName,
+                        ))),
                   ],
                 ),
               ),
@@ -108,8 +114,13 @@ class FavouriteServiceList extends ConsumerWidget {
                             rating: serviceRating,
                             carWashCategoryPrice: servicePrice,
                             carWashCategoryName: serviceName)),
-                    const Expanded(
-                        flex: 30, child: FavouriteCategoryBookButton()),
+                    Expanded(
+                        flex: 30,
+                        child: FavouriteCategoryBookButton(
+                          serviceId: state.listOfFavouriteServices[index]
+                              .favouriteServiceId,
+                          serviceName: serviceName,
+                        )),
                   ],
                 ),
               ),

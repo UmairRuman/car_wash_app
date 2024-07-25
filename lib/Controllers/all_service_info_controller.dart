@@ -5,12 +5,14 @@ import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dial
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
+
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
+import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
-import 'package:car_wash_app/ModelClasses/favourite_service_counter.dart';
+
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,12 +25,11 @@ final initializationProvider = FutureProvider<void>((ref) async {
       sharedPreferences.getString(SharedPreferncesConstants.adminkey)!;
   final userKey = FirebaseAuth.instance.currentUser!.uid;
   ref.read(userAdditionStateProvider.notifier).getUser(userKey);
-  await ref
-      .read(defaultServicesStateProvider.notifier)
-      .fetchingAllServicesFirstTime();
 });
 
 class AllServiceInfoController extends Notifier<DataStates> {
+  var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  List<Services> intialListOfService = [];
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
       FavouriteServicesCounterCollection();
@@ -45,13 +46,21 @@ class AllServiceInfoController extends Notifier<DataStates> {
     return DataIntialState();
   }
 
+  Future<void> getIntialListOfServices() async {
+    try {
+      intialListOfService =
+          await serviceCollection.getAllServicesByAdmin(adminId!);
+    } catch (e) {
+      log("Error in Getting intial service list ");
+    }
+  }
+
   void getServiceName(String name, String newiconUrl) {
     serviceName = name;
     iconUrl = newiconUrl;
   }
 
   Future<void> addCars(int serviceId, String serviceName) async {
-    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     cars = await serviceCollection.getAllCarsAtSpecificDocument(
         adminId!, serviceId, serviceName);
     // log("CarInfo : ${cars[0].carName}");
@@ -142,6 +151,8 @@ class AllServiceInfoController extends Notifier<DataStates> {
           imageUrl: imageUrl,
           availableDates: listOfDates,
           adminPhoneNo: phoneNo!));
+      favouriteServicesCounterCollection.addAdminBookingCount(
+          FavouriteServiceCounter(count: favouriteServiceId, userId: userId));
     }
     await fetchServiceData(serviceName, serviceId);
   }

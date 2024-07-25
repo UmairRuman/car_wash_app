@@ -59,7 +59,8 @@ class BookedInfoContainer extends StatelessWidget {
                     Expanded(
                       flex: 18,
                       child: TextBookingDate(
-                        bookingDate: "$bookingDate",
+                        bookingDate:
+                            "${bookingDate.day}-${bookingDate.month}-${bookingDate.year}",
                       ),
                     ),
                     Expanded(

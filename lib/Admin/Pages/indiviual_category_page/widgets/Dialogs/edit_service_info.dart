@@ -126,6 +126,8 @@ void dialogForEdditingServiceImageAndDescription(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
+                          maxLength: 100,
+                          maxLines: 5,
                           controller: ref
                               .read(serviceInfoProvider.notifier)
                               .serviceDescriptionTEC,

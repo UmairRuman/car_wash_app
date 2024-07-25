@@ -1,16 +1,15 @@
-import 'dart:developer';
-
+import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
 import 'package:car_wash_app/Client/pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Client/pages/category_page/View/categoryPage.dart';
 import 'package:car_wash_app/Client/pages/favourite_page/view/favourite_page.dart';
 import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Client/pages/home_page/Widget/bottom_bar_widget.dart';
+import 'package:car_wash_app/Client/pages/profile_page/controller/profile_state_controller.dart';
 import 'package:car_wash_app/Client/pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -23,7 +22,12 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final initializationState = ref.watch(initializationProvider);
     ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings();
-    ref.read(favouriteServiceProvider.notifier).getAllIntialServices();
+    ref.read(favouriteServiceProvider.notifier).getAllIntialFavouriteServices();
+    ref.read(profileDataStateProvider.notifier).getUserAllDData();
+    ref
+        .read(previousServiceStateProvider.notifier)
+        .getIntialListPreviousServices();
+    ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices();
     // ref.read(defaultServicesStateProvider.notifier).addDefaultService();
     return initializationState.when(
       data: (_) {

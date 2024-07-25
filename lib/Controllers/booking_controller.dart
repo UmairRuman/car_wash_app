@@ -73,11 +73,15 @@ class BookingController extends Notifier<BookingStates> {
             timeSlot: timeSlot!));
 
         if (adminBookingsTotalCount.length < 9) {
-          adminBookingCollectionCount.addAdminBookingCount(AdminServiceCounter(
-              userId: userId, count: "0${adminBookingsTotalCount.length + 1}"));
+          adminBookingCollectionCount.addAdminBookingCount(
+              FavouriteServiceCounter(
+                  userId: userId,
+                  count: "0${adminBookingsTotalCount.length + 1}"));
         } else {
-          adminBookingCollectionCount.addAdminBookingCount(AdminServiceCounter(
-              userId: userId, count: "${adminBookingsTotalCount.length + 1}"));
+          adminBookingCollectionCount.addAdminBookingCount(
+              FavouriteServiceCounter(
+                  userId: userId,
+                  count: "${adminBookingsTotalCount.length + 1}"));
         }
 
         if (userBookingsTotalCount.length < 9) {

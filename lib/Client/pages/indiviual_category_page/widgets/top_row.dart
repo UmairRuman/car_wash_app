@@ -56,8 +56,8 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                       isFavourite = true;
                       ref
                           .read(favouriteServiceProvider.notifier)
-                          .addToFavourite(
-                              serviceName, serviceImageUrl, favouriteServiceId);
+                          .addToFavourite(serviceName, serviceImageUrl,
+                              serviceId.toString());
                       ref
                           .read(allServiceDataStateProvider.notifier)
                           .updateService(serviceId, serviceName, isFavourite);
@@ -75,7 +75,7 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                       isFavourite = false;
                       ref
                           .read(favouriteServiceProvider.notifier)
-                          .deleteFavouriteService(favouriteServiceId);
+                          .deleteFavouriteService(serviceId.toString());
                       ref
                           .read(allServiceDataStateProvider.notifier)
                           .updateService(serviceId, serviceName, isFavourite);

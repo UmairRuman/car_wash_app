@@ -12,7 +12,7 @@ final favouriteServiceProvider =
         FavouriteServiceStateController.new);
 
 class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
-  List<FavouriteSerivces> listOfFavouriteServices = [];
+  List<FavouriteServices> listOfFavouriteServices = [];
   double? servicePrice;
   double? serviceRating;
   FavouriteCollection favouriteCollection = FavouriteCollection();
@@ -23,7 +23,7 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
     return FavouriteServiceIntialState();
   }
 
-  Future<void> getAllIntialServices() async {
+  Future<void> getAllIntialFavouriteServices() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     try {
       listOfFavouriteServices =
@@ -36,45 +36,40 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
   // Deleting favourite Service
   Future<void> deleteFavouriteService(String favouriteServiceId) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    var favouriteServiceCount = await favouriteServicesCounterCollection
-        .getAllUserBookingsCount(userId);
-    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
-    var favouriteServiceId = "$favouriteServiceIdCount";
-    if (favouriteServiceIdCount < 9) {
-      favouriteServiceId = "0$favouriteServiceIdCount";
-    }
+
     try {
       await favouriteCollection.deleteFavouriteService(
           userId, favouriteServiceId);
+      await getAllFavouriteService(userId);
     } catch (e) {
       log("failed to delete Favourite service :  ${e.toString()}");
     }
   }
 
   //Adding Favourite Service
-  Future<void> addToFavourite(String serviceName, String serviceImageUrl,
-      String favouriteServiceId) async {
+  Future<void> addToFavourite(
+      String serviceName, String serviceImageUrl, String serviceId) async {
     final String userId = FirebaseAuth.instance.currentUser!.uid;
     var favouriteServiceCount = await favouriteServicesCounterCollection
         .getAllUserBookingsCount(userId);
     var favouriteServiceIdCount = favouriteServiceCount.length + 1;
-    var favouriteServiceId = "${favouriteServiceCount.length + 1}";
+    var favouriteServiceId = "${favouriteServiceCount.length + 1}$serviceId";
     if (favouriteServiceIdCount < 10) {
-      favouriteServiceId = "0$favouriteServiceIdCount";
+      favouriteServiceId = "0$favouriteServiceIdCount$serviceId";
     }
     serviceRating = 5;
     servicePrice = 50;
     try {
       if (servicePrice != null && serviceRating != null) {
-        await favouriteCollection.addServiceToFavourite(FavouriteSerivces(
-            favouriteServiceId: favouriteServiceId,
+        await favouriteCollection.addServiceToFavourite(FavouriteServices(
+            favouriteServiceId: serviceId,
             serviceName: serviceName,
             userId: userId,
             serviceRating: serviceRating!,
             serviceImageUrl: serviceImageUrl,
             servicePrice: servicePrice!));
-        favouriteServicesCounterCollection.addAdminBookingCount(
-            AdminServiceCounter(userId: userId, count: favouriteServiceId));
+        // favouriteServicesCounterCollection.addAdminBookingCount(
+        //     AdminServiceCounter(userId: userId, count: favouriteServiceId));
       }
 
       await getAllFavouriteService(userId);
@@ -105,7 +100,7 @@ class FavouriteServiceIntialState extends FavouriteServiceStates {}
 class FavouriteServiceLoadingState extends FavouriteServiceStates {}
 
 class FavouriteServiceLoadedState extends FavouriteServiceStates {
-  final List<FavouriteSerivces> listOfFavouriteServices;
+  final List<FavouriteServices> listOfFavouriteServices;
   FavouriteServiceLoadedState({required this.listOfFavouriteServices});
 }
 

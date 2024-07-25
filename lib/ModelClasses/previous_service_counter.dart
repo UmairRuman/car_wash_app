@@ -2,13 +2,13 @@
 import 'dart:convert';
 
 class PreviousServiceCounter {
-  int count;
+  String count;
   PreviousServiceCounter({
     required this.count,
   });
 
   PreviousServiceCounter copyWith({
-    int? count,
+    String? count,
   }) {
     return PreviousServiceCounter(
       count: count ?? this.count,
@@ -23,7 +23,7 @@ class PreviousServiceCounter {
 
   factory PreviousServiceCounter.fromMap(Map<String, dynamic> map) {
     return PreviousServiceCounter(
-      count: map['count'] as int,
+      count: map['count'] as String,
     );
   }
 

@@ -50,23 +50,26 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                           fit: BoxFit.fill)),
                 )),
             const Spacer(
-              flex: 5,
+              flex: 2,
             ),
             Expanded(flex: 45, child: Text(description)),
             Expanded(
-                flex: 20,
+                flex: 23,
                 child: Column(
                   children: [
                     Row(
                       children: [
                         const Expanded(
-                            flex: 25,
+                            flex: 10,
                             child: Icon(
                               Icons.phone,
                               color: Colors.green,
                             )),
+                        const Spacer(
+                          flex: 5,
+                        ),
                         Expanded(
-                            flex: 75,
+                            flex: 80,
                             child: FittedBox(
                                 child: Text(
                               FirebaseAuth.instance.currentUser!.phoneNumber!,
@@ -74,6 +77,9 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                                   color:
                                       const Color.fromARGB(255, 16, 66, 108)),
                             ))),
+                        const Spacer(
+                          flex: 5,
+                        )
                       ],
                     ),
                     const Spacer(

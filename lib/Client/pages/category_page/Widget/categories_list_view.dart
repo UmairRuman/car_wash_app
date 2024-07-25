@@ -13,13 +13,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class CategoriesList extends ConsumerWidget {
-  final List<Services> listOfServices;
-  const CategoriesList({super.key, required this.listOfServices});
+  const CategoriesList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(serviceAddtionStateProvider);
-
+    var listOfIntialServices =
+        ref.read(allServiceDataStateProvider.notifier).intialListOfService;
     return Row(
       children: [
         const Spacer(
@@ -29,7 +29,7 @@ class CategoriesList extends ConsumerWidget {
           flex: 80,
           child: Builder(builder: (context) {
             if (state is ServiceDataIntialState) {
-              return ServiceInitialState(listOfServices: listOfServices);
+              return ServiceInitialState(listOfServices: listOfIntialServices);
             } else if (state is ServiceDataLoadingState) {
               return const Scaffold(
                   body: Center(

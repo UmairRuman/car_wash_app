@@ -119,13 +119,19 @@ class ActualBookingDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: Text(
-        bookingDate,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 13),
-      ),
-    );
+    return bookingDate.length >= 12
+        ? FittedBox(
+            child: Text(
+              bookingDate,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13),
+            ),
+          )
+        : Text(
+            bookingDate,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 13),
+          );
   }
 }
 
@@ -135,13 +141,19 @@ class ActualBookingTimeSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: Text(
-        timeSlot,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 13),
-      ),
-    );
+    return timeSlot.length >= 12
+        ? FittedBox(
+            child: Text(
+              timeSlot,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13),
+            ),
+          )
+        : Text(
+            timeSlot,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 13),
+          );
   }
 }
 
@@ -151,13 +163,19 @@ class ActualBookingWashPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: Text(
-        washPrice,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 13),
-      ),
-    );
+    return washPrice.length >= 12
+        ? FittedBox(
+            child: Text(
+              washPrice,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13, color: Colors.red),
+            ),
+          )
+        : Text(
+            washPrice,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 13, color: Colors.red),
+          );
   }
 }
 
@@ -171,7 +189,7 @@ class ActualBookingStatus extends StatelessWidget {
       child: Text(
         bookingStatus,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 13),
+        style: const TextStyle(fontSize: 13, color: Colors.green),
       ),
     );
   }
@@ -183,12 +201,18 @@ class ActualBookedServiceName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: Text(
-        serviceName,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 13),
-      ),
-    );
+    return serviceName.length >= 12
+        ? FittedBox(
+            child: Text(
+              serviceName,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13),
+            ),
+          )
+        : Text(
+            serviceName,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 13),
+          );
   }
 }
