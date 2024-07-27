@@ -5,7 +5,6 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_colle
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/ModelClasses/car_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
-import 'package:car_wash_app/ModelClasses/favourite_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
@@ -14,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ServiceAdditionController extends Notifier<ServiceDataStates> {
+  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
   String iconUrl = "";
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
@@ -40,10 +40,16 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
 
   onSaveBtnClick() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
-    List<ServiceCounter> listOfServices =
+    //Getting all service count
+    List<ServiceCounter> listOfServicesCount =
         await serviceCounterCollection.getAllServiceCount(adminId!);
-    log("List length : ${listOfServices.length}");
+    String serviceId;
+    if (listOfServicesCount.length < 9) {
+      serviceId = "0${listOfServicesCount.length + 1}";
+    } else {
+      serviceId = "${listOfServicesCount.length + 1}";
+    }
+
     List<Car> listOfCars = [];
     for (int index = 0; index < listOfCarImages.length; index++) {
       listOfCars.add(
@@ -64,17 +70,18 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
     }
 
     if (isIconPicked) {
+      log("Icon URl in adding service : $iconUrl");
       log("Adding service");
       //Adding plus one in the counter collection
       serviceCounterCollection.addCount(
-          ServiceCounter(count: listOfServices.length + 1), adminId);
+          ServiceCounter(count: serviceId), adminId!);
 
       serviceCollection.addNewService(Services(
           serviceFavouriteId: favouriteServiceId,
           rating: 5,
           isAssetImage: false,
-          serviceId: listOfServices.length + 1,
-          adminId: adminId,
+          serviceId: serviceId,
+          adminId: adminId!,
           isAssetIcon: false,
           serviceName: serviecNameTEC.text,
           description: "Click to add Description",
@@ -89,9 +96,19 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
     }
   }
 
-  fetchAllDataFromFireStore() async {
-    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  Future<void> deleteSpecificService(
+      String serviceName, String serviceId) async {
+    try {
+      await serviceCollection.deleteSpecificService(
+          adminId!, serviceName, serviceId);
+      serviceCounterCollection.deleteCount(serviceId, adminId!);
+      await fetchAllDataFromFireStore();
+    } catch (e) {
+      log("Failed in deleting Specific Service");
+    }
+  }
 
+  fetchAllDataFromFireStore() async {
     state = ServiceDataLoadingState();
     try {
       var listOfServices =

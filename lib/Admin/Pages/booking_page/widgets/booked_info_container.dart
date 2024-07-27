@@ -1,17 +1,18 @@
+import 'package:car_wash_app/Admin/Pages/booking_page/widgets/text_widget.dart';
 import 'package:car_wash_app/Client/pages/booking_page/widgets/booked_service_image.dart';
 import 'package:car_wash_app/Client/pages/booking_page/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
-class BookedInfoContainer extends StatelessWidget {
+class AdminBookedInfoContainer extends StatelessWidget {
   final double height;
   final double width;
   final String imagePath;
   final String bookingServiceName;
-  final String bookingDate;
+  final DateTime bookingDate;
   final String timeSlot;
   final String washPrice;
   final String bookingStatus;
-  const BookedInfoContainer(
+  const AdminBookedInfoContainer(
       {super.key,
       required this.height,
       required this.width,
@@ -54,24 +55,26 @@ class BookedInfoContainer extends StatelessWidget {
                     ),
                     Expanded(
                         flex: 18,
-                        child: BookedServiceName(
+                        child: AdminSideBookedServiceName(
                             bookingServiceName: bookingServiceName)),
                     Expanded(
                       flex: 18,
-                      child: TextBookingDate(
+                      child: AdminSideTextBookingDate(
                         bookingDate: bookingDate,
                       ),
                     ),
                     Expanded(
                       flex: 18,
-                      child: TextBookingTimeSlot(timeSlot: timeSlot),
+                      child: AdminSideTextBookingTimeSlot(timeSlot: timeSlot),
                     ),
                     Expanded(
                         flex: 18,
-                        child: TextBookingWashPrice(washPrice: washPrice)),
+                        child: AdminSideTextBookingWashPrice(
+                            washPrice: washPrice)),
                     Expanded(
                         flex: 18,
-                        child: BookingStatus(bookingStatus: bookingStatus)),
+                        child: AdminSideBookingStatus(
+                            bookingStatus: bookingStatus)),
                     const Spacer(
                       flex: 5,
                     ),

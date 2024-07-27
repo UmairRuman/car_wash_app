@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class TextBookingDate extends StatelessWidget {
-  final String bookingDate;
-  const TextBookingDate({super.key, required this.bookingDate});
+class AdminSideTextBookingDate extends StatelessWidget {
+  final DateTime bookingDate;
+  const AdminSideTextBookingDate({super.key, required this.bookingDate});
 
   @override
   Widget build(BuildContext context) {
@@ -13,20 +13,25 @@ class TextBookingDate extends StatelessWidget {
           child: Text(
             "Booking Date",
             textAlign: TextAlign.start,
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         Expanded(
             flex: 45,
-            child: AdminSideActualBookingDate(bookingDate: bookingDate)),
+            child: AdminSideActualBookingDate(
+                bookingDate:
+                    "${bookingDate.day}-${bookingDate.month}-${bookingDate.year}")),
       ],
     );
   }
 }
 
-class TextBookingTimeSlot extends StatelessWidget {
+class AdminSideTextBookingTimeSlot extends StatelessWidget {
   final String timeSlot;
-  const TextBookingTimeSlot({super.key, required this.timeSlot});
+  const AdminSideTextBookingTimeSlot({super.key, required this.timeSlot});
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +53,9 @@ class TextBookingTimeSlot extends StatelessWidget {
   }
 }
 
-class TextBookingWashPrice extends StatelessWidget {
+class AdminSideTextBookingWashPrice extends StatelessWidget {
   final String washPrice;
-  const TextBookingWashPrice({super.key, required this.washPrice});
+  const AdminSideTextBookingWashPrice({super.key, required this.washPrice});
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +77,9 @@ class TextBookingWashPrice extends StatelessWidget {
   }
 }
 
-class BookingStatus extends StatelessWidget {
+class AdminSideBookingStatus extends StatelessWidget {
   final String bookingStatus;
-  const BookingStatus({super.key, required this.bookingStatus});
+  const AdminSideBookingStatus({super.key, required this.bookingStatus});
 
   @override
   Widget build(BuildContext context) {
@@ -96,9 +101,10 @@ class BookingStatus extends StatelessWidget {
   }
 }
 
-class BookedServiceName extends StatelessWidget {
+class AdminSideBookedServiceName extends StatelessWidget {
   final String bookingServiceName;
-  const BookedServiceName({super.key, required this.bookingServiceName});
+  const AdminSideBookedServiceName(
+      {super.key, required this.bookingServiceName});
 
   @override
   Widget build(BuildContext context) {

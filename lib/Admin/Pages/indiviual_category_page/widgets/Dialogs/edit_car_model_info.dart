@@ -17,7 +17,7 @@ class CarInfoVariables {
 }
 
 void dialogForEditCarInfo(BuildContext context, String serviceName,
-    int serviceId, WidgetRef ref, bool isFavourite) {
+    String serviceId, WidgetRef ref, bool isFavourite) {
   showDialog(
       useSafeArea: true,
       context: context,

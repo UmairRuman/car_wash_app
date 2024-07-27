@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class Services {
-  int serviceId;
+  String serviceId;
   String serviceFavouriteId;
   String adminId;
   String serviceName;
@@ -38,7 +38,7 @@ class Services {
   });
 
   Services copyWith({
-    int? serviceId,
+    String? serviceId,
     String? serviceFavouriteId,
     String? adminId,
     String? serviceName,
@@ -84,7 +84,7 @@ class Services {
       'cars': cars.map((x) => x.toMap()).toList(),
       'imageUrl': imageUrl,
       'availableDates':
-          availableDates.map((x) => x.millisecondsSinceEpoch).toList(),
+          availableDates.map((x) => Timestamp.fromDate(x)).toList(),
       'adminPhoneNo': adminPhoneNo,
       'isAssetIcon': isAssetIcon,
       'isAssetImage': isAssetImage,
@@ -93,7 +93,7 @@ class Services {
 
   factory Services.fromMap(Map<String, dynamic> map) {
     return Services(
-      serviceId: map['serviceId'] as int,
+      serviceId: map['serviceId'] as String,
       serviceFavouriteId: map['serviceFavouriteId'] as String,
       adminId: map['adminId'] as String,
       serviceName: map['serviceName'] as String,
@@ -109,7 +109,7 @@ class Services {
       imageUrl: map['imageUrl'] as String,
       availableDates: List<DateTime>.from(
         (map['availableDates']).map<DateTime>(
-          (x) => DateTime.fromMillisecondsSinceEpoch(x),
+          (x) => (x as Timestamp).toDate(),
         ),
       ),
       adminPhoneNo: map['adminPhoneNo'] as String,

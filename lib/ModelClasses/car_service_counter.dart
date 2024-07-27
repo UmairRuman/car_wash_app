@@ -2,13 +2,13 @@
 import 'dart:convert';
 
 class ServiceCounter {
-  int count;
+  String count;
   ServiceCounter({
     required this.count,
   });
 
   ServiceCounter copyWith({
-    int? count,
+    String? count,
   }) {
     return ServiceCounter(
       count: count ?? this.count,
@@ -23,7 +23,7 @@ class ServiceCounter {
 
   factory ServiceCounter.fromMap(Map<String, dynamic> map) {
     return ServiceCounter(
-      count: map['count'] as int,
+      count: map['count'] as String,
     );
   }
 
@@ -33,7 +33,7 @@ class ServiceCounter {
       ServiceCounter.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'PreviousServiceCounter(count: $count)';
+  String toString() => 'ServiceCounter(count: $count)';
 
   @override
   bool operator ==(covariant ServiceCounter other) {

@@ -5,11 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class TimeSlots {
-  String serviceName;
   DateTime currentDate;
   List<String> timeslots;
   TimeSlots({
-    required this.serviceName,
     required this.currentDate,
     required this.timeslots,
   });
@@ -20,7 +18,6 @@ class TimeSlots {
     List<String>? timeslots,
   }) {
     return TimeSlots(
-      serviceName: serviceName ?? this.serviceName,
       currentDate: currentDate ?? this.currentDate,
       timeslots: timeslots ?? this.timeslots,
     );
@@ -28,7 +25,6 @@ class TimeSlots {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'serviceName': serviceName,
       'currentDate': Timestamp.fromDate(currentDate),
       'timeslots': timeslots,
     };
@@ -36,7 +32,6 @@ class TimeSlots {
 
   factory TimeSlots.fromMap(Map<String, dynamic> map) {
     return TimeSlots(
-      serviceName: map['serviceName'] as String,
       currentDate: (map['currentDate'] as Timestamp).toDate(),
       timeslots: List<String>.from((map['timeslots'] as List<dynamic>)),
     );
@@ -49,20 +44,18 @@ class TimeSlots {
 
   @override
   String toString() =>
-      'TimeSlots(serviceName: $serviceName, currentDate: $currentDate, timeslots: $timeslots)';
+      'TimeSlots(currentDate: $currentDate, timeslots: $timeslots)';
 
   @override
   bool operator ==(covariant TimeSlots other) {
     if (identical(this, other)) return true;
 
-    return other.serviceName == serviceName &&
-        other.currentDate == currentDate &&
+    return other.currentDate == currentDate &&
         listEquals(other.timeslots, timeslots);
   }
 
   @override
-  int get hashCode =>
-      serviceName.hashCode ^ currentDate.hashCode ^ timeslots.hashCode;
+  int get hashCode => currentDate.hashCode ^ timeslots.hashCode;
 }
 
 class TimeSlotsInfo {

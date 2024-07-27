@@ -40,12 +40,13 @@ class ServiceCollection {
     }
   }
 
-  Future<bool> deleteNewService(Services services) async {
+  Future<bool> deleteSpecificService(
+      String adminId, String serviceName, String serviceId) async {
     try {
       await UserCollection.userCollection
-          .doc(services.adminId)
+          .doc(adminId)
           .collection(serviceCollection)
-          .doc("${services.serviceId})${services.serviceName}")
+          .doc("$serviceId)$serviceName")
           .delete();
       return true;
     } catch (e) {
@@ -54,7 +55,7 @@ class ServiceCollection {
   }
 
   Future<List<Car>> getAllCarsAtSpecificDocument(
-      String adminId, int serviceId, String serviceName) async {
+      String adminId, String serviceId, String serviceName) async {
     try {
       var snapshot = await UserCollection.userCollection
           .doc(adminId)
@@ -66,6 +67,41 @@ class ServiceCollection {
       return listOfCars;
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<bool> deleteCarFromList(
+      String adminId, String serviceId, String serviceName, int index) async {
+    try {
+      var snapshot = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .get();
+
+      if (!snapshot.exists) {
+        return false;
+      }
+
+      var serviceData = Services.fromMap(snapshot.data()!);
+
+      if (index < 0 || index >= serviceData.cars.length) {
+        return false;
+      }
+
+      // Remove the car at the specified index
+      serviceData.cars.removeAt(index);
+
+      // Update the document in Firestore
+      await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .update(serviceData.toMap());
+
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -87,7 +123,7 @@ class ServiceCollection {
   }
 
   Future<Services> getSpecificService(
-      String adminId, String serviceName, int serviceId) async {
+      String adminId, String serviceName, String serviceId) async {
     var querySnapshot = await UserCollection.userCollection
         .doc(adminId)
         .collection(serviceCollection)

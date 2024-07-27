@@ -11,8 +11,8 @@ class TimeSlotVariables {
   static Time currentTime = Time(hour: 10, minute: 0);
 }
 
-void dialogForEditTimeSlot(
-    BuildContext context, String serviceName, int serviceId, bool isFavourite) {
+void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
+    String serviceId, String serviceName) {
   showDialog(
       useSafeArea: true,
       context: context,
@@ -220,7 +220,7 @@ void dialogForEditTimeSlot(
                                   onPressed: () {
                                     ref
                                         .read(timeSlotsStateProvider.notifier)
-                                        .addTimeSlots(serviceId, serviceName);
+                                        .addTimeSlots();
 
                                     ref
                                         .read(allServiceDataStateProvider
@@ -230,13 +230,12 @@ void dialogForEditTimeSlot(
                                     ref
                                         .read(timeSlotsStateProvider.notifier)
                                         .getTimeSlots(
-                                            DateTime(
-                                              DateTime.now().year,
-                                              DateTime.now().month,
-                                              DateTime.now().day,
-                                            ),
-                                            serviceId,
-                                            serviceName);
+                                          DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day,
+                                          ),
+                                        );
                                     Navigator.of(context).pop();
                                     ref
                                         .read(timeSlotTimingStateProvider

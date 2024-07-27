@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminSideTextChooseYourCarModel extends ConsumerWidget {
   final String serviceName;
-  final int serviceId;
+  final String serviceId;
   final bool isFavourite;
   const AdminSideTextChooseYourCarModel(
       {super.key,

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/time_slot.dart';
+import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
 
 class TimeSlotCollection {
   static final TimeSlotCollection instance = TimeSlotCollection._internal();
@@ -14,13 +15,10 @@ class TimeSlotCollection {
   Future<bool> addTimeSlots(
     TimeSlots timeslot,
     String userId,
-    int serviceId,
   ) async {
     try {
       await UserCollection.userCollection
           .doc(userId)
-          .collection(ServiceCollection.serviceCollection)
-          .doc("$serviceId)${timeslot.serviceName}")
           .collection(timeSlotCollection)
           .doc(timeslot.currentDate.toIso8601String())
           .set(timeslot.toMap());
@@ -31,13 +29,10 @@ class TimeSlotCollection {
     }
   }
 
-  Future<bool> updateTimeSlots(
-      TimeSlots timeslot, String userId, int serviceId) async {
+  Future<bool> updateTimeSlots(TimeSlots timeslot, String adminId) async {
     try {
       await UserCollection.userCollection
-          .doc(userId)
-          .collection(ServiceCollection.serviceCollection)
-          .doc("$serviceId)${timeslot.serviceName}")
+          .doc(adminId)
           .collection(timeSlotCollection)
           .doc(timeslot.currentDate.toIso8601String())
           .update(timeslot.toMap());
@@ -47,13 +42,37 @@ class TimeSlotCollection {
     }
   }
 
-  Future<bool> deleteTimeSlots(
-      TimeSlots timeslot, String userId, int serviceId) async {
+  Future<bool> deleteSpecificTimeSlot(
+      String adminId, int index, DateTime date) async {
+    try {
+      var querrySnapshots = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(TimeSlotCollection.timeSlotCollection)
+          .doc(date.toIso8601String())
+          .get();
+      var listOfTimeSlots = TimeSlots.fromMap(querrySnapshots.data()!);
+
+      if (index < 0 && index >= listOfTimeSlots.timeslots.length) {
+        return false;
+      }
+      listOfTimeSlots.timeslots.removeAt(index);
+
+      await UserCollection.userCollection
+          .doc(adminId)
+          .collection(timeSlotCollection)
+          .doc(date.toIso8601String())
+          .update(listOfTimeSlots.toMap());
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteAllTimeSlots(TimeSlots timeslot, String userId) async {
     try {
       await UserCollection.userCollection
           .doc(userId)
-          .collection(ServiceCollection.serviceCollection)
-          .doc("$serviceId)${timeslot.serviceName}")
           .collection(timeSlotCollection)
           .doc(timeslot.currentDate.toIso8601String())
           .delete();
@@ -63,16 +82,14 @@ class TimeSlotCollection {
     }
   }
 
-  Future<List<String>> getSpecificDateSlots(String adminId, int serviceId,
-      String serviceName, DateTime dateTime) async {
+  Future<List<String>> getSpecificDateSlots(
+      String adminId, DateTime dateTime) async {
     try {
       String docId = dateTime.toIso8601String();
       log("Fetching time slots for doc ID: $docId");
 
       var querrySnapshots = await UserCollection.userCollection
           .doc(adminId)
-          .collection(ServiceCollection.serviceCollection)
-          .doc("$serviceId)$serviceName")
           .collection(timeSlotCollection)
           .doc(docId)
           .get();
@@ -90,13 +107,10 @@ class TimeSlotCollection {
     }
   }
 
-  Future<List<TimeSlots>> getAllTimeSlots(
-      String serviceName, String userId, int serviceId) async {
+  Future<List<TimeSlots>> getAllTimeSlots(String userId) async {
     try {
       var querrySnapshots = await UserCollection.userCollection
           .doc(userId)
-          .collection(ServiceCollection.serviceCollection)
-          .doc("$serviceId)$serviceName")
           .collection(TimeSlotCollection.timeSlotCollection)
           .get();
       return querrySnapshots.docs

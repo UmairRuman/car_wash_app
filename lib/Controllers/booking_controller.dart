@@ -15,6 +15,7 @@ final bookingStateProvider =
     NotifierProvider<BookingController, BookingStates>(BookingController.new);
 
 class BookingController extends Notifier<BookingStates> {
+  var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
   String? carType;
   DateTime? carWashDate;
   String? carPrice;
@@ -32,14 +33,22 @@ class BookingController extends Notifier<BookingStates> {
   }
 
   Future<void> addBooking(
-      int serviceId, String serviceName, String serviceImageUrl) async {
+      String serviceId, String serviceName, String serviceImageUrl) async {
     try {
-      final adminId = prefs!.getString(SharedPreferncesConstants.adminkey)!;
       final userId = FirebaseAuth.instance.currentUser!.uid;
+      final bookerName = FirebaseAuth.instance.currentUser!.uid;
       var adminBookingsTotalCount =
-          await adminBookingCollectionCount.getAllUserBookingsCount(adminId);
+          await adminBookingCollectionCount.getAllUserBookingsCount(adminId!);
       var userBookingsTotalCount =
           await userBookingCountCollection.getAllUserBookingsCount(userId);
+      String userBookingId = "${userBookingsTotalCount.length + 1}";
+      String adminBookingId = "${adminBookingsTotalCount.length + 1}";
+      if (userBookingsTotalCount.length < 9) {
+        userBookingId = "0${userBookingsTotalCount.length + 1}";
+      }
+      if (adminBookingsTotalCount.length < 9) {
+        adminBookingId = "0${adminBookingsTotalCount.length + 1}";
+      }
 
       if (carWashDate != null &&
           carType != null &&
@@ -47,43 +56,45 @@ class BookingController extends Notifier<BookingStates> {
           timeSlot != null) {
         //Adding Booking in client Collection
         bookingCollection.addBooking(Bookings(
-            userBookingId: userBookingsTotalCount.length + 1,
+            bookerName: bookerName,
+            userBookingId: userBookingId,
             userId: userId,
-            serviceId: serviceId.toString(),
+            serviceId: serviceId,
             carType: carType!,
             carWashdate: carWashDate!,
             price: carPrice!,
-            bookingStatus: BookingStatus.pending,
+            bookingStatus: BookingStatus.confirmed,
             bookingDate: DateTime.now(),
             serviceImageUrl: serviceImageUrl,
             serviceName: serviceName,
             timeSlot: timeSlot!));
         //Adding booking at Admin Collection
         bookingCollection.addBooking(Bookings(
-            userBookingId: userBookingsTotalCount.length + 1,
-            userId: adminId,
+            bookerName: bookerName,
+            userBookingId: adminBookingId,
+            userId: userId,
             serviceId: serviceId.toString(),
             carType: carType!,
             carWashdate: carWashDate!,
             price: carPrice!,
-            bookingStatus: BookingStatus.pending,
+            bookingStatus: BookingStatus.confirmed,
             bookingDate: DateTime.now(),
             serviceImageUrl: serviceImageUrl,
             serviceName: serviceName,
             timeSlot: timeSlot!));
-
+        //Booking counter at admin Collection
         if (adminBookingsTotalCount.length < 9) {
           adminBookingCollectionCount.addAdminBookingCount(
               FavouriteServiceCounter(
-                  userId: userId,
+                  userId: adminId!,
                   count: "0${adminBookingsTotalCount.length + 1}"));
         } else {
           adminBookingCollectionCount.addAdminBookingCount(
               FavouriteServiceCounter(
-                  userId: userId,
+                  userId: adminId!,
                   count: "${adminBookingsTotalCount.length + 1}"));
         }
-
+        // Booking counter for client side
         if (userBookingsTotalCount.length < 9) {
           userBookingCountCollection.addUserBookingCount(UserBookingCounter(
               userId: userId, count: "0${userBookingsTotalCount.length + 1}"));
@@ -99,7 +110,6 @@ class BookingController extends Notifier<BookingStates> {
   }
 
   Future<void> getBookings(String userId) async {
-    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     state = BookingLoadingState();
     try {
       var listOfClientBookings = await bookingCollection.getAllBookings(userId);

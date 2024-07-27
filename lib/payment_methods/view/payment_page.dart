@@ -88,7 +88,10 @@ class PaymentPage extends StatelessWidget {
                   Expanded(
                       flex: 10,
                       child: StripePaymentMethodBtn(
+                        id: data.serviceId,
+                        serviceImagePath: data.serviceImagePath,
                         paymentAmount: data.price,
+                        serviceName: data.serviceName,
                       )),
                 ],
               ),

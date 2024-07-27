@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/ModelClasses/previous_work_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -14,7 +15,7 @@ class IntialListPreviousWork extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: intialList.length,
           itemBuilder: (context, index) => AnimationConfiguration.staggeredList(
-            duration: const Duration(seconds :1),
+            duration: const Duration(seconds: 1),
             position: index,
             child: SlideAnimation(
               verticalOffset: -50,
@@ -33,18 +34,31 @@ class IntialListPreviousWork extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 75,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20)),
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: intialList[index].isAssetImage
-                                            ? AssetImage(
-                                                intialList[index].previousWorkImage)
-                                            : NetworkImage(
-                                                intialList[index].previousWorkImage)))),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                              child: intialList[index].isAssetImage
+                                  ? Image.asset(
+                                      intialList[index].previousWorkImage,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    )
+                                  : CachedNetworkImage(
+                                      imageUrl:
+                                          intialList[index].previousWorkImage,
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    ),
+                            ),
                           ),
                           Expanded(
                             flex: 25,
@@ -55,7 +69,8 @@ class IntialListPreviousWork extends StatelessWidget {
                               Expanded(
                                   flex: 50,
                                   child: FittedBox(
-                                      child: Text(intialList[index].serviceName))),
+                                      child:
+                                          Text(intialList[index].serviceName))),
                               const Spacer(
                                 flex: 5,
                               ),
@@ -68,8 +83,9 @@ class IntialListPreviousWork extends StatelessWidget {
                                       ),
                                       Expanded(
                                         flex: 30,
-                                        child: Text(
-                                            intialList[index].serviceRating.toString()),
+                                        child: Text(intialList[index]
+                                            .serviceRating
+                                            .toString()),
                                       ),
                                       const Expanded(
                                         flex: 30,

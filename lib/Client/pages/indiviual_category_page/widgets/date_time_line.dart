@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DateTimePicker extends ConsumerWidget {
   final String serviceName;
-  final int serviceId;
+  final String serviceId;
   const DateTimePicker(
       {super.key, required this.serviceId, required this.serviceName});
 
@@ -33,9 +33,8 @@ class DateTimePicker extends ConsumerWidget {
               DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
           //For Getting time slot at specific date
           ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
-              DateTime(selectedDate.year, selectedDate.month, selectedDate.day),
-              serviceId,
-              serviceName);
+                DateTime(selectedYear, selectedDate.month, selectedDate.day),
+              );
 
           focusDate =
               DateTime(selectedDate.year, selectedDate.month, selectedDate.day);

@@ -5,8 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class Bookings {
-  int userBookingId;
-
+  String userBookingId;
+  String bookerName;
   String userId;
   String serviceId;
   String carType;
@@ -19,6 +19,7 @@ class Bookings {
   String timeSlot;
   Bookings({
     required this.userBookingId,
+    required this.bookerName,
     required this.userId,
     required this.serviceId,
     required this.carType,
@@ -32,7 +33,8 @@ class Bookings {
   });
 
   Bookings copyWith({
-    int? userBookingId,
+    String? userBookingId,
+    String? bookerName,
     String? userId,
     String? serviceId,
     String? carType,
@@ -46,6 +48,7 @@ class Bookings {
   }) {
     return Bookings(
       userBookingId: userBookingId ?? this.userBookingId,
+      bookerName: bookerName ?? this.bookerName,
       userId: userId ?? this.userId,
       serviceId: serviceId ?? this.serviceId,
       carType: carType ?? this.carType,
@@ -62,6 +65,7 @@ class Bookings {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'userBookingId': userBookingId,
+      'bookerName': bookerName,
       'userId': userId,
       'serviceId': serviceId,
       'carType': carType,
@@ -77,7 +81,8 @@ class Bookings {
 
   factory Bookings.fromMap(Map<String, dynamic> map) {
     return Bookings(
-      userBookingId: map['userBookingId'] as int,
+      userBookingId: map['userBookingId'] as String,
+      bookerName: map['bookerName'] as String,
       userId: map['userId'] as String,
       serviceId: map['serviceId'] as String,
       carType: map['carType'] as String,
@@ -98,7 +103,7 @@ class Bookings {
 
   @override
   String toString() {
-    return 'Bookings(userBookingId: $userBookingId, userId: $userId, serviceId: $serviceId, carType: $carType, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, serviceImageUrl: $serviceImageUrl, serviceName: $serviceName, timeSlot: $timeSlot)';
+    return 'Bookings(userBookingId: $userBookingId, bookerName: $bookerName, userId: $userId, serviceId: $serviceId, carType: $carType, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, serviceImageUrl: $serviceImageUrl, serviceName: $serviceName, timeSlot: $timeSlot)';
   }
 
   @override
@@ -106,6 +111,7 @@ class Bookings {
     if (identical(this, other)) return true;
 
     return other.userBookingId == userBookingId &&
+        other.bookerName == bookerName &&
         other.userId == userId &&
         other.serviceId == serviceId &&
         other.carType == carType &&
@@ -121,6 +127,7 @@ class Bookings {
   @override
   int get hashCode {
     return userBookingId.hashCode ^
+        bookerName.hashCode ^
         userId.hashCode ^
         serviceId.hashCode ^
         carType.hashCode ^

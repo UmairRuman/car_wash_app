@@ -1,15 +1,18 @@
-import 'dart:developer';
-
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_name_controller.dart';
+import 'package:car_wash_app/Controllers/rating_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EditNameVariables {
+class EditRatingVariables {
   static double currentRating = 1;
+  static bool isClickOnSave = false;
 }
 
-void dialogForRating(BuildContext context) {
+void dialogForRating(
+    BuildContext context, WidgetRef ref, String serviceName, String serviceId) {
+  var finalRating = ref.read(ratingStateProvider.notifier).finalRating;
+  var isServiceRated = ref.read(ratingStateProvider.notifier).isServiceRated;
   showDialog(
       useSafeArea: true,
       context: context,
@@ -33,7 +36,7 @@ void dialogForRating(BuildContext context) {
                       Expanded(
                         flex: 40,
                         child: RatingBar.builder(
-                          initialRating: 1,
+                          initialRating: finalRating,
                           minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,
@@ -48,7 +51,9 @@ void dialogForRating(BuildContext context) {
                           },
                           onRatingUpdate: (rating) {
                             setState(() {
-                              EditNameVariables.currentRating = rating;
+                              setState(() {
+                                EditRatingVariables.currentRating = rating;
+                              });
                             });
                           },
                         ),
@@ -64,7 +69,10 @@ void dialogForRating(BuildContext context) {
                                   flex: 30,
                                   child: FittedBox(
                                       child: Text(
-                                    EditNameVariables.currentRating.toString(),
+                                    EditRatingVariables.isClickOnSave
+                                        ? finalRating.toString()
+                                        : EditRatingVariables.currentRating
+                                            .toString(),
                                     style: const TextStyle(
                                         color: Colors.blue,
                                         fontWeight: FontWeight.bold),
@@ -85,7 +93,7 @@ void dialogForRating(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
-                                  EditNameVariables.currentRating = 1;
+                                  EditRatingVariables.currentRating = 1;
                                   ref
                                       .read(serviceNameProvider.notifier)
                                       .disposeController();
@@ -105,9 +113,16 @@ void dialogForRating(BuildContext context) {
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () {
+//Setting User selected rating and bool so that i will come to know that whether userRated or not
+                                  EditRatingVariables.isClickOnSave = true;
+
                                   ref
-                                      .read(serviceNameProvider.notifier)
-                                      .disposeController();
+                                      .read(ratingStateProvider.notifier)
+                                      .addRatingFromUser(
+                                          serviceId,
+                                          serviceName,
+                                          EditRatingVariables.currentRating,
+                                          isServiceRated);
 
                                   Navigator.of(context).pop();
                                 },

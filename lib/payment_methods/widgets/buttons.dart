@@ -8,7 +8,7 @@ class PaypalPaymentMethodBtn extends ConsumerWidget {
   final String paymentAmount;
   final String serviceName;
   final String serviceImagePath;
-  final int id;
+  final String id;
   const PaypalPaymentMethodBtn(
       {super.key,
       required this.paymentAmount,
@@ -55,12 +55,20 @@ class PaypalPaymentMethodBtn extends ConsumerWidget {
   }
 }
 
-class StripePaymentMethodBtn extends StatelessWidget {
+class StripePaymentMethodBtn extends ConsumerWidget {
   final String paymentAmount;
-  const StripePaymentMethodBtn({super.key, required this.paymentAmount});
+  final String serviceName;
+  final String serviceImagePath;
+  final String id;
+  const StripePaymentMethodBtn(
+      {super.key,
+      required this.paymentAmount,
+      required this.id,
+      required this.serviceImagePath,
+      required this.serviceName});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         const Spacer(
@@ -72,7 +80,8 @@ class StripePaymentMethodBtn extends StatelessWidget {
                 onPressed: () {
                   var finalPayment = int.parse(
                       paymentAmount.substring(0, paymentAmount.length - 1));
-                  StripeServices.instance.makePayment(finalPayment, "usd");
+                  StripeServices.instance.makePayment(finalPayment, "usd", id,
+                      serviceName, ref, serviceImagePath);
                 },
                 child: Image.asset(stripeImage))),
         const Spacer(

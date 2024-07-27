@@ -12,7 +12,7 @@ class BookingPageDataSendingModel {
   bool isCarAssetImage;
   String serviceName;
   String serviceImagePath;
-  int serviceId;
+  String serviceId;
   BookingPageDataSendingModel({
     required this.imagePath,
     required this.carName,
@@ -34,7 +34,7 @@ class BookingPageDataSendingModel {
     bool? isCarAssetImage,
     String? serviceName,
     String? serviceImagePath,
-    int? serviceId,
+    String? serviceId,
   }) {
     return BookingPageDataSendingModel(
       imagePath: imagePath ?? this.imagePath,
@@ -73,7 +73,7 @@ class BookingPageDataSendingModel {
       isCarAssetImage: map['isCarAssetImage'] as bool,
       serviceName: map['serviceName'] as String,
       serviceImagePath: map['serviceImagePath'] as String,
-      serviceId: map['serviceId'] as int,
+      serviceId: map['serviceId'] as String,
     );
   }
 

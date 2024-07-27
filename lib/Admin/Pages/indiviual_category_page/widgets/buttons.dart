@@ -1,9 +1,9 @@
-import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminSideLowerContainer extends ConsumerWidget {
-  final int serviceId;
+  final String serviceId;
   final String serviceName;
   final String imagePath;
   const AdminSideLowerContainer(
@@ -27,7 +27,12 @@ class AdminSideLowerContainer extends ConsumerWidget {
           Expanded(
             flex: 80,
             child: FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+                ref
+                    .read(serviceAddtionStateProvider.notifier)
+                    .deleteSpecificService(serviceName, serviceId);
+              },
               backgroundColor: Colors.blue,
               child: const Text(
                 "Delete Service",

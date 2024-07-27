@@ -76,10 +76,12 @@ class BookingStatus extends StatelessWidget {
       children: [
         const Expanded(
           flex: 55,
-          child: Text(
-            "Booking Status",
-            textAlign: TextAlign.start,
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+          child: FittedBox(
+            child: Text(
+              "Booking Status",
+              textAlign: TextAlign.start,
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
         Expanded(

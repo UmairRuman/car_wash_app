@@ -67,33 +67,36 @@ class CarModelContainer extends ConsumerWidget {
                                     blurRadius: 3)
                               ]),
                           child: Stack(clipBehavior: Clip.none, children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    flex: 55,
-                                    child: (listOfCars[index].isAsset
-                                        ? Image.asset(listOfCars[index].url)
-                                        : Image.network(
-                                            listOfCars[index].url))),
-                                Expanded(
-                                    flex: 25,
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      flex: 55,
+                                      child: (listOfCars[index].isAsset
+                                          ? Image.asset(listOfCars[index].url)
+                                          : Image.network(
+                                              listOfCars[index].url))),
+                                  Expanded(
+                                      flex: 25,
+                                      child: Text(
+                                        listOfCars[index].carName,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                  Expanded(
+                                    flex: 15,
                                     child: Text(
-                                      listOfCars[index].carName,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                                Expanded(
-                                  flex: 15,
-                                  child: Text(
-                                    listOfCars[index].price,
-                                    style: const TextStyle(color: Colors.blue),
+                                      listOfCars[index].price,
+                                      style:
+                                          const TextStyle(color: Colors.blue),
+                                    ),
                                   ),
-                                ),
-                                const Spacer(
-                                  flex: 5,
-                                )
-                              ],
+                                  const Spacer(
+                                    flex: 5,
+                                  )
+                                ],
+                              ),
                             ),
                             if (isSelected && selectedIndex == index)
                               Positioned(

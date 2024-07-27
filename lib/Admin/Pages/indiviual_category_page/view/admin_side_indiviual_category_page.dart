@@ -22,7 +22,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
 
     var data = ModalRoute.of(context)!.settings.arguments
         as AdminSideImageAndServiceNameSender;
-    int serviceId = data.serviceID;
+    String serviceId = data.serviceID;
     String imagePath = data.imagePath;
     String serviceName = data.categoryName;
     ref
@@ -73,6 +73,8 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               Expanded(
                   flex: 15,
                   child: AdminSideCarModelContainer(
+                    serviceId: serviceId,
+                    serviceName: serviceName,
                     listOfCars: listOfCars,
                   )),
               const Spacer(

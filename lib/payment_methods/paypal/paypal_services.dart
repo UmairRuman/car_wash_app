@@ -17,7 +17,7 @@ Widget payPallmethod(
     List<PaypalItems> paypalItems,
     String serviceName,
     String serviceImagPath,
-    int serviceId,
+    String serviceId,
     WidgetRef ref) {
   MessageSender messageSender = MessageSender();
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
@@ -28,10 +28,9 @@ Widget payPallmethod(
   log("Total Amount: $amount");
   log("Subtotal: $subtotal");
 
-  // Check if subtotal matches the amount
   if (subtotal != amount) {
     log("Error: Subtotal does not match the total amount");
-    return Container(); // or handle the error appropriately
+    return Container();
   }
 
   return PaypalCheckout(

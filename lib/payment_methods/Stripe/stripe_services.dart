@@ -2,18 +2,23 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
+import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/firebase_notifications/message_sender.dart';
 import 'package:car_wash_app/payment_methods/Stripe/constants.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 class StripeServices {
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
+  BookingCollection bookingCollection = BookingCollection();
   StripeServices._internal();
   MessageSender messageSender = MessageSender();
   static final StripeServices instance = StripeServices._internal();
 
-  Future<void> makePayment(int amount, String currency) async {
+  Future<void> makePayment(int amount, String currency, String serviceId,
+      String serviceName, WidgetRef ref, String serviceImageUrl) async {
     try {
       String? paymentIntentClientSecret =
           await createPaymentIntent(amount, currency);
@@ -23,7 +28,7 @@ class StripeServices {
         paymentIntentClientSecret: paymentIntentClientSecret,
         merchantDisplayName: "Umair Ruman",
       ));
-      await processPaymentSheet();
+      await processPaymentSheet(serviceId, serviceName, ref, serviceImageUrl);
       log("Paid");
     } catch (e) {
       log("Error in making payment ${e.toString()}");
@@ -59,14 +64,17 @@ class StripeServices {
     return null;
   }
 
-  Future<void> processPaymentSheet() async {
+  Future<void> processPaymentSheet(String serviceId, String serviceName,
+      WidgetRef ref, String serviceImageUrl) async {
     try {
       //We have to call this when we want to open present Payment sheet
       await Stripe.instance.presentPaymentSheet();
 
       var adminInfo = await adminInfoCollection.getAdminsInfoAtSpecificId(1);
       log("payment SuccessFull ");
-
+      ref
+          .read(bookingStateProvider.notifier)
+          .addBooking(serviceId, serviceName, serviceImageUrl);
       messageSender.sendMessage(adminInfo.adminDeviceToken);
       //Below line will throw an exception if payment is unsuccessfull
       await Stripe.instance.confirmPaymentSheetPayment();

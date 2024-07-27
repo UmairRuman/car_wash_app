@@ -1,8 +1,10 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
 import 'package:car_wash_app/Client/pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ServiceInitialState extends StatelessWidget {
@@ -38,7 +40,13 @@ class ServiceInitialState extends StatelessWidget {
                   flex: 40,
                   child: listOfServices[index].isAssetIcon
                       ? Image.asset(listOfServices[index].iconUrl)
-                      : Image.network(listOfServices[index].iconUrl)),
+                      : CachedNetworkImage(
+                          imageUrl: listOfServices[index].iconUrl,
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          placeholder: (context, url) =>
+                              const CupertinoActivityIndicator(),
+                        )),
               Expanded(
                   flex: 40,
                   child: FittedBox(

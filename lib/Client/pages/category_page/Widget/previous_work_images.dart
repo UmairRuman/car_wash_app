@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/intial_list.dart';
 import 'package:car_wash_app/utils/categoryInfo.dart';
@@ -47,21 +48,31 @@ class PreviousWorkImages extends ConsumerWidget {
                             children: [
                               Expanded(
                                 flex: 75,
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20)),
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image:
-                                                state.list[index].isAssetImage
-                                                    ? AssetImage(state
-                                                        .list[index]
-                                                        .previousWorkImage)
-                                                    : NetworkImage(state
-                                                        .list[index]
-                                                        .previousWorkImage)))),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20)),
+                                  child: state.list[index].isAssetImage
+                                      ? Image.asset(
+                                          state.list[index].previousWorkImage,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: state
+                                              .list[index].previousWorkImage,
+                                          placeholder: (context, url) =>
+                                              const Center(
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                        ),
+                                ),
                               ),
                               Expanded(
                                 flex: 25,

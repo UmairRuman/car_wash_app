@@ -100,12 +100,6 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
                                                               .notifier)
                                                       .serviecNameTEC
                                                       .text)
-                                                  .child(ref
-                                                      .read(
-                                                          serviceAddtionStateProvider
-                                                              .notifier)
-                                                      .serviecNameTEC
-                                                      .text)
                                                   .putFile(File(file.path))
                                                   .then((snapshot) async {
                                                 var imagePath = await snapshot

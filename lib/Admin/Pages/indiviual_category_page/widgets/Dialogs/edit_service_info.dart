@@ -18,7 +18,7 @@ class ServiceClassVariables {
 void dialogForEdditingServiceImageAndDescription(
     BuildContext context,
     String serviceName,
-    int serviceId,
+    String serviceId,
     String imagePath,
     WidgetRef ref,
     bool isFavourite) {

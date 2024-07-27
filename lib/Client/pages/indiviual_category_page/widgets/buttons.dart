@@ -1,4 +1,4 @@
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_name_dialog.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_rating_dialog.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/payment_methods/model/data_sender_model.dart';
 import 'package:car_wash_app/payment_methods/view/payment_page.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ButtonBookAWash extends ConsumerStatefulWidget {
   final String serviceName;
-  final int serviceId;
+  final String serviceId;
   final String serviceImageUrl;
 
   const ButtonBookAWash(
@@ -100,8 +100,7 @@ class _ButtonBookAWashState extends ConsumerState<ButtonBookAWash>
                             price: carPrice,
                             timeSlot: timeSlot,
                             dateTime: selectedDate));
-                  }
-                  {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Kindly Choose all the given fields")));
                   }
@@ -122,7 +121,8 @@ class _ButtonBookAWashState extends ConsumerState<ButtonBookAWash>
               flex: 15,
               child: InkWell(
                 onTap: () {
-                  dialogForRating(context);
+                  dialogForRating(
+                      context, ref, widget.serviceName, widget.serviceId);
                 },
                 child: Container(
                     height: 40,

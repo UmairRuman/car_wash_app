@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,10 +36,6 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                           if (AddingPreviousDataVariables.isClickedOnCamera &&
                               AddingPreviousDataVariables.imageFilePath !=
                                   null) {
-                            ref
-                                .read(previousServiceStateProvider.notifier)
-                                .setNewPreviousImage(
-                                    AddingPreviousDataVariables.imageFilePath!);
                             return Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
@@ -61,11 +59,6 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                                       flex: 40,
                                       child: InkWell(
                                           onTap: () async {
-                                            setState(() {
-                                              AddingPreviousDataVariables
-                                                  .isClickedOnCamera = true;
-                                            });
-
                                             var file = await ImagePicker()
                                                 .pickImage(
                                                     source:
@@ -82,6 +75,32 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                                                     .imageFilePath = file.path;
                                                 AddingPreviousDataVariables
                                                     .isClickedOnCamera = true;
+
+                                                FirebaseStorage.instance
+                                                    .ref()
+                                                    .child("Images")
+                                                    .child(FirebaseAuth.instance
+                                                        .currentUser!.uid)
+                                                    .child(
+                                                        "PreviousServiceImages")
+                                                    .child(ref
+                                                        .read(
+                                                            previousServiceStateProvider
+                                                                .notifier)
+                                                        .previousServiceNameTEC
+                                                        .text)
+                                                    .putFile(File(file.path))
+                                                    .then((snapshot) async {
+                                                  var imagePath = await snapshot
+                                                      .ref
+                                                      .getDownloadURL();
+                                                  ref
+                                                      .read(
+                                                          previousServiceStateProvider
+                                                              .notifier)
+                                                      .setNewPreviousImage(
+                                                          imagePath);
+                                                });
                                               });
                                             }
                                           },

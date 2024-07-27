@@ -24,12 +24,12 @@ class ServiceCounterCollection {
     }
   }
 
-  Future<bool> deleteCount(ServiceCounter serviceCounter, String userId) async {
+  Future<bool> deleteCount(String serviceId, String userId) async {
     try {
       UserCollection.userCollection
           .doc(userId)
           .collection(previousServiceCollectionCounter)
-          .doc(serviceCounter.count.toString())
+          .doc(serviceId)
           .delete();
       return true;
     } catch (e) {

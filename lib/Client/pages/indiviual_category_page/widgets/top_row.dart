@@ -1,11 +1,12 @@
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
+import 'package:car_wash_app/Controllers/rating_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TopRowIndiviualCategoryPage extends ConsumerWidget {
   final String serviceName;
-  final int serviceId;
+  final String serviceId;
   bool isFavourite;
   final String serviceImageUrl;
   final String favouriteServiceId;

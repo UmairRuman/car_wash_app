@@ -14,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DefaultServicesController extends Notifier<DefaultServicesStates> {
+  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
       FavouriteServicesCounterCollection();
@@ -26,13 +27,11 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
 
   addDefaultService() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+
     String? adminPhoneNumber =
         prefs!.getString(SharedPreferncesConstants.phoneNo);
 
     for (int index = 0; index < listOfCategoryIcons.length; index++) {
-      List<ServiceCounter> listOfServices =
-          await serviceCounterCollection.getAllServiceCount(adminId!);
       List<Car> listOfCars = [];
       for (int index = 0; index < listOfCarImages.length; index++) {
         listOfCars.add(
@@ -43,32 +42,41 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
               isAsset: true),
         );
       }
+      List<ServiceCounter> listOfServices =
+          await serviceCounterCollection.getAllServiceCount(adminId!);
+      var listLenght = listOfServices.length + 1;
+      String serviceId;
+      if (listLenght < 9) {
+        serviceId = "0$listLenght";
+      } else {
+        serviceId = "$listLenght";
+      }
 
       var favouriteServiceCount = await favouriteServicesCounterCollection
           .getAllUserBookingsCount(userId);
       var favouriteServiceIdCount = favouriteServiceCount.length + 1;
       var favouriteServiceId = "$favouriteServiceIdCount";
-      if (favouriteServiceIdCount < 10) {
+      if (favouriteServiceIdCount < 9) {
         favouriteServiceId = "0$favouriteServiceIdCount";
       }
       serviceCollection.addNewService(Services(
           serviceFavouriteId: favouriteServiceId,
           rating: 5,
           isAssetImage: true,
-          serviceId: listOfServices.length,
-          adminId: adminId,
-          serviceName: listOfCategoryName[listOfServices.length],
+          serviceId: serviceId,
+          adminId: adminId!,
+          serviceName: listOfCategoryName[index],
           description: "Click on Edit to add description",
-          iconUrl: listOfCategoryIcons[listOfServices.length],
+          iconUrl: listOfCategoryIcons[index],
           isFavourite: false,
           cars: listOfCars,
-          imageUrl: listOfPreviousWorkImages[listOfServices.length],
+          imageUrl: listOfPreviousWorkImages[index],
           availableDates: <DateTime>[],
           adminPhoneNo: adminPhoneNumber!,
           isAssetIcon: true));
-
+      await fetchingAllServicesFirstTime();
       serviceCounterCollection.addCount(
-          ServiceCounter(count: listOfServices.length + 1), adminId);
+          ServiceCounter(count: serviceId), adminId!);
     }
   }
 

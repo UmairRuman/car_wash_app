@@ -1,18 +1,16 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Admin/Pages/category_page/Controller/default_services_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
-
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/rating_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
-
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,6 +26,7 @@ final initializationProvider = FutureProvider<void>((ref) async {
 });
 
 class AllServiceInfoController extends Notifier<DataStates> {
+  RatingCollection ratingCollection = RatingCollection();
   var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
   List<Services> intialListOfService = [];
   ServiceCollection serviceCollection = ServiceCollection();
@@ -39,7 +38,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
   String iconUrl = "";
   bool isFavourite = false;
   String serviceName = "";
-  List<Car> cars = [];
+  List<Car> listOfCars = [];
 
   @override
   DataStates build() {
@@ -60,17 +59,19 @@ class AllServiceInfoController extends Notifier<DataStates> {
     iconUrl = newiconUrl;
   }
 
-  Future<void> addCars(int serviceId, String serviceName) async {
-    cars = await serviceCollection.getAllCarsAtSpecificDocument(
+  //Method for Adding Cars
+
+  Future<void> addCars(String serviceId, String serviceName) async {
+    listOfCars = await serviceCollection.getAllCarsAtSpecificDocument(
         adminId!, serviceId, serviceName);
-    // log("CarInfo : ${cars[0].carName}");
+
     String carName = ref.read(carInfoProvider.notifier).carName;
     String carPrice =
         ref.read(carInfoProvider.notifier).carCurrentPrice.toString();
     String carPicUrl = ref.read(carInfoProvider.notifier).carImagePath;
     if (carPicUrl != "" && carName != "" && carPrice != "") {
       log("Car added");
-      cars.add(Car(
+      listOfCars.add(Car(
           carName: carName,
           price: "$carPrice\$",
           url: carPicUrl,
@@ -78,9 +79,24 @@ class AllServiceInfoController extends Notifier<DataStates> {
     }
   }
 
+  //Method For deleting cars
+  Future<void> deleteCar(
+      int index, String serviceId, String serviceName) async {
+    try {
+      bool isCarRemoved = await serviceCollection.deleteCarFromList(
+          adminId!, serviceId, serviceName, index);
+      if (isCarRemoved) {
+        await fetchServiceData(serviceName, serviceId);
+      }
+    } catch (e) {
+      log("Error in deleting service");
+    }
+  }
+
+  //Update Service
+
   void updateService(
-      int serviceId, String serviceName, bool isFavourite) async {
-    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+      String serviceId, String serviceName, bool isFavourite) async {
     var userId = FirebaseAuth.instance.currentUser!.uid;
     var service = await serviceCollection.getSpecificService(
         adminId!, serviceName, serviceId);
@@ -88,10 +104,6 @@ class AllServiceInfoController extends Notifier<DataStates> {
     bool isAssetIcon = false;
 
     await addCars(serviceId, serviceName);
-    // var serviceData = await serviceCollection.getSpecificService(
-    //     adminId!, serviceName, serviceId);
-
-    // await addCars();
     DateTime now =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime endDate = DateTime(now.year, now.month + 1, now.day);
@@ -113,7 +125,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
       imageUrl = service.imageUrl;
       isAssetImage = service.isAssetImage;
     }
-    if (service.serviceId <= 6) {
+    if (service.serviceId.length <= 6) {
       isAssetIcon = true;
     }
 
@@ -128,13 +140,9 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
     //If the user is not null then we add a service collection in userId
 
-    if (adminId != null) {
+    if (adminId != "") {
       //Getting current user data
       String? phoneNo = prefs!.getString(SharedPreferncesConstants.phoneNo);
-
-      //Adding date in car list
-
-      //Adding dates in date List
 
       serviceCollection.updateNewService(Services(
           serviceFavouriteId: favouriteServiceId,
@@ -142,12 +150,12 @@ class AllServiceInfoController extends Notifier<DataStates> {
           isAssetImage: isAssetImage,
           isAssetIcon: isAssetIcon,
           serviceId: serviceId,
-          adminId: adminId,
+          adminId: adminId!,
           serviceName: serviceName,
           description: serviceDescription,
           iconUrl: iconUrl,
           isFavourite: isFavourite,
-          cars: cars,
+          cars: listOfCars,
           imageUrl: imageUrl,
           availableDates: listOfDates,
           adminPhoneNo: phoneNo!));
@@ -157,7 +165,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
     await fetchServiceData(serviceName, serviceId);
   }
 
-  Future<void> fetchServiceData(String serviceName, int serviceID) async {
+  Future<void> fetchServiceData(String serviceName, String serviceID) async {
     var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
     log("admin Id in fetch services $adminId");
     state = DataLoadingState();

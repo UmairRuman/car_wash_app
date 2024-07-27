@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminSideDateTimePicker extends ConsumerWidget {
   final String serviceName;
-  final int serviceId;
+  final String serviceId;
   const AdminSideDateTimePicker(
       {super.key, required this.serviceId, required this.serviceName});
 
@@ -26,11 +26,13 @@ class AdminSideDateTimePicker extends ConsumerWidget {
         showTimelineHeader: false,
         focusDate: focusDate,
         onDateChange: (selectedDate) {
-          log("Selected Date : ${DateTime(selectedDate.year, selectedDate.month, selectedDate.day)}");
+          //We are setting current Date  to delete TimeSlots at that date
+          ref.read(timeSlotsStateProvider.notifier).currentDate =
+              DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
           ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
-              DateTime(selectedDate.year, selectedDate.month, selectedDate.day),
-              serviceId,
-              serviceName);
+                DateTime(
+                    selectedDate.year, selectedDate.month, selectedDate.day),
+              );
           focusDate =
               DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
           ref.read(dateProvider.notifier).onClickChangeDate(DateTime(

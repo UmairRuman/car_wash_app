@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
@@ -13,24 +14,28 @@ class ProfilePic extends StatelessWidget {
           image: DecorationImage(
               image: userProfilePic == ""
                   ? AssetImage(emptyImage)
-                  : NetworkImage(userProfilePic),
+                  : CachedNetworkImageProvider(userProfilePic),
               fit: BoxFit.fill)),
+      child: userProfilePic == ""
+          ? null
+          : CachedNetworkImage(
+              imageUrl: userProfilePic,
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }
-
-// class UserName extends StatelessWidget {
-//   final String userName;
-//   const UserName({super.key, required this.userName});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Text(
-//       userName == "" ? "UserName" : userName,
-//       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//     );
-//   }
-// }
 
 class HomePageUserLocation extends StatelessWidget {
   final String userLocation;
@@ -49,10 +54,12 @@ class HomePageUserLocation extends StatelessWidget {
         Expanded(
             flex: 85,
             child: FittedBox(
-              child: Text(
-                userLocation == "" ? "Location" : userLocation,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
+              child: FittedBox(
+                child: Text(
+                  userLocation == "" ? "Location" : userLocation,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
             ))
       ],

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +14,25 @@ class AdminProfilePic extends StatelessWidget {
           image: DecorationImage(
               image: userProfilePic == ""
                   ? AssetImage(profilePic)
-                  : NetworkImage(userProfilePic),
+                  : CachedNetworkImageProvider(userProfilePic),
               fit: BoxFit.fill)),
+      child: userProfilePic == ""
+          ? null
+          : CachedNetworkImage(
+              imageUrl: userProfilePic,
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }
@@ -35,10 +53,12 @@ class AdminHomePageUserLocation extends StatelessWidget {
             )),
         Expanded(
             flex: 85,
-            child: Text(
-              userLocation == "" ? "Bahwalpur,Pakistan" : userLocation,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white),
+            child: FittedBox(
+              child: Text(
+                userLocation == "" ? "Location" : userLocation,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white),
+              ),
             ))
       ],
     );

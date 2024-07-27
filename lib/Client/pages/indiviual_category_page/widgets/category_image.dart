@@ -1,7 +1,6 @@
-import 'dart:io';
+import 'dart:developer';
 
-import 'package:car_wash_app/utils/images_path.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class IndiviualCategoryImage extends StatelessWidget {
@@ -18,6 +17,7 @@ class IndiviualCategoryImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("IS Asset Image in Indiviual category image $isAssetImage");
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -33,18 +33,28 @@ class IndiviualCategoryImage extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-                flex: 30,
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                          image: isAssetImage
-                              ? AssetImage(imagePath)
-                              : imagePath == ""
-                                  ? AssetImage(emptyImage)
-                                  : NetworkImage(imagePath),
-                          fit: BoxFit.fill)),
-                )),
+              flex: 30,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: isAssetImage
+                    ? Image.asset(
+                        imagePath,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: imagePath,
+                        placeholder: (context, url) =>
+                            const Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+              ),
+            ),
             const Spacer(
               flex: 5,
             ),

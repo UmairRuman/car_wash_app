@@ -45,27 +45,13 @@ class NotificationServices {
   //Show Local Notification
   Future<void> showNotification(RemoteMessage message) async {
     AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails("ID1", "Chnannel1",
-            importance: Importance.high,
-            enableVibration: true,
-            playSound: true,
-            actions: <AndroidNotificationAction>[
-          AndroidNotificationAction(
-            '1',
-            'Ok',
-            showsUserInterface: true,
-          ),
-          AndroidNotificationAction(
-            '2',
-            'Cancel ',
-            showsUserInterface: true,
-          ),
-          AndroidNotificationAction(
-            '3',
-            'Done',
-            showsUserInterface: true,
-          ),
-        ]);
+        const AndroidNotificationDetails(
+      "ID1",
+      "Chnannel1",
+      importance: Importance.high,
+      enableVibration: true,
+      playSound: true,
+    );
 
     var notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
