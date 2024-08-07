@@ -84,8 +84,11 @@ class BookingStatus extends StatelessWidget {
             ),
           ),
         ),
+        const Spacer(
+          flex: 5,
+        ),
         Expanded(
-            flex: 45, child: ActualBookingStatus(bookingStatus: bookingStatus)),
+            flex: 40, child: ActualBookingStatus(bookingStatus: bookingStatus)),
       ],
     );
   }

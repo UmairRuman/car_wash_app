@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
+import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/ModelClasses/admin_info.dart';
@@ -19,6 +21,7 @@ Widget payPallmethod(
     String serviceImagPath,
     String serviceId,
     WidgetRef ref) {
+  MessageDatabase messageDatabase = MessageDatabase();
   MessageSender messageSender = MessageSender();
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
   // Calculate subtotal based on the items
@@ -67,10 +70,11 @@ Widget payPallmethod(
     onSuccess: (Map params) async {
       var adminInfo = await adminInfoCollection.getAdminsInfoAtSpecificId(1);
       log("payment SuccessFull ");
-      ref
+      await ref
           .read(bookingStateProvider.notifier)
           .addBooking(serviceId, serviceName, serviceImagPath);
       messageSender.sendMessage(adminInfo.adminDeviceToken);
+
       log("onSuccess: $params");
     },
     onError: (error) {

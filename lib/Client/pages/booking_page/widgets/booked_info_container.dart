@@ -11,6 +11,7 @@ class BookedInfoContainer extends StatelessWidget {
   final String timeSlot;
   final String washPrice;
   final String bookingStatus;
+
   const BookedInfoContainer(
       {super.key,
       required this.height,

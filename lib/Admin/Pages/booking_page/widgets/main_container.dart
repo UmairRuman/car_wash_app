@@ -14,7 +14,7 @@ class AdminSideMainContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(bookingStateProvider);
     var listOfBookings =
-        ref.read(bookingsIntialStateProvider.notifier).listOfBookings;
+        ref.read(bookingsIntialStateProvider.notifier).finalListForAdmin;
     return Builder(builder: (context) {
       if (state is BookingIntialState) {
         return LayoutBuilder(
@@ -34,10 +34,12 @@ class AdminSideMainContainer extends ConsumerWidget {
                     child: SlideAnimation(
                       horizontalOffset: 50,
                       child: FadeInAnimation(
-                        child: BookedInfoContainer(
+                        child: AdminBookedInfoContainer(
+                          carName: listOfBookings[index].carType,
+                          bookerName: listOfBookings[index].bookerName,
                           height: constraints.maxHeight / 4,
                           width: constraints.maxWidth / 3,
-                          bookingDate: listOfBookings[index].bookingDate,
+                          bookingDate: listOfBookings[index].carWashdate,
                           bookingServiceName: listOfBookings[index].serviceName,
                           bookingStatus: listOfBookings[index].bookingStatus,
                           imagePath: listOfBookings[index].serviceImageUrl,
@@ -71,6 +73,8 @@ class AdminSideMainContainer extends ConsumerWidget {
               itemCount: state.listOfAdminBookings.length,
               itemBuilder: (context, index) {
                 return AdminBookedInfoContainer(
+                  carName: state.listOfAdminBookings[index].carType,
+                  bookerName: state.listOfAdminBookings[index].bookerName,
                   height: constraints.maxHeight / 4,
                   width: constraints.maxWidth / 3,
                   bookingDate: state.listOfAdminBookings[index].bookingDate,

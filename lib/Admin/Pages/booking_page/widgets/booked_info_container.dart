@@ -12,8 +12,12 @@ class AdminBookedInfoContainer extends StatelessWidget {
   final String timeSlot;
   final String washPrice;
   final String bookingStatus;
+  final String bookerName;
+  final String carName;
   const AdminBookedInfoContainer(
       {super.key,
+      required this.carName,
+      required this.bookerName,
       required this.height,
       required this.width,
       required this.imagePath,
@@ -55,8 +59,7 @@ class AdminBookedInfoContainer extends StatelessWidget {
                     ),
                     Expanded(
                         flex: 18,
-                        child: AdminSideBookedServiceName(
-                            bookingServiceName: bookingServiceName)),
+                        child: AdminSideBookerName(bookerName: bookerName)),
                     Expanded(
                       flex: 18,
                       child: AdminSideTextBookingDate(
@@ -72,9 +75,7 @@ class AdminBookedInfoContainer extends StatelessWidget {
                         child: AdminSideTextBookingWashPrice(
                             washPrice: washPrice)),
                     Expanded(
-                        flex: 18,
-                        child: AdminSideBookingStatus(
-                            bookingStatus: bookingStatus)),
+                        flex: 18, child: AdminSideCarName(carName: carName)),
                     const Spacer(
                       flex: 5,
                     ),

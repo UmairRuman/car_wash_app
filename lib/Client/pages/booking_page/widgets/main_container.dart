@@ -10,8 +10,9 @@ class MainContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var listOfBookings =
-        ref.read(bookingsIntialStateProvider.notifier).listOfBookings;
+    var listOfBookings = ref
+        .read(bookingsIntialStateProvider.notifier)
+        .intialListOfBookingsForClient;
     var state = ref.watch(bookingStateProvider);
     return Builder(builder: (context) {
       if (state is BookingIntialState) {

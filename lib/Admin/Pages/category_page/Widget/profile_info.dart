@@ -1,6 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Admin/Pages/NotificationPage/controller/messages_state_controller.dart';
+import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
+import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
+import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminProfilePic extends StatelessWidget {
   final String userProfilePic;
@@ -65,20 +70,38 @@ class AdminHomePageUserLocation extends StatelessWidget {
   }
 }
 
-class AdminNotificationIcon extends StatelessWidget {
+class AdminNotificationIcon extends ConsumerWidget {
   const AdminNotificationIcon({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Opacity(
         opacity: 0.5,
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(5))),
-          child: const Icon(Icons.notifications),
+        child: InkWell(
+          onTap: () async {
+            Navigator.of(context).pushNamed(
+              AdminSideNotificationPage.pageName,
+            );
+          },
+          child: Stack(children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              child: const Icon(Icons.notifications),
+            ),
+            Positioned(
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ))
+          ]),
         ));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/View/admin_side_categoryPage.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
@@ -41,6 +42,8 @@ Route? onGenerateRoute(RouteSettings settings) {
         userName: "",
       )),
     PaymentPage.pageName => myPageBuilder(const PaymentPage(), settings),
+    AdminSideNotificationPage.pageName =>
+      myPageBuilder(const AdminSideNotificationPage(), settings),
     AdminSideBookingPage.pageName =>
       myPageBuilder(const AdminSideBookingPage()),
     AdminSideProfilePage.pageName =>

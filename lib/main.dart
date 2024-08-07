@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/view/chooser_page.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
@@ -23,8 +23,10 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences? prefs;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MessageDatabase.initializeHiveDatabase();
   Stripe.publishableKey = stripePublishablekey;
   await Firebase.initializeApp();
   prefs = await SharedPreferences.getInstance();

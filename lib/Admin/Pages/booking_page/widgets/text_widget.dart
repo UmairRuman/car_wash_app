@@ -127,6 +127,51 @@ class AdminSideBookedServiceName extends StatelessWidget {
   }
 }
 
+class AdminSideBookerName extends StatelessWidget {
+  final String bookerName;
+  const AdminSideBookerName({super.key, required this.bookerName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 55,
+          child: Text(
+            "Book Owner",
+            textAlign: TextAlign.start,
+            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+            flex: 45, child: AdminSideActualBookerName(bookerName: bookerName)),
+      ],
+    );
+  }
+}
+
+class AdminSideCarName extends StatelessWidget {
+  final String carName;
+  const AdminSideCarName({super.key, required this.carName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 55,
+          child: Text(
+            "Car Type",
+            textAlign: TextAlign.start,
+            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(flex: 45, child: AdminSideActualCarName(carName: carName)),
+      ],
+    );
+  }
+}
+
 class AdminSideActualBookingDate extends StatelessWidget {
   final String bookingDate;
   const AdminSideActualBookingDate({super.key, required this.bookingDate});
@@ -192,6 +237,34 @@ class AdminSideActualBookedServiceName extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       serviceName,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 13),
+    );
+  }
+}
+
+class AdminSideActualBookerName extends StatelessWidget {
+  final String bookerName;
+  const AdminSideActualBookerName({super.key, required this.bookerName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      bookerName,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 13),
+    );
+  }
+}
+
+class AdminSideActualCarName extends StatelessWidget {
+  final String carName;
+  const AdminSideActualCarName({super.key, required this.carName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      carName,
       textAlign: TextAlign.center,
       style: const TextStyle(fontSize: 13),
     );

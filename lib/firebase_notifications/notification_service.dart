@@ -1,18 +1,22 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
+import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //For background Notifications wwe have to maka a top level function
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> firebaseMessagingBackgroundHandler(
+    RemoteMessage message, WidgetRef ref) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
 
+  await Firebase.initializeApp();
+  ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings;
   log("Handling a background message: ${message.notification!.title}");
 }
 
@@ -106,6 +110,7 @@ class NotificationServices {
   void rediectMessageWhenAppOpen(RemoteMessage message, BuildContext context) {
     if (message.data['story_id'] == 'story_12345') {
       log("entered");
+
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) {
           return const AdminSideBookingPage();
