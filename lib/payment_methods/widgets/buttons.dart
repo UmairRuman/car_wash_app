@@ -9,12 +9,14 @@ class PaypalPaymentMethodBtn extends ConsumerWidget {
   final String serviceName;
   final String serviceImagePath;
   final String id;
+  final DateTime carWashDate;
   const PaypalPaymentMethodBtn(
       {super.key,
       required this.paymentAmount,
       required this.serviceName,
       required this.id,
-      required this.serviceImagePath});
+      required this.serviceImagePath,
+      required this.carWashDate});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,6 +45,7 @@ class PaypalPaymentMethodBtn extends ConsumerWidget {
                         serviceName,
                         serviceImagePath,
                         id,
+                        carWashDate,
                         ref),
                   ));
                 },
@@ -60,8 +63,10 @@ class StripePaymentMethodBtn extends ConsumerWidget {
   final String serviceName;
   final String serviceImagePath;
   final String id;
+  final DateTime carWashDate;
   const StripePaymentMethodBtn(
       {super.key,
+      required this.carWashDate,
       required this.paymentAmount,
       required this.id,
       required this.serviceImagePath,
@@ -81,7 +86,7 @@ class StripePaymentMethodBtn extends ConsumerWidget {
                   var finalPayment = int.parse(
                       paymentAmount.substring(0, paymentAmount.length - 1));
                   StripeServices.instance.makePayment(finalPayment, "usd", id,
-                      serviceName, ref, serviceImagePath);
+                      serviceName, ref, serviceImagePath, carWashDate);
                 },
                 child: Image.asset(stripeImage))),
         const Spacer(

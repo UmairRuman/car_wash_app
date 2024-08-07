@@ -41,6 +41,26 @@ class UserCollection {
     }
   }
 
+  Future<String> getUserLocation(String userId) async {
+    try {
+      var querrySnapshot = await userCollection.doc(userId).get();
+
+      return Users.fromMap(querrySnapshot.data()!).userLocation;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  Future<String> getUserPhoneNumber(String userId) async {
+    try {
+      var querrySnapshot = await userCollection.doc(userId).get();
+
+      return Users.fromMap(querrySnapshot.data()!).phoneNumber;
+    } catch (e) {
+      return "";
+    }
+  }
+
   Future<bool> deleteUser(Users user) async {
     try {
       await userCollection.doc(user.userId).delete();

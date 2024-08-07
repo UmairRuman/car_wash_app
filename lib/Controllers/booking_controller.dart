@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
-import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
+import 'package:car_wash_app/Admin/Pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/admin_booking_collection_count.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/user_booking_count_collection.dart';
@@ -17,7 +17,11 @@ final bookingStateProvider =
     NotifierProvider<BookingController, BookingStates>(BookingController.new);
 
 class BookingController extends Notifier<BookingStates> {
-  var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  var adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+      ? FirebaseAuth.instance.currentUser!.uid
+      : prefs!.getString(SharedPreferncesConstants.adminkey);
+  DateTime dateTimeForFilter =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   MessageDatabase messageDatabase = MessageDatabase();
   String? carType;
   DateTime? carWashDate;
@@ -25,6 +29,7 @@ class BookingController extends Notifier<BookingStates> {
   String? timeSlot;
   bool? isCarAssetImage;
   String? carImagePath;
+  List<Bookings> listOfAdminRealBookings = [];
   BookingCollection bookingCollection = BookingCollection();
   AdminBookingCollectionCount adminBookingCollectionCount =
       AdminBookingCollectionCount();
@@ -86,8 +91,15 @@ class BookingController extends Notifier<BookingStates> {
             serviceImageUrl: serviceImageUrl,
             serviceName: serviceName,
             timeSlot: timeSlot!));
-        //Adding Message to the Database to show user messages of one day
-        addNotification(bookerName, serviceName, carWashDate!);
+        //Adding Message to the Admin Side to show Admin messages of one day
+        await ref
+            .read(messageStateProvider.notifier)
+            .addNotificationAtAdminSide(
+                bookerName, serviceName, carWashDate!, timeSlot!);
+        //Adding messages to the user side
+        await ref.read(messageStateProvider.notifier).addNotificationAtUserSide(
+            bookerName, serviceName, carWashDate!, timeSlot!);
+
         //Booking counter at admin Collection
         if (adminBookingsTotalCount.length < 9) {
           adminBookingCollectionCount.addAdminBookingCount(
@@ -108,25 +120,15 @@ class BookingController extends Notifier<BookingStates> {
           userBookingCountCollection.addUserBookingCount(UserBookingCounter(
               userId: userId, count: "${userBookingsTotalCount.length + 1}"));
         }
-        await getBookings(userId);
+        // await getBookings(userId);
+
+        await ref
+            .read(messageStateProvider.notifier)
+            .getAllNotificationsByUserId();
       }
     } catch (e) {
       log("Error in adding Booking : ${e.toString()} ");
     }
-  }
-
-  Future<void> addNotification(
-      String bookerName, String serviceName, DateTime carWashDate) async {
-    String messageTitle = "New booking made at $carWashDate";
-    String messageBody =
-        "$bookerName booked $timeSlot timeslot for $serviceName";
-    String date = "${carWashDate.day}-${carWashDate.month}${carWashDate.year}";
-
-    MessageModel messageModel = MessageModel(
-        messageTitle: messageTitle,
-        messageBody: messageBody,
-        messageDeliveredDate: date);
-    await messageDatabase.addMessage(messageModel);
   }
 
   Future<void> getBookings(String userId) async {
@@ -135,11 +137,22 @@ class BookingController extends Notifier<BookingStates> {
       var listOfClientBookings = await bookingCollection.getAllBookings(userId);
       var listOfAdminBookings =
           await bookingCollection.getAllBookings(adminId!);
-
-      state = BookingLoadedState(
-          listOfClientBookings: listOfClientBookings,
-          listOfAdminBookings: listOfAdminBookings);
+      //After getting admin latest bookings we have to navigate admin to the booking page
+      listOfAdminRealBookings = [];
+      if (listOfAdminBookings.isNotEmpty) {
+        for (int index = 0; index < listOfAdminBookings.length; index++) {
+          var carWashdate = listOfAdminBookings[index].carWashdate;
+          var filterDate = dateTimeForFilter;
+          if (carWashdate == filterDate) {
+            listOfAdminBookings.add(listOfAdminBookings[index]);
+            state = BookingLoadedState(
+                listOfClientBookings: listOfClientBookings,
+                listOfAdminBookings: listOfAdminRealBookings);
+          }
+        }
+      }
     } catch (e) {
+      log("Error in getting Admin Side Bookings");
       state = BookingErrorState(error: e.toString());
     }
   }

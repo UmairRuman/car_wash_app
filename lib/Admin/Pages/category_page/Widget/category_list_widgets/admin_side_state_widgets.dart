@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
@@ -51,12 +52,15 @@ class AdminSideServiceDataIntialStateWidget extends ConsumerWidget {
                               ? Image.asset(listOfServices[index].iconUrl)
                               : Image.network(listOfServices[index].iconUrl)),
                       Expanded(
-                          flex: 40,
-                          child: FittedBox(
-                            child: Text(
-                              listOfServices[index].serviceName,
-                            ),
-                          ))
+                        flex: 40,
+                        child: AutoSizeText(
+                          listOfServices[index].serviceName,
+                          style: const TextStyle(fontSize: 16),
+                          maxLines: 1,
+                          minFontSize: 12,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
                     ],
                   ),
                 ),

@@ -1,6 +1,6 @@
 import 'package:car_wash_app/Admin/Pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Admin/Pages/NotificationPage/widget/messsage_intial_widget.dart';
-import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
+import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,7 +13,34 @@ class AdminSideNotificationPage extends ConsumerWidget {
     var listOfIntialMessages =
         ref.read(messageStateProvider.notifier).listOfIntialMessage;
     var state = ref.watch(messageStateProvider);
-    return SafeArea(child: Scaffold(
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        leading: InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
+        centerTitle: true,
+        title: Row(
+          children: [
+            const Expanded(
+              flex: 80,
+              child: FittedBox(
+                child: Text(
+                  "Notification Page",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            Expanded(flex: 20, child: Image.asset(notificationPageImage)),
+          ],
+        ),
+      ),
       body: Center(
         child: Builder(builder: (context) {
           if (state is MessageIntialState) {

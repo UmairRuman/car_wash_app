@@ -14,7 +14,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DefaultServicesController extends Notifier<DefaultServicesStates> {
-  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+      ? FirebaseAuth.instance.currentUser!.uid
+      : prefs!.getString(SharedPreferncesConstants.adminkey);
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
       FavouriteServicesCounterCollection();
@@ -25,11 +27,10 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
     return DefaultServicesInitialState();
   }
 
-  addDefaultService() async {
+  Future<void> addDefaultService() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-
-    String? adminPhoneNumber =
-        prefs!.getString(SharedPreferncesConstants.phoneNo);
+    log("Current user id $userId");
+    String? adminPhoneNumber = FirebaseAuth.instance.currentUser!.phoneNumber;
 
     for (int index = 0; index < listOfCategoryIcons.length; index++) {
       List<Car> listOfCars = [];
@@ -43,7 +44,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
         );
       }
       List<ServiceCounter> listOfServices =
-          await serviceCounterCollection.getAllServiceCount(adminId!);
+          await serviceCounterCollection.getAllServiceCount(userId);
       var listLenght = listOfServices.length + 1;
       String serviceId;
       if (listLenght < 9) {
@@ -64,7 +65,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
           rating: 5,
           isAssetImage: true,
           serviceId: serviceId,
-          adminId: adminId!,
+          adminId: userId,
           serviceName: listOfCategoryName[index],
           description: "Click on Edit to add description",
           iconUrl: listOfCategoryIcons[index],
@@ -76,7 +77,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
           isAssetIcon: true));
       await fetchingAllServicesFirstTime();
       serviceCounterCollection.addCount(
-          ServiceCounter(count: serviceId), adminId!);
+          ServiceCounter(count: serviceId), userId!);
     }
   }
 

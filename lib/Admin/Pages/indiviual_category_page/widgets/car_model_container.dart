@@ -51,8 +51,6 @@ class _AdminSideCarModelContainerState
 
   @override
   Widget build(BuildContext context) {
-    int selectedIndex = -1;
-    bool isClickedLong = false;
     return LayoutBuilder(
       builder: (context, constraints) => AnimationLimiter(
         child: ListView.builder(

@@ -20,7 +20,7 @@ class MessageSender {
   //   "data": {"story_id": "story_12345"}
   // };
 
-  void sendMessage(String token) async {
+  void sendMessage(String token, {Map<String, String>? data}) async {
     try {
       var accessToken = await getServiceKey.getServiceKeyTokken();
 
@@ -42,6 +42,7 @@ class MessageSender {
             },
             'data': {
               'story_id': 'story_12345',
+              if (data != null) ...data,
             },
           },
         }),

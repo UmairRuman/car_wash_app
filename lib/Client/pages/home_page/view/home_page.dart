@@ -28,6 +28,9 @@ class HomePage extends ConsumerWidget {
         .read(previousServiceStateProvider.notifier)
         .getIntialListPreviousServices();
     ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices();
+    // ref
+    //     .read(previousServiceStateProvider.notifier)
+    //     .addDefaultPreviousWorkCategories();
     // ref.read(defaultServicesStateProvider.notifier).addDefaultService();
     return initializationState.when(
       data: (_) {

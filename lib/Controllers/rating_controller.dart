@@ -12,7 +12,9 @@ final ratingStateProvider =
         RatingStateController.new);
 
 class RatingStateController extends Notifier<RatingsFetchingStates> {
-  final adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  var adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+      ? FirebaseAuth.instance.currentUser!.uid
+      : prefs!.getString(SharedPreferncesConstants.adminkey);
   String userId = FirebaseAuth.instance.currentUser!.uid;
   String userName = FirebaseAuth.instance.currentUser!.displayName!;
   double finalRating = 1;

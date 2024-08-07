@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
 import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/ModelClasses/admin_info.dart';
 import 'package:car_wash_app/firebase_notifications/message_sender.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_paypal_checkout/flutter_paypal_checkout.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 Widget payPallmethod(
     BuildContext context,
@@ -20,10 +22,12 @@ Widget payPallmethod(
     String serviceName,
     String serviceImagPath,
     String serviceId,
+    DateTime carWashDate,
     WidgetRef ref) {
   MessageDatabase messageDatabase = MessageDatabase();
   MessageSender messageSender = MessageSender();
-  AdminInfoCollection adminInfoCollection = AdminInfoCollection();
+  AdminDeviceTokenCollection adminDeviceTokenCollection =
+      AdminDeviceTokenCollection();
   // Calculate subtotal based on the items
   double subtotal =
       paypalItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
@@ -68,12 +72,33 @@ Widget payPallmethod(
     ],
     note: "Contact us for any questions on your order.",
     onSuccess: (Map params) async {
-      var adminInfo = await adminInfoCollection.getAdminsInfoAtSpecificId(1);
       log("payment SuccessFull ");
       await ref
           .read(bookingStateProvider.notifier)
           .addBooking(serviceId, serviceName, serviceImagPath);
-      messageSender.sendMessage(adminInfo.adminDeviceToken);
+
+      //If the payement is successFull then we have to  send notifications to all admin
+
+      //Show toast to user for successfully reservation of slot
+
+      Fluttertoast.showToast(
+          msg: "You have reserved slot successfully",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.white,
+          backgroundColor: Colors.green);
+
+      var listOfAdminToken =
+          await adminDeviceTokenCollection.getAllAdminDeviceTokens();
+
+      for (int index = 0; index < listOfAdminToken.length; index++) {
+        messageSender.sendMessage(
+          listOfAdminToken[index].deviceToken,
+          data: {
+            'car_wash_date': carWashDate.toString(), // include car wash date
+          },
+        );
+      }
 
       log("onSuccess: $params");
     },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CarInfoController extends Notifier<String> {
   TextEditingController carNameTEC = TextEditingController();
@@ -31,7 +32,7 @@ class CarInfoController extends Notifier<String> {
     carName = carNameTEC.text;
     if (isPickImage && isChangeCarPrice) {
       state = "Changed";
-    }
+    } else {}
   }
 }
 

@@ -21,16 +21,16 @@ class AdminInfoCollection {
     }
   }
 
-  Future<AdminInfo> getAdminsInfoAtSpecificId(int id) async {
+  Future<AdminInfo> getAdminsInfoAtSpecificId(String id) async {
     try {
-      var querrySnapShot = await adminInfoCollection.doc(id.toString()).get();
+      var querrySnapShot = await adminInfoCollection.doc(id).get();
       return AdminInfo.fromMap(querrySnapShot.data()!);
     } catch (e) {
       return AdminInfo(
           adminDeviceToken: "",
           adminName: "",
           adminId: "",
-          adminNo: 0,
+          adminNo: "",
           adminPhoneNo: "");
     }
   }

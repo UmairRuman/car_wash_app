@@ -14,7 +14,7 @@ class AdminInfoController extends Notifier<AdminInfo> {
     return AdminInfo(
         adminName: "",
         adminId: "",
-        adminNo: 0,
+        adminNo: "",
         adminPhoneNo: "",
         adminDeviceToken: "");
   }
@@ -22,7 +22,7 @@ class AdminInfoController extends Notifier<AdminInfo> {
   Future<void> setAdminInfo(
       {required String adminId,
       required String adminName,
-      required int adminNo,
+      required String adminNo,
       required String adminDeviceToken,
       required String adminPhoneNo}) async {
     AdminInfo adminInfo = AdminInfo(
@@ -69,7 +69,7 @@ class AdminInfoController extends Notifier<AdminInfo> {
       adminId: adminId,
       adminPhoneNo: adminPhoneNo,
       adminName: "Umair Ruman", // Use the stored admin name if needed
-      adminNo: 1, // Use the stored admin number if needed
+      adminNo: "01", // Use the stored admin number if needed
     );
   }
 }

@@ -1,7 +1,12 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
+import 'package:car_wash_app/Controllers/real_admin_state.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String adminInfoKey = "adminId";
@@ -21,26 +26,50 @@ Future<bool?> findIfServiceProvider() async {
   return prefs.getBool(SharedPreferncesConstants.isServiceProvider);
 }
 
+//Function For removing Admin data from
 Future<void> removeAdminIdFromPrefs() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.remove(SharedPreferncesConstants.adminkey);
   await prefs.remove(SharedPreferncesConstants.phoneNo);
   await prefs.remove(SharedPreferncesConstants.isServiceProvider);
+  await prefs.remove(SharedPreferncesConstants.adminTokenKey);
 }
 
-Future<void> getAdminIdFromFireStore() async {
+void storeServiceProviderTokens(List<String> tokens) {
+  String tokensJson = jsonEncode(tokens);
+  prefs!.setString(SharedPreferncesConstants.adminTokenKey, tokensJson);
+}
+
+Future<void> getAdminIdFromFireStore(WidgetRef ref) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  AdminDeviceTokenCollection adminDeviceTokenCollection =
+      AdminDeviceTokenCollection();
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
-  var adminInfo = await adminInfoCollection.getAdminsInfoAtSpecificId(1);
+  var adminInfo = await adminInfoCollection.getAdminsInfoAtSpecificId("01");
+  var list = await adminDeviceTokenCollection.getAllAdminDeviceTokens();
   log("(Admin ID ) : ${adminInfo.adminId} ");
 
-  if (adminInfo.adminNo >= 1) {
+  if (adminInfo.adminNo != "") {
     String? storedAdminId = prefs.getString(SharedPreferncesConstants.adminkey);
+    String? storedAdminPhone =
+        prefs.getString(SharedPreferncesConstants.phoneNo);
+    int? adminCount = prefs.getInt(SharedPreferncesConstants.adminCount);
     log("In Admin Info function");
-    if (storedAdminId == null) {
+    if (storedAdminId == null ||
+        storedAdminPhone == null ||
+        adminCount != list.length) {
+      List<String> listOfTokens = [];
+      for (int index = 0; index < list.length; index++) {
+        listOfTokens.add(list[index].deviceToken);
+      }
+      storeServiceProviderTokens(listOfTokens);
+      log("Admin info ${adminInfo.adminId}");
+      log("Admin info phone n0 ${adminInfo.adminPhoneNo}");
+      ref.read(realAdminStateProvider.notifier).isRealAdmin();
       prefs.setString(SharedPreferncesConstants.adminkey, adminInfo.adminId);
       prefs.setString(
-          SharedPreferncesConstants.adminTokenKey, adminInfo.adminDeviceToken);
+          SharedPreferncesConstants.phoneNo, adminInfo.adminPhoneNo);
+      prefs.setInt(SharedPreferncesConstants.adminCount, list.length);
     }
   } else {
     removeAdminIdFromPrefs();

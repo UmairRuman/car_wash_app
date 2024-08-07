@@ -1,15 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 //Variable to get the current user location
 Position? currentUserPostion;
 
-Future<Position> determinePosition() async {
+Future<Position> determinePosition(BuildContext context) async {
   bool serviceEnabled;
   LocationPermission permission;
 
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
-    return Future.error('Location services are disabled.');
+    _showLocationServicesDialog(context);
   }
 
   permission = await Geolocator.checkPermission();
@@ -29,4 +30,25 @@ Future<Position> determinePosition() async {
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
   return await Geolocator.getCurrentPosition();
+}
+
+void _showLocationServicesDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Location Services Disabled'),
+        content: const Text(
+            'Location services are disabled. Please enable them in settings.'),
+        actions: [
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

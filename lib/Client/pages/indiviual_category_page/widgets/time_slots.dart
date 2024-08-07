@@ -66,6 +66,7 @@ class ClientSideTimeSlots extends ConsumerWidget {
                                 borderRadius: const BorderRadius.all(
                                     Radius.elliptical(15, 15))),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   state.list[index],
@@ -77,7 +78,8 @@ class ClientSideTimeSlots extends ConsumerWidget {
                                 ),
                                 const Text(
                                   "Available",
-                                  style: TextStyle(color: Colors.green),
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 10),
                                 )
                               ],
                             ),

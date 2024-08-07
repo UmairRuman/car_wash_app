@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:car_wash_app/Client/pages/chooser_page/controller/image_controller.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
-import 'package:car_wash_app/Client/pages/chooser_page/controller/image_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -51,7 +51,7 @@ class ChooserPageUserPic extends ConsumerWidget {
           image: DecorationImage(
               image: imagePath == ""
                   ? AssetImage(emptyImage)
-                  : NetworkImage(imagePath),
+                  : FileImage(File(imagePath)),
               fit: BoxFit.fill)),
     );
   }
@@ -64,9 +64,11 @@ class EditIcon extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () async {
-        log("Current User Id ${FirebaseAuth.instance.currentUser!.uid}");
         var file = await ImagePicker().pickImage(source: ImageSource.gallery);
         if (file != null) {
+          ref
+              .read(profilePageImageStateProvider.notifier)
+              .onReciveImagePathFromCloud(file.path);
           FirebaseStorage.instance
               .ref()
               .child("Images")
@@ -77,9 +79,7 @@ class EditIcon extends ConsumerWidget {
             (snapshot) async {
               var imagePath = await snapshot.ref.getDownloadURL();
               log("Image Path $imagePath");
-              ref
-                  .read(profilePageImageStateProvider.notifier)
-                  .onReciveImagePathFromCloud(imagePath);
+
               ref
                   .read(userAdditionStateProvider.notifier)
                   .listOfUserInfo[MapForUserInfo.profilePicUrl] = imagePath;

@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
+import 'package:car_wash_app/Controllers/booking_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +31,7 @@ class NotificationServices {
 
   // Let firstly Intiallize local notifications for our app
   Future<void> initLocalNotifications(
-      RemoteMessage message, BuildContext context) async {
+      RemoteMessage message, BuildContext context, WidgetRef ref) async {
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()!
@@ -41,7 +44,7 @@ class NotificationServices {
       initializationSettings,
       onDidReceiveNotificationResponse: (details) {
         log("Notification received");
-        rediectMessageWhenAppOpen(message, context);
+        rediectMessageWhenAppOpen(message, context, ref);
       },
     );
   }
@@ -64,10 +67,11 @@ class NotificationServices {
   }
 //Listening messages when the app is open
 
-  Future<void> getMessageOnAppOnOpen(BuildContext context) async {
+  Future<void> getMessageOnAppOnOpen(
+      BuildContext context, WidgetRef ref) async {
     FirebaseMessaging.onMessage.listen(
       (message) {
-        initLocalNotifications(message, context);
+        initLocalNotifications(message, context, ref);
         showNotification(message);
       },
     );
@@ -107,10 +111,17 @@ class NotificationServices {
   }
 
   //We are using this function to redirect our user to screeen we want
-  void rediectMessageWhenAppOpen(RemoteMessage message, BuildContext context) {
+  void rediectMessageWhenAppOpen(
+      RemoteMessage message, BuildContext context, WidgetRef ref) async {
     if (message.data['story_id'] == 'story_12345') {
       log("entered");
+      DateTime? carWashDate = message.data['car_wash_date'];
+      log("Car wash date in redirect $carWashDate");
+      ref.read(bookingStateProvider.notifier).dateTimeForFilter = carWashDate!;
 
+      await ref
+          .read(bookingStateProvider.notifier)
+          .getBookings(FirebaseAuth.instance.currentUser!.uid);
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) {
           return const AdminSideBookingPage();
@@ -119,18 +130,19 @@ class NotificationServices {
     }
   }
 
-  Future<void> redirectWhenAppInBgOrTermianted(BuildContext context) async {
+  Future<void> redirectWhenAppInBgOrTermianted(
+      BuildContext context, WidgetRef ref) async {
     //If the app is terminated
     RemoteMessage? intialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
     if (intialMessage != null) {
-      rediectMessageWhenAppOpen(intialMessage, context);
+      rediectMessageWhenAppOpen(intialMessage, context, ref);
     }
 
     //When the app is in background state
     FirebaseMessaging.onMessageOpenedApp.listen(
       (event) {
-        rediectMessageWhenAppOpen(event, context);
+        rediectMessageWhenAppOpen(event, context, ref);
       },
     );
   }

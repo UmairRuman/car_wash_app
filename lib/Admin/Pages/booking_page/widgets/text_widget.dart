@@ -71,7 +71,9 @@ class AdminSideTextBookingWashPrice extends StatelessWidget {
         ),
         Expanded(
             flex: 45,
-            child: AdminSideActualBookingWashPrice(washPrice: washPrice)),
+            child: AdminSideActualBookingWashPrice(
+              washPrice: washPrice,
+            )),
       ],
     );
   }
@@ -209,7 +211,7 @@ class AdminSideActualBookingWashPrice extends StatelessWidget {
     return Text(
       washPrice,
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 13),
+      style: const TextStyle(fontSize: 13, color: Colors.red),
     );
   }
 }
@@ -266,7 +268,7 @@ class AdminSideActualCarName extends StatelessWidget {
     return Text(
       carName,
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 13),
+      style: const TextStyle(fontSize: 13, color: Colors.green),
     );
   }
 }

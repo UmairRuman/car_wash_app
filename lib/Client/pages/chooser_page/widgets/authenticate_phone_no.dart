@@ -41,9 +41,9 @@ class BtnAuthenticatePhoneNo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(children: [
-      const Spacer(flex: 40),
+      const Spacer(flex: 30),
       Expanded(
-        flex: 20,
+        flex: 40,
         child: FloatingActionButton(
           onPressed: () async {
             await ref.read(phoneNumberStateProvider.notifier).verifyOtp();
@@ -52,7 +52,7 @@ class BtnAuthenticatePhoneNo extends ConsumerWidget {
           child: const FittedBox(child: Text("Authenticate")),
         ),
       ),
-      const Spacer(flex: 40),
+      const Spacer(flex: 30),
     ]);
   }
 }

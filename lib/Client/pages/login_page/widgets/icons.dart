@@ -130,18 +130,19 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
 
   Future signInWithGoogle() async {
     // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn(
-      scopes: [
-        'email',
-        'https://www.googleapis.com/auth/userinfo.email',
-      ],
-    ).signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-    var credentials;
     try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+        scopes: [
+          'email',
+          'https://www.googleapis.com/auth/userinfo.email',
+        ],
+      ).signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      var credentials;
+
       // Create a new credential
       credentials = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,

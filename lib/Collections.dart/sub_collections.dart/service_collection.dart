@@ -1,9 +1,7 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
-import 'package:car_wash_app/ModelClasses/time_slot.dart';
 
 class ServiceCollection {
   static final ServiceCollection instance = ServiceCollection._internal();
@@ -122,14 +120,20 @@ class ServiceCollection {
     }
   }
 
-  Future<Services> getSpecificService(
+  Future<dynamic> getSpecificService(
       String adminId, String serviceName, String serviceId) async {
-    var querySnapshot = await UserCollection.userCollection
-        .doc(adminId)
-        .collection(serviceCollection)
-        .doc("$serviceId)$serviceName")
-        .get();
-    return Services.fromMap(querySnapshot.data()!);
+    try {
+      var querySnapshot = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .get();
+      print(querySnapshot.data());
+      return Services.fromMap(querySnapshot.data()!);
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
   }
 
   Future<List<Services>> getAllServicesByAdmin(String adminId) async {

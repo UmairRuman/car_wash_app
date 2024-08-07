@@ -1,24 +1,32 @@
 //Firstly we have to implement singelton of class
 import 'dart:developer';
-
-import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/firebase_notifications/message_sender.dart';
 import 'package:car_wash_app/payment_methods/Stripe/constants.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class StripeServices {
-  AdminInfoCollection adminInfoCollection = AdminInfoCollection();
   BookingCollection bookingCollection = BookingCollection();
+  AdminDeviceTokenCollection adminDeviceTokenCollection =
+      AdminDeviceTokenCollection();
   StripeServices._internal();
   MessageSender messageSender = MessageSender();
   static final StripeServices instance = StripeServices._internal();
 
-  Future<void> makePayment(int amount, String currency, String serviceId,
-      String serviceName, WidgetRef ref, String serviceImageUrl) async {
+  Future<void> makePayment(
+      int amount,
+      String currency,
+      String serviceId,
+      String serviceName,
+      WidgetRef ref,
+      String serviceImageUrl,
+      DateTime carWashDate) async {
     try {
       String? paymentIntentClientSecret =
           await createPaymentIntent(amount, currency);
@@ -28,7 +36,8 @@ class StripeServices {
         paymentIntentClientSecret: paymentIntentClientSecret,
         merchantDisplayName: "Umair Ruman",
       ));
-      await processPaymentSheet(serviceId, serviceName, ref, serviceImageUrl);
+      await processPaymentSheet(
+          serviceId, serviceName, ref, serviceImageUrl, carWashDate);
       log("Paid");
     } catch (e) {
       log("Error in making payment ${e.toString()}");
@@ -65,20 +74,43 @@ class StripeServices {
   }
 
   Future<void> processPaymentSheet(String serviceId, String serviceName,
-      WidgetRef ref, String serviceImageUrl) async {
+      WidgetRef ref, String serviceImageUrl, DateTime carWashDate) async {
     try {
       //We have to call this when we want to open present Payment sheet
       await Stripe.instance.presentPaymentSheet();
 
-      var adminInfo = await adminInfoCollection.getAdminsInfoAtSpecificId(1);
       log("payment SuccessFull ");
       ref
           .read(bookingStateProvider.notifier)
           .addBooking(serviceId, serviceName, serviceImageUrl);
-      messageSender.sendMessage(adminInfo.adminDeviceToken);
+      //Show toast to user for successfully reservation of slot
+      Fluttertoast.showToast(
+          msg: "You have reserved slot successfully",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.white,
+          backgroundColor: Colors.green);
+      //When the payment is successfull then we have to send messages to admins by taking their token
+      var listOfAdminToken =
+          await adminDeviceTokenCollection.getAllAdminDeviceTokens();
+
+      for (int index = 0; index < listOfAdminToken.length; index++) {
+        messageSender.sendMessage(
+          listOfAdminToken[index].deviceToken,
+          data: {
+            'car_wash_date': carWashDate.toString(), // include car wash date
+          },
+        );
+      }
       //Below line will throw an exception if payment is unsuccessfull
       await Stripe.instance.confirmPaymentSheetPayment();
     } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Payment Failed ,${e.toString()}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.white,
+          backgroundColor: Colors.red);
       log("Payement Failed");
       log(e.toString());
     }

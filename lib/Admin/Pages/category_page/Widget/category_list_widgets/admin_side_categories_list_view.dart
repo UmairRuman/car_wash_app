@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Model/model_For_sending_data.dart';
@@ -105,12 +106,15 @@ class AdminSideCategoriesList extends ConsumerWidget {
                                         ),
                                 ),
                                 Expanded(
-                                    flex: 40,
-                                    child: FittedBox(
-                                      child: Text(
-                                        state.services[index].serviceName,
-                                      ),
-                                    ))
+                                  flex: 40,
+                                  child: AutoSizeText(
+                                    state.services[index].serviceName,
+                                    style: const TextStyle(fontSize: 16),
+                                    maxLines: 1,
+                                    minFontSize: 12,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
                               ],
                             ),
                           ),

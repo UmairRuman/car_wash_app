@@ -54,11 +54,14 @@ class BookingCollection {
           .doc(userId)
           .collection(bookingCollection)
           .get();
-      return querrySnapshot.docs
-          .map(
-            (doc) => Bookings.fromMap(doc.data()),
-          )
-          .toList();
+      if (querrySnapshot.docs.isNotEmpty) {
+        return querrySnapshot.docs
+            .map(
+              (doc) => Bookings.fromMap(doc.data()),
+            )
+            .toList();
+      }
+      return [];
     } catch (e) {
       return [];
     }

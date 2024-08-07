@@ -14,6 +14,8 @@ var picTireDressing = "assets/images/picTireDressing.jpg";
 var cameraImage = "assets/images/camera.png";
 var stripeImage = "assets/images/stripe.png";
 var paypalImage = "assets/images/paypal.png";
+var bookingPageImage = "assets/images/bookingPic.png";
+var notificationPageImage = "assets/images/notificationPic.png";
 
 var slotImage = "assets/images/slot.png";
 var dateImage = "assets/images/date.png";

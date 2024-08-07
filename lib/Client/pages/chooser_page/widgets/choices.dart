@@ -1,7 +1,10 @@
-import 'package:car_wash_app/Controllers/user_state_controller.dart';
-import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/controller/color_controller.dart';
+import 'package:car_wash_app/Client/pages/chooser_page/widgets/key_dialog.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/sqare_shape_clipper.dart';
+import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
+import 'package:car_wash_app/Controllers/user_state_controller.dart';
+import 'package:car_wash_app/ModelClasses/admin_key.dart';
+import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -82,7 +85,8 @@ class Choice1 extends ConsumerWidget {
 }
 
 class Choice2 extends ConsumerWidget {
-  const Choice2({super.key});
+  final AdminKeyCollection adminKeyCollection = AdminKeyCollection();
+  Choice2({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,13 +95,9 @@ class Choice2 extends ConsumerWidget {
       builder: (context, constraints) => ClipPath(
           clipper: SquareShapeClipper(),
           child: InkWell(
-            onTap: () {
-              ref
-                  .read(colorNotifierProvider.notifier)
-                  .onClickOnAttendentChoice();
-              ref
-                  .read(userAdditionStateProvider.notifier)
-                  .listOfUserInfo[MapForUserInfo.isServiceProvider] = true;
+            onTap: () async {
+              // await adminKeyCollection.addAdminKey(AdminKey(pin: "293323"));
+              showDialogForEnteringOwnerKey(context, ref, adminKeyCollection);
             },
             child: Container(
                 height: constraints.maxHeight,

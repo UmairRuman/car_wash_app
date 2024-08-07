@@ -9,8 +9,6 @@ import 'package:car_wash_app/Client/pages/category_page/Widget/state_widgets.dar
 import 'package:car_wash_app/Client/pages/indiviual_category_page/view/indiviual_category_page.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/rating_controller.dart';
-import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';

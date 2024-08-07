@@ -104,18 +104,21 @@ class _MainLayoutSignUpButtonState extends ConsumerState<MainLayoutSignUpButton>
         await animationController.reverse();
         Navigator.pushNamed(context, SignUpPage.pageName);
       },
-      child: Container(
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(3)),
-          color: Color.fromARGB(255, 224, 219, 219),
-        ),
-        child: const Text(
-          "SignUp",
-          style: TextStyle(
-              color: Color.fromARGB(255, 96, 91, 91),
-              fontWeight: FontWeight.bold,
-              fontSize: 18),
+      child: ScaleTransition(
+        scale: animationForSize,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(3)),
+            color: Color.fromARGB(255, 224, 219, 219),
+          ),
+          child: const Text(
+            "SignUp",
+            style: TextStyle(
+                color: Color.fromARGB(255, 96, 91, 91),
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
+          ),
         ),
       ),
     );

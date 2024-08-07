@@ -34,6 +34,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  
   cupertino_icons: ^1.0.6
   animated_notch_bottom_bar: ^1.0.3
   font_awesome_flutter: ^10.7.0
@@ -74,6 +75,10 @@ dependencies:
   pushable_button: ^0.0.4
   hive_flutter: ^1.1.0
   hive: ^2.0.0
+  fluttertoast: ^8.2.6
+  animated_text_kit: ^4.2.2
+  bcrypt: ^1.1.3
+  auto_size_text: ^3.0.0
   
   
   

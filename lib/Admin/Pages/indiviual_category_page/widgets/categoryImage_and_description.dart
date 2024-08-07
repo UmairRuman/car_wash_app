@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_service_info.dart';
+import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,7 +53,7 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                         placeholder: (context, url) =>
                             const Center(child: CircularProgressIndicator()),
                         errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                            Image.asset(emptyImage),
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,

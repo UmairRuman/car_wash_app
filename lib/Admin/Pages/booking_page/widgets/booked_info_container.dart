@@ -14,18 +14,20 @@ class AdminBookedInfoContainer extends StatelessWidget {
   final String bookingStatus;
   final String bookerName;
   final String carName;
-  const AdminBookedInfoContainer(
-      {super.key,
-      required this.carName,
-      required this.bookerName,
-      required this.height,
-      required this.width,
-      required this.imagePath,
-      required this.bookingServiceName,
-      required this.bookingDate,
-      required this.timeSlot,
-      required this.washPrice,
-      required this.bookingStatus});
+
+  const AdminBookedInfoContainer({
+    super.key,
+    required this.carName,
+    required this.bookerName,
+    required this.height,
+    required this.width,
+    required this.imagePath,
+    required this.bookingServiceName,
+    required this.bookingDate,
+    required this.timeSlot,
+    required this.washPrice,
+    required this.bookingStatus,
+  });
 
   @override
   Widget build(BuildContext context) {

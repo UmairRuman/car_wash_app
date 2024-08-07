@@ -46,9 +46,14 @@ class MessageDatabase {
     }
   }
 
-  List<MessageModel> getMessages() {
+  static List<MessageModel> getMessages() {
     final box = Hive.box<MessageModel>(messageBox);
     return box.values.toList();
+  }
+
+  List<MessageModel> getMessagesByUserId(String userId) {
+    final box = Hive.box<MessageModel>(messageBox);
+    return box.values.where((message) => message.userId == userId).toList();
   }
 
   MessageModel? getMessage(int index) {

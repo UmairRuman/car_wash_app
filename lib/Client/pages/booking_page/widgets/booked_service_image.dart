@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 
 class BookedServiceImage extends StatelessWidget {
   final String imagepath;
@@ -9,8 +10,28 @@ class BookedServiceImage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          image:
-              DecorationImage(image: AssetImage(imagepath), fit: BoxFit.cover)),
+          image: DecorationImage(
+              image: imagepath[0] == "a"
+                  ? AssetImage(imagepath)
+                  : CachedNetworkImageProvider(imagepath),
+              fit: BoxFit.cover)),
+      child: imagepath[0] == "a"
+          ? Image.asset(imagepath)
+          : CachedNetworkImage(
+              imageUrl: imagepath,
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

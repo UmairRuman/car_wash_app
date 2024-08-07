@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,25 @@ class ProfilePagePic extends StatelessWidget {
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           image: DecorationImage(
-              image: NetworkImage(profileImageUrl), fit: BoxFit.fill)),
+              image: CachedNetworkImageProvider(profileImageUrl),
+              fit: BoxFit.fill)),
+      child: profileImageUrl == ""
+          ? Image.asset(emptyImage)
+          : CachedNetworkImage(
+              imageUrl: profileImageUrl,
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

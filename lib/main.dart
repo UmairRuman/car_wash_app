@@ -1,10 +1,13 @@
 import 'dart:developer';
+
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/view/chooser_page.dart';
+import 'package:car_wash_app/Client/pages/email_verification_page/view/verification_page.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/auth_state_change_notifier.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
@@ -39,15 +42,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SchedulerBinding.instance.addPostFrameCallback(
-      (timeStamp) async {
-        await getAdminIdFromFireStore();
-        var position = await determinePosition();
-        currentUserPostion = position;
-        log("Longitude ${currentUserPostion!.longitude}");
-        log("Lotitude ${currentUserPostion!.latitude}");
-      },
-    );
     for (var imagespath in listOfPreviousWorkImages) {
       precacheImage(AssetImage(imagespath), context);
     }
@@ -67,6 +61,7 @@ class MyApp extends ConsumerWidget {
 }
 
 class AuthHandler extends ConsumerStatefulWidget {
+  static const pageName = '/authHandler';
   const AuthHandler({super.key});
 
   @override
@@ -75,26 +70,53 @@ class AuthHandler extends ConsumerStatefulWidget {
 
 class AuthHandlerState extends ConsumerState<AuthHandler> {
   NotificationServices notificationServices = NotificationServices();
+  UserCollection userCollection = UserCollection();
+
   @override
   void initState() {
     super.initState();
     notificationServices.requestPermission();
-    notificationServices.getMessageOnAppOnOpen(context);
-    notificationServices.redirectWhenAppInBgOrTermianted(context);
-  }
+    notificationServices.getMessageOnAppOnOpen(context, ref);
+    notificationServices.redirectWhenAppInBgOrTermianted(context, ref);
 
-  @override
-  Widget build(BuildContext context) {
     notificationServices.messaging.onTokenRefresh.listen(
-      (token) {
+      (token) async {
         log("Device Token : $token ");
         if (FirebaseAuth.instance.currentUser != null) {
+          ref.read(userAdditionStateProvider.notifier).updateAdminToken(token);
           ref
               .read(userAdditionStateProvider.notifier)
               .updateUserToken(FirebaseAuth.instance.currentUser!.uid, token);
         }
       },
     );
+  }
+
+  Future<void> getPosition() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      String userLocation = await userCollection
+          .getUserLocation(FirebaseAuth.instance.currentUser!.uid);
+      if (userLocation == "") {
+        var position = await determinePosition(context);
+        currentUserPostion = position;
+      }
+    } else {
+      var position = await determinePosition(context);
+      currentUserPostion = position;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        await getAdminIdFromFireStore(ref);
+        await getPosition();
+        // log("Longitude ${currentUserPostion!.longitude}");
+        // log("Lotitude ${currentUserPostion!.latitude}");
+      },
+    );
+
     final authState = ref.watch(authStateProvider);
     final currentUser = FirebaseAuth.instance.currentUser;
     log("Auth Handler Rebuild");
@@ -108,13 +130,10 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
             prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
           //If the service provider is true then we will show him Admin Home Page
           return const AdminSideHomePage();
-        } else if (currentUser.phoneNumber != null &&
-            prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
-                null &&
-            !prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
+        } else if (currentUser.phoneNumber != null) {
           //If the
           return const HomePage();
-        } else {
+        } else if (currentUser.emailVerified) {
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
               Navigator.pushNamed(context, ChooserPage.pageName);
@@ -131,6 +150,8 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
           ref.read(userAdditionStateProvider.notifier).deviceToken =
               notificationServices.getTokken();
           return const ChooserPage();
+        } else {
+          return const EmailVerficationPage();
         }
       },
       loading: () => const Scaffold(

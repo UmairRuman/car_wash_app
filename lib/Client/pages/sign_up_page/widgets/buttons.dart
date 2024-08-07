@@ -1,12 +1,13 @@
-import 'dart:developer';
-
+import 'package:car_wash_app/Client/pages/email_verification_page/view/verification_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/sign_up_page_controller.dart';
+import 'package:car_wash_app/Client/pages/sign_up_page/model/model_for_sending_user_info.dart';
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:car_wash_app/utils/gradients.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BtnCreateAccount extends ConsumerStatefulWidget {
   const BtnCreateAccount({super.key});
@@ -55,20 +56,41 @@ class _BtnCreateAccountState extends ConsumerState<BtnCreateAccount>
                 if (signUpPagePasswordKey.currentState!.validate() &&
                     signUpPageEmailKey.currentState!.validate() &&
                     signUpPageNameKey.currentState!.validate()) {
-                  UserCredential credentials = await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: emailController.text,
-                          password: passWordController.text);
+                  // Check if the email is already registered
+                  try {
+                    List<String> signInMethods = await FirebaseAuth.instance
+                        .fetchSignInMethodsForEmail(emailController.text);
 
-                  User? user = credentials.user;
-
-                  if (FirebaseAuth.instance.currentUser != null) {
-                    await FirebaseAuth.instance.currentUser!
-                        .updateDisplayName(nameController.text);
-
-                    log(FirebaseAuth.instance.currentUser?.displayName ??
-                        'No Name');
-                    log('[Updated successfully]');
+                    if (signInMethods.isEmpty) {
+                      // Email not registered, proceed to create the user
+                      Navigator.of(context).pushNamed(
+                          EmailVerficationPage.pageName,
+                          arguments: ModelForUserInfo(
+                              userEmail: emailController.text,
+                              userName: nameController.text,
+                              userPassword: passWordController.text));
+                    } else {
+                      // Email already registered, show an error message
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Email is already registered')));
+                    }
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'network-request-failed') {
+                      Fluttertoast.showToast(
+                          msg: "Check your Internet Connection",
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white);
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "An error occurred: ${e.message}",
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white);
+                    }
+                  } catch (e) {
+                    Fluttertoast.showToast(
+                        msg: "An unexpected error occurred: $e",
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white);
                   }
                 }
               },

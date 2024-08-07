@@ -9,11 +9,15 @@ import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/utils/categoryInfo.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
-  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+      ? FirebaseAuth.instance.currentUser!.uid
+      : prefs!.getString(SharedPreferncesConstants.adminkey);
+
   List<PreviousWorkModel> intialList = [];
   TextEditingController previousServiceNameTEC = TextEditingController();
   RatingCollection ratingCollection = RatingCollection();
@@ -33,8 +37,6 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
   }
 
   Future<void> getIntialListPreviousServices() async {
-    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
-
     try {
       intialList = await previousWorkCollection.getAllPreviousWork(adminId!);
     } catch (e) {
@@ -116,6 +118,15 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
       } catch (e) {
         log("Error in adding previous Work data");
       }
+    }
+  }
+
+  void deleteSpecificPreviousData(String previousServiceId) async {
+    try {
+      previousWorkCollection.deletePreviousData(adminId!, previousServiceId);
+      await getAllPreviousData();
+    } catch (e) {
+      log("Error in deleting Previous Work");
     }
   }
 }

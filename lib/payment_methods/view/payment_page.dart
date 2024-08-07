@@ -14,6 +14,14 @@ class PaymentPage extends StatelessWidget {
         as BookingPageDataSendingModel;
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          leading: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: const Icon(Icons.arrow_back)),
+        ),
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -80,6 +88,7 @@ class PaymentPage extends StatelessWidget {
                   Expanded(
                       flex: 10,
                       child: PaypalPaymentMethodBtn(
+                        carWashDate: data.dateTime,
                         id: data.serviceId,
                         serviceImagePath: data.serviceImagePath,
                         paymentAmount: data.price,
@@ -88,6 +97,7 @@ class PaymentPage extends StatelessWidget {
                   Expanded(
                       flex: 10,
                       child: StripePaymentMethodBtn(
+                        carWashDate: data.dateTime,
                         id: data.serviceId,
                         serviceImagePath: data.serviceImagePath,
                         paymentAmount: data.price,

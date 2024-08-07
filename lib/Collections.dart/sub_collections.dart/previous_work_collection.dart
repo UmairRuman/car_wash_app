@@ -26,12 +26,12 @@ class PreviousWorkCollection {
   }
 
   Future<bool> deletePreviousData(
-      String userId, PreviousWorkModel previousWorkModel) async {
+      String userId, String previousServiceid) async {
     try {
       await UserCollection.userCollection
           .doc(userId)
           .collection(previousWorkCollectionName)
-          .doc(previousWorkModel.id.toString())
+          .doc(previousServiceid)
           .delete();
       return true;
     } catch (e) {

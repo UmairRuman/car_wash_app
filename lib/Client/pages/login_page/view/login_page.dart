@@ -2,6 +2,7 @@ import 'package:car_wash_app/Client/pages/login_page/widgets/buttons.dart';
 import 'package:car_wash_app/Client/pages/login_page/widgets/icons.dart';
 import 'package:car_wash_app/Client/pages/login_page/widgets/text_fields.dart';
 import 'package:car_wash_app/Client/pages/login_page/widgets/texts.dart';
+import 'package:car_wash_app/Client/pages/reset_password_page/view/reset_password.dart';
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:flutter/material.dart';
 
@@ -48,8 +49,37 @@ class LoginPage extends StatelessWidget {
                         child: LoginTextFieldPassword(
                           formKey: loginPagePasswordKey,
                         )),
+                    Expanded(
+                        flex: 5,
+                        child: Row(
+                          children: [
+                            const Spacer(
+                              flex: 52,
+                            ),
+                            Expanded(
+                              flex: 35,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(ResetPasswordPage.pageName);
+                                },
+                                child: FittedBox(
+                                  child: Text(
+                                    "Forgot Password?",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade700),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Spacer(
+                              flex: 13,
+                            )
+                          ],
+                        )),
                     const Spacer(
-                      flex: 5,
+                      flex: 3,
                     ),
                     const Expanded(flex: 10, child: BtnLogin()),
                     const Spacer(
@@ -62,7 +92,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     const Expanded(flex: 10, child: SocialMediaIcons()),
                     const Spacer(
-                      flex: 7,
+                      flex: 4,
                     ),
                   ],
                 ),

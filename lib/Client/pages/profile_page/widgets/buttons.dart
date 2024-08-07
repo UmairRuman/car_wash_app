@@ -16,10 +16,9 @@ class EditProfileButton extends StatelessWidget {
         ),
         Expanded(
             flex: 80,
-            child: FloatingActionButton(
-              heroTag: "1",
+            child: MaterialButton(
               onPressed: () {},
-              backgroundColor: Colors.blue,
+              color: Colors.blue,
               child: const Text(
                 "Edit Profile",
                 style:
@@ -46,8 +45,7 @@ class LogOutProfileButton extends StatelessWidget {
         ),
         Expanded(
             flex: 60,
-            child: FloatingActionButton(
-              heroTag: "2",
+            child: MaterialButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut();
                 SchedulerBinding.instance.addPostFrameCallback(
@@ -56,7 +54,7 @@ class LogOutProfileButton extends StatelessWidget {
                   },
                 );
               },
-              backgroundColor: Colors.blue,
+              color: Colors.blue,
               child: const Text(
                 "Log Out",
                 style:

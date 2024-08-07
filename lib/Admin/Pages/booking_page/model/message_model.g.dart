@@ -17,8 +17,9 @@ class MessageModelAdapter extends TypeAdapter<MessageModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return MessageModel(
-      messageBody: fields[2] as String,
+      userId: fields[0] as String,
       messageTitle: fields[1] as String,
+      messageBody: fields[2] as String,
       messageDeliveredDate: fields[3] as String,
     );
   }
@@ -26,7 +27,9 @@ class MessageModelAdapter extends TypeAdapter<MessageModel> {
   @override
   void write(BinaryWriter writer, MessageModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.userId)
       ..writeByte(1)
       ..write(obj.messageTitle)
       ..writeByte(2)

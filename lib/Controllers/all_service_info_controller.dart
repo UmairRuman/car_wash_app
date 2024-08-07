@@ -19,15 +19,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final initializationProvider = FutureProvider<void>((ref) async {
   final sharedPreferences = await SharedPreferences.getInstance();
-  final adminkey =
-      sharedPreferences.getString(SharedPreferncesConstants.adminkey)!;
+
   final userKey = FirebaseAuth.instance.currentUser!.uid;
   ref.read(userAdditionStateProvider.notifier).getUser(userKey);
 });
 
 class AllServiceInfoController extends Notifier<DataStates> {
   RatingCollection ratingCollection = RatingCollection();
-  var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  var adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+      ? FirebaseAuth.instance.currentUser!.uid
+      : prefs!.getString(SharedPreferncesConstants.adminkey);
   List<Services> intialListOfService = [];
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
@@ -42,6 +43,9 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
   @override
   DataStates build() {
+    ref.onDispose(
+      () {},
+    );
     return DataIntialState();
   }
 
@@ -77,6 +81,9 @@ class AllServiceInfoController extends Notifier<DataStates> {
           url: carPicUrl,
           isAsset: false));
     }
+    ref.read(carInfoProvider.notifier).carName = "";
+    ref.read(carInfoProvider.notifier).carCurrentPrice = 1;
+    ref.read(carInfoProvider.notifier).carImagePath = "";
   }
 
   //Method For deleting cars

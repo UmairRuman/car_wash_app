@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +11,7 @@ class ProfilePic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("Profile Pic Url in Page $userProfilePic");
     return Container(
       decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -72,16 +76,21 @@ class NotificationIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-        opacity: 0.5,
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(5))),
-          child: const Icon(Icons.notifications),
-        ));
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, NotificationPage.pageName);
+      },
+      child: Opacity(
+          opacity: 0.5,
+          child: Container(
+            height: 50,
+            width: 50,
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            child: const Icon(Icons.notifications),
+          )),
+    );
   }
 }
 

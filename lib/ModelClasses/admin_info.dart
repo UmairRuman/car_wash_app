@@ -4,7 +4,7 @@ import 'dart:convert';
 class AdminInfo {
   String adminName;
   String adminId;
-  int adminNo;
+  String adminNo;
   String adminPhoneNo;
   String adminDeviceToken;
   AdminInfo({
@@ -18,16 +18,16 @@ class AdminInfo {
   AdminInfo copyWith({
     String? adminName,
     String? adminId,
-    int? adminNo,
+    String? adminNo,
     String? adminPhoneNo,
-    String? addminDeviceToken,
+    String? adminDeviceToken,
   }) {
     return AdminInfo(
       adminName: adminName ?? this.adminName,
       adminId: adminId ?? this.adminId,
       adminNo: adminNo ?? this.adminNo,
       adminPhoneNo: adminPhoneNo ?? this.adminPhoneNo,
-      adminDeviceToken: addminDeviceToken ?? this.adminDeviceToken,
+      adminDeviceToken: adminDeviceToken ?? this.adminDeviceToken,
     );
   }
 
@@ -37,7 +37,7 @@ class AdminInfo {
       'adminId': adminId,
       'adminNo': adminNo,
       'adminPhoneNo': adminPhoneNo,
-      'addminDeviceToken': adminDeviceToken,
+      'adminDeviceToken': adminDeviceToken,
     };
   }
 
@@ -45,9 +45,9 @@ class AdminInfo {
     return AdminInfo(
       adminName: map['adminName'] as String,
       adminId: map['adminId'] as String,
-      adminNo: map['adminNo'] as int,
+      adminNo: map['adminNo'] as String,
       adminPhoneNo: map['adminPhoneNo'] as String,
-      adminDeviceToken: map['addminDeviceToken'] as String,
+      adminDeviceToken: map['adminDeviceToken'] as String,
     );
   }
 
@@ -58,7 +58,7 @@ class AdminInfo {
 
   @override
   String toString() {
-    return 'AdminInfo(adminName: $adminName, adminId: $adminId, adminNo: $adminNo, adminPhoneNo: $adminPhoneNo, addminDeviceToken: $adminDeviceToken)';
+    return 'AdminInfo(adminName: $adminName, adminId: $adminId, adminNo: $adminNo, adminPhoneNo: $adminPhoneNo, adminDeviceToken: $adminDeviceToken)';
   }
 
   @override

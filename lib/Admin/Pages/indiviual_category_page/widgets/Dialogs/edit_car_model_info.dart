@@ -237,6 +237,8 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
                                         .updateService(serviceId, serviceName,
                                             isFavourite);
 
+                                    //After performing operation set all values to intial
+
                                     Navigator.of(context).pop();
                                   },
                                   backgroundColor: const Color(0xFF1BC0C5),
