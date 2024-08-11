@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -19,6 +21,7 @@ class MessageDatabase {
   Future<bool> addMessage(MessageModel messageModel) async {
     try {
       final box = Hive.box<MessageModel>(messageBox);
+      log("In add Message method  : ${messageModel.toString()}");
       await box.add(messageModel);
       return true;
     } catch (e) {
@@ -48,12 +51,18 @@ class MessageDatabase {
 
   static List<MessageModel> getMessages() {
     final box = Hive.box<MessageModel>(messageBox);
+    log("Message  List ${box.values.toList()}");
     return box.values.toList();
   }
 
   List<MessageModel> getMessagesByUserId(String userId) {
     final box = Hive.box<MessageModel>(messageBox);
-    return box.values.where((message) => message.userId == userId).toList();
+    try {
+      return box.values.where((message) => message.userId == userId).toList();
+    } catch (e) {
+      log("Error in intial ");
+      return [];
+    }
   }
 
   MessageModel? getMessage(int index) {

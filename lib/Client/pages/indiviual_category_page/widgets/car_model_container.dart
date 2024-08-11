@@ -72,7 +72,7 @@ class CarModelContainer extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Expanded(
-                                      flex: 55,
+                                      flex: 52,
                                       child: (listOfCars[index].isAsset
                                           ? Image.asset(listOfCars[index].url)
                                           : Image.network(
@@ -85,7 +85,7 @@ class CarModelContainer extends ConsumerWidget {
                                             fontWeight: FontWeight.bold),
                                       )),
                                   Expanded(
-                                    flex: 15,
+                                    flex: 18,
                                     child: Text(
                                       listOfCars[index].price,
                                       style:

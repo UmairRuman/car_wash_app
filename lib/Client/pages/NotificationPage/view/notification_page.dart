@@ -1,5 +1,5 @@
-import 'package:car_wash_app/Admin/Pages/NotificationPage/controller/messages_state_controller.dart';
-import 'package:car_wash_app/Admin/Pages/NotificationPage/widget/messsage_intial_widget.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/widget/messsage_intial_widget.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,20 +21,24 @@ class NotificationPage extends ConsumerWidget {
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: const Icon(Icons.arrow_back)),
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         centerTitle: true,
         title: Row(
           children: [
             const Expanded(
-              flex: 70,
+              flex: 80,
               child: FittedBox(
                 child: Text(
                   "Notification Page",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-            Expanded(flex: 30, child: Image.asset(notificationPageImage))
+            Expanded(flex: 20, child: Image.asset(notificationPageImage))
           ],
         ),
       ),
@@ -46,52 +50,119 @@ class NotificationPage extends ConsumerWidget {
           } else if (state is MessageLoadingState) {
             return const CircularProgressIndicator();
           } else if (state is MessageLoadedState) {
-            return ListView.builder(
-              itemCount: state.listOfMessageModel.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                            flex: 30,
-                            child: Text(
-                              state.listOfMessageModel[index].messageTitle,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                        Expanded(
-                            flex: 50,
-                            child: Text(
-                              state.listOfMessageModel[index].messageBody,
-                              style:
-                                  const TextStyle(fontStyle: FontStyle.italic),
-                            )),
-                        Expanded(
-                            flex: 10,
-                            child: Row(
-                              children: [
-                                const Spacer(
-                                  flex: 60,
-                                ),
-                                Expanded(
+            return LayoutBuilder(
+              builder: (context, constraints) => ListView.builder(
+                itemCount: state.listOfMessageModel.length,
+                itemBuilder: (context, index) {
+                  DateTime dateTime =
+                      state.listOfMessageModel[index].carWashDate;
+                  String carWashDate =
+                      "${dateTime.day}-${dateTime.month}-${dateTime.year}";
+                  return Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Container(
+                      height: constraints.maxHeight * 0.15,
+                      width: constraints.maxWidth,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: const Color.fromARGB(255, 156, 199, 235),
+                                offset: Offset(5, 5),
+                                blurRadius: 5)
+                          ]),
+                      child: Column(
+                        children: [
+                          const Spacer(
+                            flex: 5,
+                          ),
+                          Expanded(
+                              flex: 15,
+                              child: Row(
+                                children: [
+                                  const Spacer(
+                                    flex: 5,
+                                  ),
+                                  Expanded(
                                     flex: 30,
-                                    child: Text(state.listOfMessageModel[index]
-                                        .messageDeliveredDate)),
-                                const Spacer(
-                                  flex: 10,
-                                )
-                              ],
-                            ))
-                      ],
+                                    child: FittedBox(
+                                      child: RichText(
+                                        text: TextSpan(
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                            children: [
+                                              const TextSpan(
+                                                text: "Mr.",
+                                              ),
+                                              TextSpan(
+                                                  text: state
+                                                      .listOfMessageModel[index]
+                                                      .bookerName,
+                                                  style: const TextStyle(
+                                                      color: Colors.orange)),
+                                            ]),
+                                      ),
+                                    ),
+                                  ),
+                                  const Spacer(
+                                    flex: 65,
+                                  ),
+                                ],
+                              )),
+                          const Spacer(
+                            flex: 5,
+                          ),
+                          Expanded(
+                              flex: 25,
+                              child: RichText(
+                                text: TextSpan(
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                          text:
+                                              "You have successfully booked service "),
+                                      TextSpan(
+                                          text: state.listOfMessageModel[index]
+                                              .serviceName,
+                                          style: const TextStyle(
+                                              color: Colors.amber))
+                                    ]),
+                              )),
+                          Expanded(
+                              flex: 40,
+                              child: RichText(
+                                text: TextSpan(
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                          text: state.listOfMessageModel[index]
+                                              .timeSlot,
+                                          style: const TextStyle(
+                                              color: Colors.red)),
+                                      const TextSpan(
+                                          text:
+                                              " slot has reserved for you on Date "),
+                                      TextSpan(
+                                          text: carWashDate,
+                                          style: const TextStyle(
+                                              color: Colors.blue)),
+                                    ]),
+                              )),
+                          const Spacer(
+                            flex: 5,
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           } else {
             String error = (state as MessageErrorState).error;

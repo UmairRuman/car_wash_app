@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
-import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -115,18 +115,22 @@ class NotificationServices {
       RemoteMessage message, BuildContext context, WidgetRef ref) async {
     if (message.data['story_id'] == 'story_12345') {
       log("entered");
-      DateTime? carWashDate = message.data['car_wash_date'];
+      String carWashDateString = message.data['car_wash_date'];
+      DateTime carWashDate = DateTime.parse(carWashDateString);
       log("Car wash date in redirect $carWashDate");
-      ref.read(bookingStateProvider.notifier).dateTimeForFilter = carWashDate!;
-
-      await ref
-          .read(bookingStateProvider.notifier)
-          .getBookings(FirebaseAuth.instance.currentUser!.uid);
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) {
-          return const AdminSideBookingPage();
-        },
-      ));
+      ref.read(bookingStateProvider.notifier).dateTimeForFilter =
+          DateTime(carWashDate.year, carWashDate.month, carWashDate.day);
+      try {
+        Navigator.of(context).pushNamed(NotificationPage.pageName);
+        await ref
+            .read(messageStateProvider.notifier)
+            .getAllNotificationsByUserId();
+        await ref
+            .read(bookingStateProvider.notifier)
+            .getBookings(FirebaseAuth.instance.currentUser!.uid);
+      } catch (e) {
+        log("Error in redirect message Method : ${e.toString()}");
+      }
     }
   }
 

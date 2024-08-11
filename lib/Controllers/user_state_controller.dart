@@ -65,7 +65,7 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
 
   Future<void> updateUserToken(String userId, String deviceToken) async {
     try {
-      await userCollection.updateSpecificField(userId, deviceToken);
+      await userCollection.updateUserDeviceToken(userId, deviceToken);
     } catch (e) {
       log("Failed to update device token ");
     }

@@ -1,9 +1,12 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
+import 'package:car_wash_app/Client/pages/category_page/Widget/dialog_for_showing_profile_image.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfilePic extends StatelessWidget {
   final String userProfilePic;
@@ -12,31 +15,36 @@ class ProfilePic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log("Profile Pic Url in Page $userProfilePic");
-    return Container(
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-              image: userProfilePic == ""
-                  ? AssetImage(emptyImage)
-                  : CachedNetworkImageProvider(userProfilePic),
-              fit: BoxFit.fill)),
-      child: userProfilePic == ""
-          ? null
-          : CachedNetworkImage(
-              imageUrl: userProfilePic,
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
+    return InkWell(
+      onTap: () {
+        dialogForShowingProfileImage(context, userProfilePic);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                image: userProfilePic == ""
+                    ? AssetImage(emptyImage)
+                    : CachedNetworkImageProvider(userProfilePic),
+                fit: BoxFit.fill)),
+        child: userProfilePic == ""
+            ? null
+            : CachedNetworkImage(
+                imageUrl: userProfilePic,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }
@@ -71,13 +79,14 @@ class HomePageUserLocation extends StatelessWidget {
   }
 }
 
-class NotificationIcon extends StatelessWidget {
+class NotificationIcon extends ConsumerWidget {
   const NotificationIcon({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
+        await ref.read(messageStateProvider.notifier).intialMessages();
         Navigator.pushNamed(context, NotificationPage.pageName);
       },
       child: Opacity(

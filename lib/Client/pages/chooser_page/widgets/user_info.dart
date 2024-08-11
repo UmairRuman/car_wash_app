@@ -52,7 +52,7 @@ class ChooserPageUserPic extends ConsumerWidget {
               image: imagePath == ""
                   ? AssetImage(emptyImage)
                   : FileImage(File(imagePath)),
-              fit: BoxFit.fill)),
+              fit: BoxFit.scaleDown)),
     );
   }
 }

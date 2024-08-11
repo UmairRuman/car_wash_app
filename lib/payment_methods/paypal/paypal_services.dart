@@ -95,7 +95,8 @@ Widget payPallmethod(
         messageSender.sendMessage(
           listOfAdminToken[index].deviceToken,
           data: {
-            'car_wash_date': carWashDate.toString(), // include car wash date
+            'car_wash_date':
+                carWashDate.toIso8601String(), // include car wash date
           },
         );
       }

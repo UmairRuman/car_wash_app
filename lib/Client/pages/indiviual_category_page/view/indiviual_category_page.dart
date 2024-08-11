@@ -60,7 +60,7 @@ class IndiviualCategoryPage extends ConsumerWidget {
                 flex: 2,
               ),
               Expanded(
-                  flex: 20,
+                  flex: 19,
                   child: IndiviualCategoryImage(
                     adminPhoneNumber: phoneNumber,
                     isAssetImage: isAssetImage,
@@ -72,7 +72,7 @@ class IndiviualCategoryPage extends ConsumerWidget {
                 child: TextChooseYourCarModel(),
               ),
               Expanded(
-                  flex: 15,
+                  flex: 14,
                   child: CarModelContainer(
                     listOfCars: listOfCars,
                   )),
@@ -81,7 +81,7 @@ class IndiviualCategoryPage extends ConsumerWidget {
               ),
               const Expanded(flex: 5, child: TextSelectDate()),
               Expanded(
-                  flex: 15,
+                  flex: 17,
                   child: DateTimePicker(
                     serviceId: serviceId,
                     serviceName: serviceName,

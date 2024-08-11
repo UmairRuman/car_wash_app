@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/dialog_for_updating_car_info.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_car_model_info.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flip_card/flip_card.dart';
@@ -106,6 +108,17 @@ class _AdminSideCarModelContainerState
                       ),
                       //Front Side OF Widget
                       front: InkWell(
+                        onTap: () {
+                          dialogForUpdatingCarInfo(
+                              context,
+                              widget.listOfCars[index].carName,
+                              widget.serviceId,
+                              widget.listOfCars[index].url,
+                              widget.listOfCars[index].price,
+                              widget.listOfCars[index].isAsset,
+                              widget.serviceName,
+                              ref);
+                        },
                         onLongPress: () {
                           _controller[index].toggleCard();
                         },

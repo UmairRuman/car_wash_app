@@ -1,14 +1,15 @@
 import 'package:car_wash_app/utils/profile_page_resources.dart';
 import 'package:flutter/material.dart';
 
-class ProfileInfoContainersList extends StatelessWidget {
-  const ProfileInfoContainersList({super.key});
+class AdminSideProfileInfoContainersList extends StatelessWidget {
+  final List list;
+  const AdminSideProfileInfoContainersList({super.key, required this.list});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) => ListView(children: [
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < list.length; i++)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -28,19 +29,29 @@ class ProfileInfoContainersList extends StatelessWidget {
                   Expanded(
                       flex: 10,
                       child: Icon(
-                        listOfProfileIcons[i],
+                        adminlistOfProfileIcons[i],
                         color: Colors.blue,
                       )),
                   Expanded(
                       flex: 30,
                       child: Text(
-                        listOfInfo[i],
+                        adminListOfInfo[i],
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       )),
                   const Spacer(
-                    flex: 20,
+                    flex: 5,
                   ),
-                  Expanded(flex: 30, child: Text(listOfProfileInfoStrings[i]))
+                  Expanded(
+                      flex: 40,
+                      child: (list[i] as String).length >= 20
+                          ? FittedBox(child: Text(list[i]))
+                          : Text(
+                              list[i],
+                              textAlign: TextAlign.center,
+                            )),
+                  const Spacer(
+                    flex: 5,
+                  )
                 ],
               ),
             ),

@@ -1,14 +1,26 @@
+import 'package:car_wash_app/Admin/Pages/profile_page/controller/key_state_controller.dart';
+import 'package:car_wash_app/Admin/Pages/profile_page/widgets/dialog.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
-import 'package:car_wash_app/Client/pages/login_page/view/login_page.dart';
+import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EditProfileButton extends StatelessWidget {
-  const EditProfileButton({super.key});
+class AdminSideEditProfileButton extends ConsumerWidget {
+  final String name;
+  final String phoneNo;
+  final String location;
+  const AdminSideEditProfileButton(
+      {super.key,
+      required this.location,
+      required this.name,
+      required this.phoneNo});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(keyStateProvider);
+    AdminKeyCollection adminKeyCollection = AdminKeyCollection();
     return Row(
       children: [
         const Spacer(
@@ -16,10 +28,12 @@ class EditProfileButton extends StatelessWidget {
         ),
         Expanded(
             flex: 80,
-            child: FloatingActionButton(
-              heroTag: "1",
-              onPressed: () {},
-              backgroundColor: Colors.blue,
+            child: MaterialButton(
+              onPressed: () async {
+                showDialogForEnteringOwnerKeyInProfilePage(
+                    context, ref, adminKeyCollection, name, phoneNo, location);
+              },
+              color: Colors.blue,
               child: const Text(
                 "Edit Profile",
                 style:
@@ -34,8 +48,8 @@ class EditProfileButton extends StatelessWidget {
   }
 }
 
-class LogOutProfileButton extends StatelessWidget {
-  const LogOutProfileButton({super.key});
+class AdminSideLogOutProfileButton extends StatelessWidget {
+  const AdminSideLogOutProfileButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +60,7 @@ class LogOutProfileButton extends StatelessWidget {
         ),
         Expanded(
             flex: 60,
-            child: FloatingActionButton(
-              heroTag: "2",
+            child: MaterialButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut();
                 SchedulerBinding.instance.addPostFrameCallback(
@@ -56,7 +69,7 @@ class LogOutProfileButton extends StatelessWidget {
                   },
                 );
               },
-              backgroundColor: Colors.blue,
+              color: Colors.blue,
               child: const Text(
                 "Log Out",
                 style:

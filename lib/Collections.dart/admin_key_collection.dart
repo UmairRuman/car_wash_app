@@ -30,6 +30,22 @@ class AdminKeyCollection {
     }
   }
 
+  Future<bool> updateAdminKey(AdminKey adminKey) async {
+    try {
+      String hashedPin = BCrypt.hashpw(adminKey.pin, BCrypt.gensalt());
+      adminKey.pin =
+          hashedPin; // Ensure to update the pin with the hashed value
+      await adminKeyCollection
+          .doc("serviceProviderPin")
+          .update(adminKey.toMap());
+      log("Admin Key updated successfully");
+      return true;
+    } catch (e) {
+      log("Error in updating admin key: $e");
+      return false;
+    }
+  }
+
   Future<AdminKey> getAdminKey() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> querySnapshot =

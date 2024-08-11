@@ -29,13 +29,13 @@ class ProfileInfoContainersList extends StatelessWidget {
                   Expanded(
                       flex: 10,
                       child: Icon(
-                        listOfProfileIcons[i],
+                        clientlistOfProfileIcons[i],
                         color: Colors.blue,
                       )),
                   Expanded(
                       flex: 30,
                       child: Text(
-                        listOfInfo[i],
+                        clientListOfInfo[i],
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       )),
                   const Spacer(
@@ -43,7 +43,7 @@ class ProfileInfoContainersList extends StatelessWidget {
                   ),
                   Expanded(
                       flex: 40,
-                      child: (list[i] as String).length >= 15
+                      child: (list[i] as String).length >= 20
                           ? FittedBox(child: Text(list[i]))
                           : Text(
                               list[i],

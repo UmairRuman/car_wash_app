@@ -1,11 +1,14 @@
 //Firstly we have to implement singelton of class
 import 'dart:developer';
+
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/firebase_notifications/message_sender.dart';
 import 'package:car_wash_app/payment_methods/Stripe/constants.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -80,7 +83,7 @@ class StripeServices {
       await Stripe.instance.presentPaymentSheet();
 
       log("payment SuccessFull ");
-      ref
+      await ref
           .read(bookingStateProvider.notifier)
           .addBooking(serviceId, serviceName, serviceImageUrl);
       //Show toast to user for successfully reservation of slot
@@ -91,6 +94,13 @@ class StripeServices {
           textColor: Colors.white,
           backgroundColor: Colors.green);
       //When the payment is successfull then we have to send messages to admins by taking their token
+      await ref
+          .read(messageStateProvider.notifier)
+          .getAllNotificationsByUserId();
+
+      await ref
+          .read(bookingStateProvider.notifier)
+          .getBookings(FirebaseAuth.instance.currentUser!.uid);
       var listOfAdminToken =
           await adminDeviceTokenCollection.getAllAdminDeviceTokens();
 
@@ -98,10 +108,12 @@ class StripeServices {
         messageSender.sendMessage(
           listOfAdminToken[index].deviceToken,
           data: {
-            'car_wash_date': carWashDate.toString(), // include car wash date
+            'car_wash_date':
+                carWashDate.toIso8601String(), // include car wash date
           },
         );
       }
+
       //Below line will throw an exception if payment is unsuccessfull
       await Stripe.instance.confirmPaymentSheetPayment();
     } catch (e) {

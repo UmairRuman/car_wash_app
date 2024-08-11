@@ -187,7 +187,7 @@ class AdminSideTextChooseTimeSlot extends StatelessWidget {
       children: [
         const Spacer(flex: 5),
         const Expanded(
-          flex: 35,
+          flex: 33,
           child: FittedBox(
             child: Text(
               stringChooseTimeSlot,
@@ -216,7 +216,7 @@ class AdminSideTextChooseTimeSlot extends StatelessWidget {
             ),
           ),
         ),
-        const Spacer(flex: 3),
+        const Spacer(flex: 5),
       ],
     );
   }

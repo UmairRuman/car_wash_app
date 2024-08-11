@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Admin/Pages/NotificationPage/controller/messages_state_controller.dart';
-import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/View/admin_side_categoryPage.dart';
@@ -31,7 +29,7 @@ class AdminSideHomePage extends ConsumerWidget {
         .getIntialListPreviousServices();
     ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices();
     ref.read(favouriteServiceProvider.notifier).getAllIntialFavouriteServices();
-    ref.read(messageStateProvider.notifier).intialMessages();
+    // ref.read(messageStateProvider.notifier).intialMessages();
     // ref.read(defaultServicesStateProvider.notifier).addDefaultService();
     // ref
     //     .read(previousServiceStateProvider.notifier)

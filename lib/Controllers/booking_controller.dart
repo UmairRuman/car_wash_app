@@ -1,7 +1,8 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
-import 'package:car_wash_app/Admin/Pages/NotificationPage/controller/messages_state_controller.dart';
+
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/admin_booking_collection_count.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/user_booking_count_collection.dart';
@@ -92,6 +93,7 @@ class BookingController extends Notifier<BookingStates> {
             serviceName: serviceName,
             timeSlot: timeSlot!));
         //Adding Message to the Admin Side to show Admin messages of one day
+        log("Reached at Adding messages");
         await ref
             .read(messageStateProvider.notifier)
             .addNotificationAtAdminSide(

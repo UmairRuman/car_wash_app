@@ -120,6 +120,59 @@ class ServiceCollection {
     }
   }
 
+  Future<bool> updateCarInfo(
+      String adminId,
+      String serviceId,
+      String carOldName,
+      String serviceName,
+      String carPrice,
+      String carName,
+      String carImagePath,
+      bool isAssetImage) async {
+    try {
+      final docRef = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName");
+
+      final snapshot = await docRef.get();
+      log("Snapshot Data  : ${snapshot.data().toString()}");
+      if (snapshot.exists) {
+        final data = snapshot.data();
+
+        List cars = data?['cars'] ?? [];
+
+        // Find the car to update
+        final index = cars.indexWhere((car) => car['carName'] == carOldName);
+
+        if (index != -1) {
+          // Remove the old map
+          cars.removeAt(index);
+
+          // Create the updated map
+          final updatedCar = {
+            'carName': carName,
+            'price': carPrice,
+            'url': carImagePath,
+            'isAsset': isAssetImage,
+          };
+          log("Updated Car ${updatedCar.toString()}");
+
+          // Add the updated map
+          cars.add(updatedCar);
+
+          // Update the document with the new cars array
+          await docRef.update({'cars': cars});
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      log('Error updating car info: $e');
+      return false;
+    }
+  }
+
   Future<dynamic> getSpecificService(
       String adminId, String serviceName, String serviceId) async {
     try {

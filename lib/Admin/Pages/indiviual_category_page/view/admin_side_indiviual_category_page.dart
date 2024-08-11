@@ -48,6 +48,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
                   flex: 5,
                   child: AdminSideTopRowIndiviualCategoryPage(
                     serviceName: serviceName,
+                    serviceId: serviceId,
                   )),
               const Spacer(
                 flex: 2,

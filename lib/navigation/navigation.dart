@@ -1,5 +1,6 @@
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/View/admin_side_categoryPage.dart';
+import 'package:car_wash_app/Admin/Pages/edit_profile_page/view/edit_profile_page.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/view/profile_page.dart';
@@ -46,6 +47,8 @@ Route? onGenerateRoute(RouteSettings settings) {
         profilePic: "",
         userName: "",
       )),
+    AdminSideEditProfilePage.pageName =>
+      myPageBuilder(const AdminSideEditProfilePage(), settings),
     PaymentPage.pageName => myPageBuilder(const PaymentPage(), settings),
     AdminSideNotificationPage.pageName =>
       myPageBuilder(const AdminSideNotificationPage(), settings),

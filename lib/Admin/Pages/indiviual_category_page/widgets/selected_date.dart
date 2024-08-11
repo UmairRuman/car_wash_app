@@ -37,7 +37,7 @@ class AdminSideTextSelectDate extends StatelessWidget {
                 dialogForEditYear(context);
               },
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(6.0),
                 child: Container(
                     decoration: const BoxDecoration(
                         color: Color.fromARGB(255, 201, 218, 232),

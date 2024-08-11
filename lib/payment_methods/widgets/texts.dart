@@ -45,7 +45,10 @@ class BookingDateText extends StatelessWidget {
         const Spacer(
           flex: 20,
         ),
-        Expanded(flex: 30, child: Text(bookingDate.toString())),
+        Expanded(
+            flex: 30,
+            child: Text(
+                "${bookingDate.year}-${bookingDate.month}-${bookingDate.day}")),
         const Spacer(
           flex: 15,
         ),

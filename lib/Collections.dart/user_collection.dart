@@ -31,12 +31,85 @@ class UserCollection {
     }
   }
 
-  Future<bool> updateSpecificField(String userId, String deviceTokken) async {
+  Future<bool> updateUserDeviceToken(String userId, String deviceTokken) async {
     try {
       await userCollection.doc(userId).update({"deviceToken": deviceTokken});
       return true;
     } catch (e) {
       log("Error in updating specific user field ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserGmail(String userId, String gmail) async {
+    try {
+      await userCollection.doc(userId).update({"email": gmail});
+      return true;
+    } catch (e) {
+      log("Error in updating specific user gmail ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserName(String userId, String userName) async {
+    try {
+      await userCollection.doc(userId).update({"name": userName});
+      return true;
+    } catch (e) {
+      log("Error in updating user phone no ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserLocation(String userId, String userLocation) async {
+    try {
+      await userCollection.doc(userId).update({"userLocation": userLocation});
+      return true;
+    } catch (e) {
+      log("Error in updating user phone no ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserPhoneNo(String userId, String phoneNo) async {
+    try {
+      await userCollection.doc(userId).update({"phoneNumber": phoneNo});
+      return true;
+    } catch (e) {
+      log("Error in updating user phone no ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserNoOfServices(
+      String userId, String serviceConsumed) async {
+    try {
+      await userCollection
+          .doc(userId)
+          .update({"serviceConsumed": serviceConsumed});
+      return true;
+    } catch (e) {
+      log("Error in updating useer consumed services ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserProfilePic(String userId, String profilePicUrl) async {
+    try {
+      await userCollection.doc(userId).update({"profilePicUrl": profilePicUrl});
+      return true;
+    } catch (e) {
+      log("Error in updating useer consumed services ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserBonusPoints(String userId, String bonusPoints) async {
+    try {
+      await userCollection.doc(userId).update({"bonusPoints": bonusPoints});
+      return true;
+    } catch (e) {
+      log("Error in updating useer consumed services ${e.toString()}");
       return false;
     }
   }
@@ -67,6 +140,15 @@ class UserCollection {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<String> getUserPic(String adminId) async {
+    try {
+      var querrySnapShot = await userCollection.doc(adminId).get();
+      return Users.fromMap(querrySnapShot.data()!).profilePicUrl;
+    } catch (e) {
+      return "";
     }
   }
 

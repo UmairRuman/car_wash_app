@@ -1,9 +1,11 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
-import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/Database/notification_collection.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/model/notification_model.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final messageStateProvider =
@@ -11,9 +13,11 @@ final messageStateProvider =
         MessagesStateController.new);
 
 class MessagesStateController extends Notifier<MessageStates> {
+  final adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  UserCollection userCollection = UserCollection();
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-  List<MessageModel> listOfIntialMessage = [];
-  MessageDatabase messageDatabase = MessageDatabase();
+  List<NotificationModel> listOfIntialMessage = [];
+  NotificationCollection notificationCollection = NotificationCollection();
   @override
   MessageStates build() {
     return MessageIntialState();
@@ -21,7 +25,8 @@ class MessagesStateController extends Notifier<MessageStates> {
 
   Future<void> intialMessages() async {
     try {
-      listOfIntialMessage = messageDatabase.getMessagesByUserId(currentUserId);
+      listOfIntialMessage =
+          await notificationCollection.fetchAllNotification(currentUserId);
     } catch (e) {
       log("Error in getting intial messages");
     }
@@ -29,37 +34,39 @@ class MessagesStateController extends Notifier<MessageStates> {
 
   Future<void> addNotificationAtAdminSide(String bookerName, String serviceName,
       DateTime carWashDate, String timeSlot) async {
-    String messageTitle = "New booking made at $carWashDate";
-    String messageBody =
-        "$bookerName booked $timeSlot timeslot for $serviceName";
-    String date = "${carWashDate.day}-${carWashDate.month}${carWashDate.year}";
+    String userProfilePic = await userCollection.getUserPic(currentUserId!);
 
-    MessageModel messageModel = MessageModel(
-        userId: currentUserId,
-        messageTitle: messageTitle,
-        messageBody: messageBody,
-        messageDeliveredDate: date);
-    await messageDatabase.addMessage(messageModel);
+    NotificationModel notificationModel = NotificationModel(
+      serviceName: serviceName,
+      bookerName: bookerName,
+      bookerPic: userProfilePic,
+      carWashDate: carWashDate,
+      timeSlot: timeSlot,
+      userId: adminId!,
+    );
+    await notificationCollection.addNotification(notificationModel);
   }
 
   Future<void> addNotificationAtUserSide(String bookerName, String serviceName,
       DateTime carWashDate, String timeSlot) async {
-    String messageTitle = "You have successfully booked $serviceName";
-    String messageBody = "You have booked $timeSlot timeslot for $serviceName ";
-    String date = "${carWashDate.day}-${carWashDate.month}${carWashDate.year}";
-
-    MessageModel messageModel = MessageModel(
-        userId: currentUserId,
-        messageTitle: messageTitle,
-        messageBody: messageBody,
-        messageDeliveredDate: date);
-    await messageDatabase.addMessage(messageModel);
+    String userProfilePic = await userCollection.getUserPic(currentUserId);
+    NotificationModel notificationModel = NotificationModel(
+      serviceName: serviceName,
+      bookerName: bookerName,
+      bookerPic: userProfilePic,
+      carWashDate: carWashDate,
+      timeSlot: timeSlot,
+      userId: currentUserId,
+    );
+    await notificationCollection.addNotification(notificationModel);
   }
 
   Future<void> getAllNotificationsByUserId() async {
+    log("Current User Id in Notification method $currentUserId");
     state = MessageLoadingState();
     try {
-      var listOfMessage = messageDatabase.getMessagesByUserId(currentUserId);
+      var listOfMessage =
+          await notificationCollection.fetchAllNotification(currentUserId);
       state = MessageLoadedState(listOfMessageModel: listOfMessage);
     } catch (e) {
       state = MessageErrorState(error: e.toString());
@@ -76,7 +83,7 @@ class MessageIntialState extends MessageStates {}
 class MessageLoadingState extends MessageStates {}
 
 class MessageLoadedState extends MessageStates {
-  final List<MessageModel> listOfMessageModel;
+  final List<NotificationModel> listOfMessageModel;
   const MessageLoadedState({required this.listOfMessageModel});
 }
 

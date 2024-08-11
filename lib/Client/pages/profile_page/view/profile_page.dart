@@ -16,6 +16,7 @@ class ProfilePage extends ConsumerWidget {
     var list = [
       userData!.email,
       userData.phoneNumber,
+      userData.userLocation,
       userData.bonusPoints.toInt().toString(),
       userData.serviceConsumed.toInt().toString()
     ];
@@ -61,7 +62,13 @@ class ProfilePage extends ConsumerWidget {
               child: ProfileInfoContainersList(
                 list: list,
               )),
-          const Expanded(flex: 8, child: EditProfileButton()),
+          const Expanded(
+              flex: 8,
+              child: EditProfileButton(
+                location: "",
+                name: "",
+                phoneNo: "",
+              )),
           const Spacer(
             flex: 2,
           ),

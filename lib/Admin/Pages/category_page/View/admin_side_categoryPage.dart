@@ -1,4 +1,3 @@
-import 'package:car_wash_app/Admin/Pages/category_page/Controller/default_services_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widgets/admin_side_categories_list_view.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/home_page_texts.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/previous_work_images.dart';
@@ -6,9 +5,7 @@ import 'package:car_wash_app/Admin/Pages/category_page/Widget/previous_work_text
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/profile_info.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/top_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AdminSideCategoryPage extends ConsumerWidget {
   static const String pageName = "/adminSideCategoryPage";
@@ -26,6 +23,7 @@ class AdminSideCategoryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             Expanded(
@@ -34,10 +32,10 @@ class AdminSideCategoryPage extends ConsumerWidget {
                     builder: (context, constraints) => Stack(children: [
                           const HomePageTopContainer(),
                           Positioned(
-                              height: constraints.maxHeight * 0.25,
-                              width: constraints.maxWidth * 0.25,
+                              height: constraints.maxHeight * 0.28,
+                              width: constraints.maxWidth * 0.28,
                               left: constraints.maxWidth / 7 -
-                                  (constraints.maxWidth * 0.3) / 2,
+                                  (constraints.maxWidth * 0.35) / 2,
                               top: constraints.maxHeight / 4,
                               child: AdminProfilePic(
                                 userProfilePic: profilePic,

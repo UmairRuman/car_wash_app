@@ -29,7 +29,7 @@ SharedPreferences? prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MessageDatabase.initializeHiveDatabase();
+  await MessageDatabase.initializeHiveDatabase();
   Stripe.publishableKey = stripePublishablekey;
   await Firebase.initializeApp();
   prefs = await SharedPreferences.getInstance();
@@ -97,8 +97,10 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
       String userLocation = await userCollection
           .getUserLocation(FirebaseAuth.instance.currentUser!.uid);
       if (userLocation == "") {
-        var position = await determinePosition(context);
-        currentUserPostion = position;
+        if (context.mounted) {
+          var position = await determinePosition(context);
+          currentUserPostion = position;
+        }
       }
     } else {
       var position = await determinePosition(context);

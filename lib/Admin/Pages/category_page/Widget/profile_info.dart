@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
+import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
+import 'package:car_wash_app/Client/pages/category_page/Widget/dialog_for_showing_profile_image.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,31 +13,36 @@ class AdminProfilePic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-              image: userProfilePic == ""
-                  ? AssetImage(profilePic)
-                  : CachedNetworkImageProvider(userProfilePic),
-              fit: BoxFit.fill)),
-      child: userProfilePic == ""
-          ? null
-          : CachedNetworkImage(
-              imageUrl: userProfilePic,
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
+    return InkWell(
+      onTap: () {
+        dialogForShowingProfileImage(context, userProfilePic);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                image: userProfilePic == ""
+                    ? AssetImage(profilePic)
+                    : CachedNetworkImageProvider(userProfilePic),
+                fit: BoxFit.cover)),
+        child: userProfilePic == ""
+            ? null
+            : CachedNetworkImage(
+                imageUrl: userProfilePic,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }
@@ -72,10 +80,12 @@ class AdminNotificationIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    MessageDatabase messageDatabase = MessageDatabase();
     return Opacity(
         opacity: 0.5,
         child: InkWell(
           onTap: () async {
+            await ref.read(messageStateProvider.notifier).intialMessages();
             Navigator.of(context).pushNamed(
               AdminSideNotificationPage.pageName,
             );

@@ -16,7 +16,7 @@ class MainContainer extends ConsumerWidget {
       builder: (context) {
         if (intialListOfBookings.isEmpty) {
           return const Center(
-            child: Text("No Bookings Found"),
+            child: Scaffold(body: Center(child: Text("No Bookings Found"))),
           );
         }
 

@@ -10,10 +10,11 @@ class ProfilePagePic extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+          border: Border.all(width: 3, color: Colors.white),
           shape: BoxShape.circle,
           image: DecorationImage(
               image: CachedNetworkImageProvider(profileImageUrl),
-              fit: BoxFit.fill)),
+              fit: BoxFit.none)),
       child: profileImageUrl == ""
           ? Image.asset(emptyImage)
           : CachedNetworkImage(

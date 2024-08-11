@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminSideTopRowIndiviualCategoryPage extends ConsumerWidget {
   final String serviceName;
+  final String serviceId;
   const AdminSideTopRowIndiviualCategoryPage(
-      {super.key, required this.serviceName});
+      {super.key, required this.serviceName, required this.serviceId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,19 +25,25 @@ class AdminSideTopRowIndiviualCategoryPage extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: const Icon(Icons.arrow_back_ios))),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(Icons.arrow_back_ios),
+                ))),
         const Spacer(
           flex: 20,
         ),
         Expanded(
             flex: 30,
-            child: FittedBox(
-                child: Text(
-              serviceName,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 24, 103, 167)),
-            ))),
+            child: Hero(
+              tag: "TextAnimation${serviceId}",
+              child: FittedBox(
+                  child: Text(
+                serviceName,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 24, 103, 167)),
+              )),
+            )),
         const Spacer(
           flex: 15,
         ),

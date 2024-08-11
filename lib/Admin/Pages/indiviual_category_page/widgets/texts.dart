@@ -36,7 +36,7 @@ class AdminSideTextChooseYourCarModel extends ConsumerWidget {
         Expanded(
           flex: 15,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 6, right: 6, top: 6),
             child: InkWell(
               onTap: () {
                 dialogForEditCarInfo(
@@ -46,7 +46,7 @@ class AdminSideTextChooseYourCarModel extends ConsumerWidget {
                   decoration: const BoxDecoration(
                       color: Color.fromARGB(255, 201, 218, 232),
                       borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: const Icon(Icons.timer_sharp)),
+                  child: const Icon(Icons.no_crash_outlined)),
             ),
           ),
         ),

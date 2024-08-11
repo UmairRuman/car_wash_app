@@ -16,7 +16,8 @@ class AdminSideMainContainer extends ConsumerWidget {
     log("Admin Side main Container rebuild");
     return Builder(builder: (context) {
       if (state is BookingIntialState) {
-        return const AdminSideIntialBookings();
+        return const Scaffold(
+            body: Center(child: const AdminSideIntialBookings()));
       } else if (state is BookingLoadingState) {
         return const Scaffold(
             backgroundColor: Colors.blue,
@@ -25,30 +26,36 @@ class AdminSideMainContainer extends ConsumerWidget {
               size: 40,
             ));
       } else if (state is BookingLoadedState) {
-        return LayoutBuilder(
-          builder: (context, constraints) => Container(
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30))),
-            child: ListView.builder(
-              itemCount: state.listOfAdminBookings.length,
-              itemBuilder: (context, index) {
-                return AdminBookedInfoContainer(
-                  carName: state.listOfAdminBookings[index].carType,
-                  bookerName: state.listOfAdminBookings[index].bookerName,
-                  height: constraints.maxHeight / 4,
-                  width: constraints.maxWidth / 3,
-                  bookingDate: state.listOfAdminBookings[index].bookingDate,
-                  bookingServiceName:
-                      state.listOfAdminBookings[index].serviceName,
-                  bookingStatus: state.listOfAdminBookings[index].bookingStatus,
-                  imagePath: state.listOfAdminBookings[index].serviceImageUrl,
-                  timeSlot: state.listOfAdminBookings[index].timeSlot,
-                  washPrice: state.listOfAdminBookings[index].price,
-                );
-              },
+        return Scaffold(
+          body: Center(
+            child: LayoutBuilder(
+              builder: (context, constraints) => Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30))),
+                child: ListView.builder(
+                  itemCount: state.listOfAdminBookings.length,
+                  itemBuilder: (context, index) {
+                    return AdminBookedInfoContainer(
+                      carName: state.listOfAdminBookings[index].carType,
+                      bookerName: state.listOfAdminBookings[index].bookerName,
+                      height: constraints.maxHeight / 4,
+                      width: constraints.maxWidth / 3,
+                      bookingDate: state.listOfAdminBookings[index].bookingDate,
+                      bookingServiceName:
+                          state.listOfAdminBookings[index].serviceName,
+                      bookingStatus:
+                          state.listOfAdminBookings[index].bookingStatus,
+                      imagePath:
+                          state.listOfAdminBookings[index].serviceImageUrl,
+                      timeSlot: state.listOfAdminBookings[index].timeSlot,
+                      washPrice: state.listOfAdminBookings[index].price,
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         );
