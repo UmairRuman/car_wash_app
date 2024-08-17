@@ -26,14 +26,13 @@ class BtnSaveUserData extends ConsumerWidget {
                 String userLocation = ref
                     .read(userAdditionStateProvider.notifier)
                     .listOfUserInfo[MapForUserInfo.userLocation];
-                String userPhoneNumber = ref
-                    .read(userAdditionStateProvider.notifier)
-                    .listOfUserInfo[MapForUserInfo.phoneNumber];
+                String userPhoneNumber =
+                    FirebaseAuth.instance.currentUser!.phoneNumber!;
                 String userProfilePic = ref
                     .read(userAdditionStateProvider.notifier)
                     .listOfUserInfo[MapForUserInfo.profilePicUrl];
 
-                log("User profile Pic in On Save Btn ${ref.read(userAdditionStateProvider.notifier).listOfUserInfo[MapForUserInfo.profilePicUrl]}");
+                log("User profile Pic in On Save Btn ${userProfilePic}");
 
                 log("User Phone No ${FirebaseAuth.instance.currentUser!.phoneNumber}");
                 if (userLocation != "" &&
@@ -87,13 +86,6 @@ class BtnSaveUserData extends ConsumerWidget {
                       gravity: ToastGravity.CENTER,
                       textColor: Colors.white,
                       backgroundColor: Colors.red);
-                } else if (userPhoneNumber == "") {
-                  Fluttertoast.showToast(
-                      msg: "Kindly authenticate your phone number!",
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.CENTER,
-                      textColor: Colors.white,
-                      backgroundColor: Colors.red);
                 } else if (userLocation == "") {
                   Fluttertoast.showToast(
                       msg: "Kindly Add your location!",
@@ -101,9 +93,16 @@ class BtnSaveUserData extends ConsumerWidget {
                       gravity: ToastGravity.CENTER,
                       textColor: Colors.white,
                       backgroundColor: Colors.red);
+                } else if (userPhoneNumber == "") {
+                  Fluttertoast.showToast(
+                      msg: "Kindly authenticate your phone number!",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.CENTER,
+                      textColor: Colors.white,
+                      backgroundColor: Colors.red);
                 }
               },
-              color: Color.fromARGB(255, 57, 162, 61),
+              color: const Color.fromARGB(255, 57, 162, 61),
               child: const Text(
                 "Save Data",
                 style: TextStyle(color: Colors.white),

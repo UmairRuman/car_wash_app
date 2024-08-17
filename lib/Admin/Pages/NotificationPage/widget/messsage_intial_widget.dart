@@ -14,6 +14,9 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
       builder: (context, constraints) => ListView.builder(
         itemCount: listOfIntialMessage.length,
         itemBuilder: (context, index) {
+          var date = listOfIntialMessage[index].notificationDeliveredDate;
+          String notificationDeleiveredData =
+              "${date.day}-${date.month}-${date.year}";
           DateTime dateTime = listOfIntialMessage[index].carWashDate;
           String carWashDate =
               "${dateTime.day}-${dateTime.month}-${dateTime.year}";
@@ -88,7 +91,7 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                             flex: 5,
                           ),
                           Expanded(
-                              flex: 40,
+                              flex: 35,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -111,10 +114,10 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                     ]),
                               )),
                           const Spacer(
-                            flex: 10,
+                            flex: 35,
                           ),
                           Expanded(
-                              flex: 40,
+                              flex: 35,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -133,6 +136,23 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                           style: const TextStyle(
                                               color: Colors.blue)),
                                     ]),
+                              )),
+                          const Spacer(
+                            flex: 3,
+                          ),
+                          Expanded(
+                              flex: 12,
+                              child: Row(
+                                children: [
+                                  const Spacer(
+                                    flex: 60,
+                                  ),
+                                  Expanded(
+                                      flex: 40,
+                                      child: FittedBox(
+                                          child: Text(
+                                              notificationDeleiveredData))),
+                                ],
                               )),
                           const Spacer(
                             flex: 5,

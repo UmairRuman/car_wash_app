@@ -37,6 +37,7 @@ class MessagesStateController extends Notifier<MessageStates> {
     String userProfilePic = await userCollection.getUserPic(currentUserId!);
 
     NotificationModel notificationModel = NotificationModel(
+      notificationDeliveredDate: DateTime.now(),
       serviceName: serviceName,
       bookerName: bookerName,
       bookerPic: userProfilePic,
@@ -51,6 +52,7 @@ class MessagesStateController extends Notifier<MessageStates> {
       DateTime carWashDate, String timeSlot) async {
     String userProfilePic = await userCollection.getUserPic(currentUserId);
     NotificationModel notificationModel = NotificationModel(
+      notificationDeliveredDate: DateTime.now(),
       serviceName: serviceName,
       bookerName: bookerName,
       bookerPic: userProfilePic,

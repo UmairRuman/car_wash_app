@@ -24,6 +24,10 @@ class SelectedCarContainer extends StatelessWidget {
             BoxShadow(
                 color: Color.fromARGB(255, 143, 193, 234),
                 offset: Offset(3, 3),
+                blurRadius: 3),
+            BoxShadow(
+                color: Color.fromARGB(255, 143, 193, 234),
+                offset: Offset(-3, -3),
                 blurRadius: 3)
           ]),
       child: Column(

@@ -23,6 +23,7 @@ void dialogForEdditingServiceImageAndDescription(
     WidgetRef ref,
     bool isFavourite) {
   showDialog(
+      barrierDismissible: false,
       useSafeArea: true,
       context: context,
       builder: (BuildContext context) {
@@ -93,8 +94,9 @@ void dialogForEdditingServiceImageAndDescription(
                                                     .child("Images")
                                                     .child(FirebaseAuth.instance
                                                         .currentUser!.uid)
-                                                    .child("serviceImages")
+                                                    .child("ServiceAssets")
                                                     .child(serviceName)
+                                                    .child("image")
                                                     .putFile(File(file.path))
                                                     .then((snapshot) async {
                                                   var imagePath = await snapshot
@@ -155,7 +157,7 @@ void dialogForEdditingServiceImageAndDescription(
                                       false;
                                 });
                               },
-                              backgroundColor: const Color(0xFF1BC0C5),
+                              backgroundColor: Colors.blue,
                               child: const Text(
                                 "Cancel",
                                 style: TextStyle(color: Colors.white),
@@ -189,7 +191,7 @@ void dialogForEdditingServiceImageAndDescription(
                                   ServiceClassVariables.imageFilePath = null;
                                 });
                               },
-                              backgroundColor: const Color(0xFF1BC0C5),
+                              backgroundColor: Colors.blue,
                               child: const Text(
                                 "Save",
                                 style: TextStyle(color: Colors.white),

@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Widget/search_page.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/dialog_for_showing_profile_image.dart';
+import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,14 +105,41 @@ class NotificationIcon extends ConsumerWidget {
   }
 }
 
-class HomePageSearchBar extends StatelessWidget {
+class HomePageSearchBar extends ConsumerWidget {
   const HomePageSearchBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const SearchBar(
-      leading: Icon(Icons.search),
-      hintText: "Search",
+  Widget build(BuildContext context, WidgetRef ref) {
+    var intialListOfServices =
+        ref.read(allServiceDataStateProvider.notifier).intialListOfService;
+
+    return GestureDetector(
+      onTap: () {
+        // Navigate to the search page
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SearchPage(services: intialListOfServices),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(color: Colors.blue, width: 1.0),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.search, color: Colors.grey),
+            SizedBox(width: 8),
+            Text(
+              'Search service',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

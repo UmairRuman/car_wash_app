@@ -1,4 +1,3 @@
-import 'package:car_wash_app/Admin/Pages/category_page/Widget/dialog.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +13,7 @@ class HomePagePreviousServiceText extends ConsumerWidget {
           flex: 5,
         ),
         Expanded(
-            flex: 25,
+            flex: 35,
             child: FittedBox(
               child: Text(
                 stringPreviousWork,
@@ -22,7 +21,7 @@ class HomePagePreviousServiceText extends ConsumerWidget {
               ),
             )),
         Spacer(
-          flex: 50,
+          flex: 40,
         ),
         Expanded(flex: 15, child: Icon(Icons.arrow_forward)),
         Spacer(

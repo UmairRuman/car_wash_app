@@ -1,10 +1,13 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/utils/images_path.dart'; // Assuming you have this file for the icon paths.
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:oauth1/oauth1.dart' as oauth1;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SocialMediaIcons extends StatefulWidget {
@@ -37,9 +40,27 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
       oauth1.SignatureMethods.hmacSha1,
     );
     auth = oauth1.Authorization(clientCredentials, platform);
+    _checkIfLoggedIn();
   }
 
-  Future<void> authenticate() async {
+  Future<void> _checkIfLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? twitterToken = prefs.getString('twitterAccessToken');
+    String? twitterTokenSecret = prefs.getString('twitterAccessTokenSecret');
+    User? googleUser = FirebaseAuth.instance.currentUser;
+
+    if (twitterToken != null && twitterTokenSecret != null) {
+      // User is logged in via Twitter
+      log('User already authenticated with Twitter.');
+    } else if (googleUser != null) {
+      // User is logged in via Google
+      log('User already authenticated with Google: ${googleUser.email}');
+    } else {
+      log('No user is authenticated.');
+    }
+  }
+
+  Future<void> authenticateTwitter() async {
     try {
       log('Requesting temporary credentials...');
       final res = await auth.requestTemporaryCredentials(callbackUrl);
@@ -72,7 +93,7 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
                   navigationDelegate: (NavigationRequest request) {
                     log('Navigating to: ${request.url}');
                     if (request.url.startsWith(callbackUrl)) {
-                      handleCallback(Uri.parse(request.url));
+                      handleTwitterCallback(Uri.parse(request.url));
                       Navigator.of(context).pop();
                       return NavigationDecision.prevent;
                     }
@@ -95,7 +116,7 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
                   },
                 ),
               ),
-              if (isLoading) CircularProgressIndicator(),
+              if (isLoading) const CircularProgressIndicator(),
             ],
           ),
         );
@@ -103,7 +124,7 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
     );
   }
 
-  Future<void> handleCallback(Uri uri) async {
+  Future<void> handleTwitterCallback(Uri uri) async {
     final queryParams = uri.queryParameters;
     final oauthToken = queryParams['oauth_token'];
     final oauthVerifier = queryParams['oauth_verifier'];
@@ -117,7 +138,32 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
         );
         log('Access Token: ${res.credentials.token}');
         log('Access Token Secret: ${res.credentials.tokenSecret}');
-        // Store these tokens for future requests
+
+        // Store these tokens securely using SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString(SharedPreferncesConstants.twitterAccessToken,
+            res.credentials.token);
+        await prefs.setString(
+            SharedPreferncesConstants.twitterAccessTokenSecret,
+            res.credentials.tokenSecret);
+
+        // Sign in to Firebase with Twitter credentials
+        final AuthCredential twitterCredential = TwitterAuthProvider.credential(
+          accessToken: res.credentials.token,
+          secret: res.credentials.tokenSecret,
+        );
+
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithCredential(twitterCredential);
+
+        User? user = userCredential.user;
+        if (user != null) {
+          log('User authenticated successfully with Twitter and Firebase: ${user.displayName}');
+        } else {
+          log('Failed to authenticate with Firebase.');
+        }
+
+        setState(() {});
       } catch (e) {
         log('Failed to obtain access token: $e');
       }
@@ -125,11 +171,10 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
   }
 
   Future<void> signInWithTwitter() async {
-    authenticate();
+    authenticateTwitter();
   }
 
-  Future signInWithGoogle() async {
-    // Trigger the authentication flow
+  Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
         scopes: [
@@ -138,30 +183,29 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
         ],
       ).signIn();
 
-      // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
-      var credentials;
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
 
-      // Create a new credential
-      credentials = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-      return await FirebaseAuth.instance.signInWithCredential(credentials);
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        log('User authenticated successfully with Google: ${googleUser.email}');
+        setState(() {});
+      }
     } catch (e) {
-      log("Error in loging in with Google ${e.toString()}");
+      log("Error in logging in with Google: ${e.toString()}");
     }
-
-    // Once signed in, return the UserCredential
-    return null;
   }
 
-  onTapOnGoogleIcon() {
+  void onTapGoogleIcon() {
     signInWithGoogle();
   }
 
-  onTapTwitterIcon() {
+  void onTapTwitterIcon() {
     signInWithTwitter();
   }
 
@@ -170,23 +214,31 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
     log('Auth URL in build: $authUrl');
     return Row(
       children: [
-        const Spacer(
-          flex: 25,
-        ),
+        const Spacer(flex: 25),
         Expanded(
-            flex: 20,
-            child: InkWell(
-                onTap: onTapOnGoogleIcon, child: Image.asset(googleIconPath))),
-        const Spacer(
-          flex: 10,
+          flex: 20,
+          child: Center(
+            child: TouchRippleEffect(
+              borderRadius: BorderRadius.circular(150),
+              rippleColor: Colors.red,
+              onTap: onTapGoogleIcon,
+              child: Image.asset(googleIconPath),
+            ),
+          ),
         ),
+        const Spacer(flex: 10),
         Expanded(
-            flex: 20,
-            child: InkWell(
-                onTap: onTapTwitterIcon, child: Image.asset(twitterIconPath))),
-        const Spacer(
-          flex: 25,
-        )
+          flex: 20,
+          child: Center(
+            child: TouchRippleEffect(
+              borderRadius: BorderRadius.circular(150),
+              rippleColor: Colors.red,
+              onTap: onTapTwitterIcon,
+              child: Image.asset(twitterIconPath),
+            ),
+          ),
+        ),
+        const Spacer(flex: 25),
       ],
     );
   }

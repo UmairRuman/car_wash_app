@@ -25,6 +25,39 @@ class ServiceCollection {
     }
   }
 
+  Future<bool> updateCarList(
+      String adminId, String serviceId, String serviceName, Car car) async {
+    try {
+      // Get the existing list of cars
+      var snapshot = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .get();
+
+      List<dynamic> existingCars = snapshot.data()?['cars'] ?? [];
+
+      // Add the new car to the list
+      existingCars.add({
+        'carName': car.carName,
+        'isAsset': car.isAsset,
+        'price': car.price,
+        'url': car.url,
+      });
+
+      // Update the document with the new car list
+      await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .update({"cars": existingCars});
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> updateNewService(Services services) async {
     try {
       await UserCollection.userCollection
@@ -186,6 +219,54 @@ class ServiceCollection {
     } catch (e) {
       log(e.toString());
       return null;
+    }
+  }
+
+  Future<bool> updateFavouriteServiceId(String adminId, String serviceName,
+      String serviceId, String favouriteServiceId) async {
+    try {
+      var querrySnapShots = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .update({"serviceFavouriteId": favouriteServiceId});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<double> getServiceRating(
+      String adminId, String serviceName, String serviceId) async {
+    try {
+      var querrySnapShots = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .get();
+      return Services.fromMap(querrySnapShots.data()!).rating;
+    } catch (e) {
+      return 0.0;
+    }
+  }
+
+  Future<String> getLastServiceId(String adminId) async {
+    try {
+      var querrySnapShots = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .get();
+      var list = querrySnapShots.docs
+          .map(
+            (doc) => Services.fromMap(doc.data()),
+          )
+          .toList();
+      if (list.isEmpty) {
+        return "";
+      }
+      return list.last.serviceId;
+    } catch (e) {
+      return "";
     }
   }
 

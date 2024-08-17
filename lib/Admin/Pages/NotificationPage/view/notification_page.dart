@@ -34,7 +34,8 @@ class AdminSideNotificationPage extends ConsumerWidget {
               child: FittedBox(
                 child: Text(
                   "Notification Page",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -54,6 +55,11 @@ class AdminSideNotificationPage extends ConsumerWidget {
               builder: (context, constraints) => ListView.builder(
                 itemCount: state.listOfMessageModel.length,
                 itemBuilder: (context, index) {
+                  var date =
+                      state.listOfMessageModel[index].notificationDeliveredDate;
+                  String notificationDeleiveredData =
+                      "${date.day}-${date.month}-${date.year}";
+
                   DateTime dateTime =
                       state.listOfMessageModel[index].carWashDate;
                   String carWashDate =
@@ -76,11 +82,11 @@ class AdminSideNotificationPage extends ConsumerWidget {
                       child: Row(
                         children: [
                           Expanded(
-                              flex: 50,
+                              flex: 25,
                               child: Column(
                                 children: [
                                   Expanded(
-                                      flex: 30,
+                                      flex: 50,
                                       child: Container(
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
@@ -126,7 +132,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                 ],
                               )),
                           Expanded(
-                            flex: 80,
+                            flex: 75,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Column(
@@ -135,7 +141,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                     flex: 5,
                                   ),
                                   Expanded(
-                                      flex: 40,
+                                      flex: 35,
                                       child: RichText(
                                         text: TextSpan(
                                             style: const TextStyle(
@@ -160,10 +166,10 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                             ]),
                                       )),
                                   const Spacer(
-                                    flex: 10,
+                                    flex: 5,
                                   ),
                                   Expanded(
-                                      flex: 40,
+                                      flex: 35,
                                       child: RichText(
                                         text: TextSpan(
                                             style: const TextStyle(
@@ -184,6 +190,23 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                                   style: const TextStyle(
                                                       color: Colors.blue)),
                                             ]),
+                                      )),
+                                  const Spacer(
+                                    flex: 3,
+                                  ),
+                                  Expanded(
+                                      flex: 12,
+                                      child: Row(
+                                        children: [
+                                          const Spacer(
+                                            flex: 60,
+                                          ),
+                                          Expanded(
+                                              flex: 40,
+                                              child: FittedBox(
+                                                  child: Text(
+                                                      notificationDeleiveredData))),
+                                        ],
                                       )),
                                   const Spacer(
                                     flex: 5,

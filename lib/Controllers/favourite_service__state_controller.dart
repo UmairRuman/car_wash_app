@@ -2,8 +2,11 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/favourites_booking.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,9 +15,11 @@ final favouriteServiceProvider =
         FavouriteServiceStateController.new);
 
 class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
+  final adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  ServiceCollection serviceCollection = ServiceCollection();
   List<FavouriteServices> listOfFavouriteServices = [];
   double? servicePrice;
-  double? serviceRating;
+
   FavouriteCollection favouriteCollection = FavouriteCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
       FavouriteServicesCounterCollection();
@@ -50,26 +55,20 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
   Future<void> addToFavourite(
       String serviceName, String serviceImageUrl, String serviceId) async {
     final String userId = FirebaseAuth.instance.currentUser!.uid;
-    var favouriteServiceCount = await favouriteServicesCounterCollection
-        .getAllUserBookingsCount(userId);
-    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
-    var favouriteServiceId = "${favouriteServiceCount.length + 1}$serviceId";
-    if (favouriteServiceIdCount < 10) {
-      favouriteServiceId = "0$favouriteServiceIdCount$serviceId";
-    }
-    serviceRating = 5;
+
+    double serviceRating = await serviceCollection.getServiceRating(
+        adminId!, serviceName, serviceId);
     servicePrice = 50;
     try {
-      if (servicePrice != null && serviceRating != null) {
+      if (servicePrice != null && serviceRating != 0.0) {
         await favouriteCollection.addServiceToFavourite(FavouriteServices(
+            createdAt: DateTime.now(),
             favouriteServiceId: serviceId,
             serviceName: serviceName,
             userId: userId,
-            serviceRating: serviceRating!,
+            serviceRating: serviceRating,
             serviceImageUrl: serviceImageUrl,
             servicePrice: servicePrice!));
-        // favouriteServicesCounterCollection.addAdminBookingCount(
-        //     AdminServiceCounter(userId: userId, count: favouriteServiceId));
       }
 
       await getAllFavouriteService(userId);

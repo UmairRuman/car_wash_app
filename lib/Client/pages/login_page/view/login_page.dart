@@ -5,6 +5,7 @@ import 'package:car_wash_app/Client/pages/login_page/widgets/texts.dart';
 import 'package:car_wash_app/Client/pages/reset_password_page/view/reset_password.dart';
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:flutter/material.dart';
+import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
 class LoginPage extends StatelessWidget {
   static const String pageName = "/loginPage";
@@ -58,7 +59,8 @@ class LoginPage extends StatelessWidget {
                             ),
                             Expanded(
                               flex: 35,
-                              child: InkWell(
+                              child: TouchRippleEffect(
+                                rippleColor: Colors.lightBlue,
                                 onTap: () {
                                   Navigator.of(context)
                                       .pushNamed(ResetPasswordPage.pageName);
@@ -66,6 +68,7 @@ class LoginPage extends StatelessWidget {
                                 child: FittedBox(
                                   child: Text(
                                     "Forgot Password?",
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blue.shade700),

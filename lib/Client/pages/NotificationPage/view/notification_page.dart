@@ -54,6 +54,10 @@ class NotificationPage extends ConsumerWidget {
               builder: (context, constraints) => ListView.builder(
                 itemCount: state.listOfMessageModel.length,
                 itemBuilder: (context, index) {
+                  var date =
+                      state.listOfMessageModel[index].notificationDeliveredDate;
+                  String notificationDeleiveredData =
+                      "${date.day}-${date.month}-${date.year}";
                   DateTime dateTime =
                       state.listOfMessageModel[index].carWashDate;
                   String carWashDate =
@@ -75,7 +79,7 @@ class NotificationPage extends ConsumerWidget {
                       child: Column(
                         children: [
                           const Spacer(
-                            flex: 5,
+                            flex: 3,
                           ),
                           Expanded(
                               flex: 15,
@@ -94,7 +98,7 @@ class NotificationPage extends ConsumerWidget {
                                                 fontWeight: FontWeight.bold),
                                             children: [
                                               const TextSpan(
-                                                text: "Mr.",
+                                                text: "Hi,",
                                               ),
                                               TextSpan(
                                                   text: state
@@ -112,10 +116,10 @@ class NotificationPage extends ConsumerWidget {
                                 ],
                               )),
                           const Spacer(
-                            flex: 5,
+                            flex: 3,
                           ),
                           Expanded(
-                              flex: 25,
+                              flex: 28,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -133,7 +137,7 @@ class NotificationPage extends ConsumerWidget {
                                     ]),
                               )),
                           Expanded(
-                              flex: 40,
+                              flex: 30,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -155,7 +159,24 @@ class NotificationPage extends ConsumerWidget {
                                     ]),
                               )),
                           const Spacer(
-                            flex: 5,
+                            flex: 3,
+                          ),
+                          Expanded(
+                              flex: 15,
+                              child: Row(
+                                children: [
+                                  const Spacer(
+                                    flex: 60,
+                                  ),
+                                  Expanded(
+                                      flex: 40,
+                                      child: FittedBox(
+                                          child: Text(
+                                              notificationDeleiveredData))),
+                                ],
+                              )),
+                          const Spacer(
+                            flex: 3,
                           )
                         ],
                       ),

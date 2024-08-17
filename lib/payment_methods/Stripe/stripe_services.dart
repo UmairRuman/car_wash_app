@@ -83,6 +83,7 @@ class StripeServices {
       await Stripe.instance.presentPaymentSheet();
 
       log("payment SuccessFull ");
+      log("Adding Bookings");
       await ref
           .read(bookingStateProvider.notifier)
           .addBooking(serviceId, serviceName, serviceImageUrl);
@@ -94,10 +95,11 @@ class StripeServices {
           textColor: Colors.white,
           backgroundColor: Colors.green);
       //When the payment is successfull then we have to send messages to admins by taking their token
+      log("Getting all admins Id ");
       await ref
           .read(messageStateProvider.notifier)
           .getAllNotificationsByUserId();
-
+      log("Getting all bookings ");
       await ref
           .read(bookingStateProvider.notifier)
           .getBookings(FirebaseAuth.instance.currentUser!.uid);

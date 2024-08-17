@@ -1,10 +1,43 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/main_container.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/user_info.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/Functions/geo_locator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ChooserPage extends StatelessWidget {
+class ChooserPage extends StatefulWidget {
   static const pageName = "/chooserPage";
   const ChooserPage({super.key});
+
+  @override
+  State<ChooserPage> createState() => _ChooserPageState();
+}
+
+class _ChooserPageState extends State<ChooserPage> {
+  UserCollection userCollection = UserCollection();
+  @override
+  void initState() {
+    super.initState();
+    getPosition();
+  }
+
+  void getPosition() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      String userLocation = await userCollection
+          .getUserLocation(FirebaseAuth.instance.currentUser!.uid);
+      if (userLocation == "") {
+        var position = await determinePosition(context);
+        currentUserPostion = position;
+        log("User Position in IF $currentUserPostion");
+      }
+    } else {
+      var position = await determinePosition(context);
+      currentUserPostion = position;
+      log("User Position $currentUserPostion");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

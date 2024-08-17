@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DefaultServicesController extends Notifier<DefaultServicesStates> {
+  FavouriteCollection favouriteCollection = FavouriteCollection();
   String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
       ? FirebaseAuth.instance.currentUser!.uid
       : prefs!.getString(SharedPreferncesConstants.adminkey);
@@ -43,8 +45,8 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
               isAsset: true),
         );
       }
-      List<ServiceCounter> listOfServices =
-          await serviceCounterCollection.getAllServiceCount(userId);
+      List<Services> listOfServices =
+          await serviceCollection.getAllServicesByAdmin(userId);
       var listLenght = listOfServices.length + 1;
       String serviceId;
       if (listLenght < 9) {
@@ -53,15 +55,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
         serviceId = "$listLenght";
       }
 
-      var favouriteServiceCount = await favouriteServicesCounterCollection
-          .getAllUserBookingsCount(userId);
-      var favouriteServiceIdCount = favouriteServiceCount.length + 1;
-      var favouriteServiceId = "$favouriteServiceIdCount";
-      if (favouriteServiceIdCount < 9) {
-        favouriteServiceId = "0$favouriteServiceIdCount";
-      }
       serviceCollection.addNewService(Services(
-          serviceFavouriteId: favouriteServiceId,
           rating: 5,
           isAssetImage: true,
           serviceId: serviceId,
@@ -76,8 +70,8 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
           adminPhoneNo: adminPhoneNumber!,
           isAssetIcon: true));
       await fetchingAllServicesFirstTime();
-      serviceCounterCollection.addCount(
-          ServiceCounter(count: serviceId), userId!);
+      // serviceCounterCollection.addCount(
+      //     ServiceCounter(count: serviceId), userId!);
     }
   }
 

@@ -67,23 +67,26 @@ class AdminSideCategoryPage extends ConsumerWidget {
                               child: const AdminNotificationIcon()),
                           Positioned(
                               height: constraints.maxHeight * 0.25,
-                              width: constraints.maxWidth * 0.8,
+                              width: constraints.maxWidth * 0.85,
                               left: constraints.maxWidth / 2 -
-                                  (constraints.maxWidth * 0.8) / 2,
+                                  (constraints.maxWidth * 0.85) / 2,
                               bottom: constraints.maxHeight / 7 -
                                   (constraints.maxHeight * 0.2) / 2,
                               child: const AdminHomePageSearchBar()),
                         ]))),
             const Spacer(
-              flex: 3,
+              flex: 2,
             ),
             const Expanded(flex: 5, child: AdminHomePageServiceText()),
             const Spacer(
-              flex: 3,
+              flex: 2,
             ),
             const Expanded(flex: 22, child: AdminSideCategoriesList()),
             const Expanded(flex: 10, child: AdminHomePagePreviousServiceText()),
-            const Expanded(flex: 27, child: AdminPreviousWorkImages()),
+            const Expanded(flex: 26, child: AdminPreviousWorkImages()),
+            const Spacer(
+              flex: 3,
+            )
           ],
         ),
       ),

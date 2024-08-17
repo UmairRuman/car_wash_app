@@ -13,7 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ServiceAdditionController extends Notifier<ServiceDataStates> {
-  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) ??
+      FirebaseAuth.instance.currentUser!.uid;
   String iconUrl = "";
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
@@ -38,18 +39,21 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
     iconUrl = newIconUrl;
   }
 
-  onSaveBtnClick() async {
+  Future<void> onSaveBtnClick() async {
+    log("Icon Url  : $iconUrl");
     String userId = FirebaseAuth.instance.currentUser!.uid;
     //Getting all service count
-    List<ServiceCounter> listOfServicesCount =
-        await serviceCounterCollection.getAllServiceCount(adminId!);
-    String serviceId;
-    if (listOfServicesCount.length < 9) {
-      serviceId = "0${listOfServicesCount.length + 1}";
-    } else {
-      serviceId = "${listOfServicesCount.length + 1}";
-    }
 
+    String serviceId = await serviceCollection.getLastServiceId(adminId!);
+    log("Service Id $serviceId");
+    if (int.parse(serviceId) < 9) {
+      serviceId = "0${int.parse(serviceId) + 1}";
+    } else if (serviceId == "") {
+      serviceId = "01";
+    } else {
+      serviceId = "${int.parse(serviceId) + 1}";
+    }
+    log("Service Id $serviceId");
     List<Car> listOfCars = [];
     for (int index = 0; index < listOfCarImages.length; index++) {
       listOfCars.add(
@@ -61,14 +65,6 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
       );
     }
 
-    var favouriteServiceCount = await favouriteServicesCounterCollection
-        .getAllUserBookingsCount(userId);
-    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
-    var favouriteServiceId = "$favouriteServiceIdCount";
-    if (favouriteServiceIdCount < 10) {
-      favouriteServiceId = "0$favouriteServiceIdCount";
-    }
-
     if (isIconPicked) {
       log("Icon URl in adding service : $iconUrl");
       log("Adding service");
@@ -77,7 +73,6 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
           ServiceCounter(count: serviceId), adminId!);
 
       serviceCollection.addNewService(Services(
-          serviceFavouriteId: favouriteServiceId,
           rating: 5,
           isAssetImage: false,
           serviceId: serviceId,
@@ -101,7 +96,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
     try {
       await serviceCollection.deleteSpecificService(
           adminId!, serviceName, serviceId);
-      serviceCounterCollection.deleteCount(serviceId, adminId!);
+
       await fetchAllDataFromFireStore();
     } catch (e) {
       log("Failed in deleting Specific Service");

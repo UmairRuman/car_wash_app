@@ -11,6 +11,9 @@ class MesssageIntialWidget extends StatelessWidget {
       builder: (context, constraints) => ListView.builder(
         itemCount: listOfIntialMessage.length,
         itemBuilder: (context, index) {
+          var date = listOfIntialMessage[index].notificationDeliveredDate;
+          String notificationDeleiveredData =
+              "${date.day}-${date.month}-${date.year}";
           DateTime dateTime = listOfIntialMessage[index].carWashDate;
           String carWashDate =
               "${dateTime.day}-${dateTime.month}-${dateTime.year}";
@@ -31,7 +34,7 @@ class MesssageIntialWidget extends StatelessWidget {
               child: Column(
                 children: [
                   const Spacer(
-                    flex: 5,
+                    flex: 3,
                   ),
                   Expanded(
                       flex: 15,
@@ -50,7 +53,7 @@ class MesssageIntialWidget extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                     children: [
                                       const TextSpan(
-                                        text: "Mr.",
+                                        text: "Hi,",
                                       ),
                                       TextSpan(
                                           text: listOfIntialMessage[index]
@@ -66,8 +69,11 @@ class MesssageIntialWidget extends StatelessWidget {
                           ),
                         ],
                       )),
+                  const Spacer(
+                    flex: 3,
+                  ),
                   Expanded(
-                      flex: 30,
+                      flex: 28,
                       child: RichText(
                         text: TextSpan(
                             style: const TextStyle(
@@ -83,7 +89,7 @@ class MesssageIntialWidget extends StatelessWidget {
                             ]),
                       )),
                   Expanded(
-                      flex: 40,
+                      flex: 30,
                       child: RichText(
                         text: TextSpan(
                             style: const TextStyle(
@@ -101,7 +107,23 @@ class MesssageIntialWidget extends StatelessWidget {
                             ]),
                       )),
                   const Spacer(
-                    flex: 5,
+                    flex: 3,
+                  ),
+                  Expanded(
+                      flex: 15,
+                      child: Row(
+                        children: [
+                          const Spacer(
+                            flex: 60,
+                          ),
+                          Expanded(
+                              flex: 40,
+                              child: FittedBox(
+                                  child: Text(notificationDeleiveredData))),
+                        ],
+                      )),
+                  const Spacer(
+                    flex: 3,
                   )
                 ],
               ),

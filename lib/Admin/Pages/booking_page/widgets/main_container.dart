@@ -39,6 +39,8 @@ class AdminSideMainContainer extends ConsumerWidget {
                   itemCount: state.listOfAdminBookings.length,
                   itemBuilder: (context, index) {
                     return AdminBookedInfoContainer(
+                      bookerPhoneNo:
+                          state.listOfAdminBookings[index].bookerPhoneNo,
                       carName: state.listOfAdminBookings[index].carType,
                       bookerName: state.listOfAdminBookings[index].bookerName,
                       height: constraints.maxHeight / 4,

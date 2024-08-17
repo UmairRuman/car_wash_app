@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:car_wash_app/Admin/Pages/category_page/Controller/default_services_controller.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/categories_list_view.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/home_page_texts.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/previous_work_images.dart';
@@ -9,7 +6,6 @@ import 'package:car_wash_app/Client/pages/category_page/Widget/profile_info.dart
 import 'package:car_wash_app/Client/pages/category_page/Widget/top_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CategoryPage extends ConsumerWidget {
   static const String pageName = "/categoryPage";
@@ -79,15 +75,18 @@ class CategoryPage extends ConsumerWidget {
                     ]);
                   })),
               const Spacer(
-                flex: 3,
+                flex: 2,
               ),
               const Expanded(flex: 5, child: HomePageServiceText()),
               const Spacer(
-                flex: 3,
+                flex: 2,
               ),
               const Expanded(flex: 22, child: CategoriesList()),
-              const Expanded(flex: 10, child: HomePagePreviousServiceText()),
+              const Expanded(flex: 8, child: HomePagePreviousServiceText()),
               const Expanded(flex: 27, child: PreviousWorkImages()),
+              const Spacer(
+                flex: 4,
+              )
             ],
           );
         }),

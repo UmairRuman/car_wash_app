@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/previous_service_collection_couter.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/previous_work_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/rating_collection.dart';
-import 'package:car_wash_app/ModelClasses/previous_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/previous_work_model.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
@@ -45,8 +44,8 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
   }
 
   void setNewPreviousImage(String newImagePath) {
-    previusWorkImagePath = newImagePath;
     isNewPathSet = true;
+    previusWorkImagePath = newImagePath;
   }
 
   Future<void> getAllPreviousData() async {
@@ -64,13 +63,16 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
   Future<void> addDefaultPreviousWorkCategories() async {
     try {
       for (int index = 0; index < listOfPreviousWorkImages.length; index++) {
-        var listOfServiceCount = await previousServiceCounterCollection
-            .getAllPreviousServiceCount(adminId!);
+        var serviceId =
+            await previousWorkCollection.getLastPreviousWorkId(adminId!);
         String countId;
-        if (listOfServiceCount.length < 9) {
-          countId = "0${listOfServiceCount.length + 1}";
+
+        if (int.parse(serviceId) < 9) {
+          countId = "0${int.parse(serviceId) + 1}";
+        } else if (serviceId == "") {
+          countId = "01";
         } else {
-          countId = "${listOfServiceCount.length + 1}";
+          countId = "${int.parse(serviceId) + 1}";
         }
 
         await previousWorkCollection.addPreviousData(
@@ -82,8 +84,8 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
                 serviceRating: 5.0,
                 serviceProvideTime: DateTime.now(),
                 id: countId));
-        previousServiceCounterCollection.addCount(
-            PreviousServiceCounter(count: countId), adminId!);
+        // previousServiceCounterCollection.addCount(
+        //     PreviousServiceCounter(count: countId), adminId!);
       }
     } catch (e) {
       log("Error in adding Default Previous Work Images");
@@ -92,15 +94,16 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
 
   Future<void> insertPreviousData() async {
     if (isNewPathSet) {
-      var listOfServiceCount = await previousServiceCounterCollection
-          .getAllPreviousServiceCount(adminId!);
+      var previousServiceCount =
+          await previousWorkCollection.getLastPreviousWorkId(adminId!);
+      log("List Of previous service list : ${int.parse(previousServiceCount)}  ");
       String countId;
-      if (listOfServiceCount.length < 9) {
-        countId = "0${listOfServiceCount.length + 1}";
+      if (int.parse(previousServiceCount) < 9) {
+        countId = "0${int.parse(previousServiceCount) + 1}";
       } else {
-        countId = "${listOfServiceCount.length + 1}";
+        countId = "${int.parse(previousServiceCount) + 1}";
       }
-
+      log("Count id $countId");
       try {
         previousWorkCollection.addPreviousData(
             adminId!,
@@ -112,8 +115,8 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
                 serviceProvideTime: DateTime.now(),
                 id: countId));
 
-        previousServiceCounterCollection.addCount(
-            PreviousServiceCounter(count: countId), adminId!);
+        // previousServiceCounterCollection.addCount(
+        //     PreviousServiceCounter(count: countId), adminId!);
         await getAllPreviousData();
       } catch (e) {
         log("Error in adding previous Work data");

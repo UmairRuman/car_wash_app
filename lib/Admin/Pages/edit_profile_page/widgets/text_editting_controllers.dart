@@ -2,15 +2,16 @@ import 'package:car_wash_app/Admin/Pages/edit_profile_page/controller/edit_profi
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EditNameTEC extends ConsumerWidget {
-  const EditNameTEC({super.key});
+class AdminEditNameTEC extends ConsumerWidget {
+  const AdminEditNameTEC({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
-        controller: ref.read(editProfileInfoProvider.notifier).editNameTEC,
+        controller:
+            ref.read(adminSideEditProfileInfoProvider.notifier).editNameTEC,
         decoration: const InputDecoration(
             labelText: "Your Name",
             prefixIcon: Icon(Icons.person),
@@ -23,15 +24,16 @@ class EditNameTEC extends ConsumerWidget {
   }
 }
 
-class EditLocationTEC extends ConsumerWidget {
-  const EditLocationTEC({super.key});
+class AdminEditLocationTEC extends ConsumerWidget {
+  const AdminEditLocationTEC({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
-        controller: ref.read(editProfileInfoProvider.notifier).editLocationTEC,
+        controller:
+            ref.read(adminSideEditProfileInfoProvider.notifier).editLocationTEC,
         decoration: const InputDecoration(
             labelText: "Location",
             prefixIcon: Icon(Icons.person),
@@ -44,15 +46,16 @@ class EditLocationTEC extends ConsumerWidget {
   }
 }
 
-class EditPhoneNoTEC extends ConsumerWidget {
-  const EditPhoneNoTEC({super.key});
+class AdminEditPhoneNoTEC extends ConsumerWidget {
+  const AdminEditPhoneNoTEC({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
-        controller: ref.read(editProfileInfoProvider.notifier).editPhoneNoTEC,
+        controller:
+            ref.read(adminSideEditProfileInfoProvider.notifier).editPhoneNoTEC,
         decoration: const InputDecoration(
             labelText: "PhoneNO",
             prefixIcon: Icon(Icons.person),
@@ -65,8 +68,8 @@ class EditPhoneNoTEC extends ConsumerWidget {
   }
 }
 
-class EditPasswordTEC extends ConsumerWidget {
-  const EditPasswordTEC({
+class AdminEditPasswordTEC extends ConsumerWidget {
+  const AdminEditPasswordTEC({
     super.key,
   });
 
@@ -75,7 +78,9 @@ class EditPasswordTEC extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
-        controller: ref.read(editProfileInfoProvider.notifier).editPasswordTEC,
+        maxLength: 6,
+        controller:
+            ref.read(adminSideEditProfileInfoProvider.notifier).editPasswordTEC,
         decoration: const InputDecoration(
             labelText: "Password",
             prefixIcon: Icon(Icons.person),

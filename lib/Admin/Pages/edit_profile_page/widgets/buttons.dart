@@ -2,8 +2,8 @@ import 'package:car_wash_app/Admin/Pages/edit_profile_page/controller/edit_profi
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ButtonUpdateUserInfo extends ConsumerWidget {
-  const ButtonUpdateUserInfo({super.key});
+class AdminButtonUpdateUserInfo extends ConsumerWidget {
+  const AdminButtonUpdateUserInfo({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,7 +21,7 @@ class ButtonUpdateUserInfo extends ConsumerWidget {
                 child: MaterialButton(
                   onPressed: () {
                     ref
-                        .read(editProfileInfoProvider.notifier)
+                        .read(adminSideEditProfileInfoProvider.notifier)
                         .onClickOnUpdateButton(context);
                   },
                   color: Colors.blue,

@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FavouriteServices {
   String favouriteServiceId;
   String serviceName;
+  DateTime createdAt;
   String userId;
   double serviceRating;
   String serviceImageUrl;
@@ -11,6 +14,7 @@ class FavouriteServices {
   FavouriteServices({
     required this.favouriteServiceId,
     required this.serviceName,
+    required this.createdAt,
     required this.userId,
     required this.serviceRating,
     required this.serviceImageUrl,
@@ -20,6 +24,7 @@ class FavouriteServices {
   FavouriteServices copyWith({
     String? favouriteServiceId,
     String? serviceName,
+    DateTime? createdAt,
     String? userId,
     double? serviceRating,
     String? serviceImageUrl,
@@ -28,6 +33,7 @@ class FavouriteServices {
     return FavouriteServices(
       favouriteServiceId: favouriteServiceId ?? this.favouriteServiceId,
       serviceName: serviceName ?? this.serviceName,
+      createdAt: createdAt ?? this.createdAt,
       userId: userId ?? this.userId,
       serviceRating: serviceRating ?? this.serviceRating,
       serviceImageUrl: serviceImageUrl ?? this.serviceImageUrl,
@@ -39,6 +45,7 @@ class FavouriteServices {
     return <String, dynamic>{
       'favouriteServiceId': favouriteServiceId,
       'serviceName': serviceName,
+      'createdAt': Timestamp.fromDate(createdAt),
       'userId': userId,
       'serviceRating': serviceRating,
       'serviceImageUrl': serviceImageUrl,
@@ -50,6 +57,7 @@ class FavouriteServices {
     return FavouriteServices(
       favouriteServiceId: map['favouriteServiceId'] as String,
       serviceName: map['serviceName'] as String,
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
       userId: map['userId'] as String,
       serviceRating: map['serviceRating'] as double,
       serviceImageUrl: map['serviceImageUrl'] as String,
@@ -64,7 +72,7 @@ class FavouriteServices {
 
   @override
   String toString() {
-    return 'FavouriteSerivces(favouriteServiceId: $favouriteServiceId, serviceName: $serviceName, userId: $userId, serviceRating: $serviceRating, serviceImageUrl: $serviceImageUrl, servicePrice: $servicePrice)';
+    return 'FavouriteServices(favouriteServiceId: $favouriteServiceId, serviceName: $serviceName, createdAt: $createdAt, userId: $userId, serviceRating: $serviceRating, serviceImageUrl: $serviceImageUrl, servicePrice: $servicePrice)';
   }
 
   @override
@@ -73,6 +81,7 @@ class FavouriteServices {
 
     return other.favouriteServiceId == favouriteServiceId &&
         other.serviceName == serviceName &&
+        other.createdAt == createdAt &&
         other.userId == userId &&
         other.serviceRating == serviceRating &&
         other.serviceImageUrl == serviceImageUrl &&
@@ -83,6 +92,7 @@ class FavouriteServices {
   int get hashCode {
     return favouriteServiceId.hashCode ^
         serviceName.hashCode ^
+        createdAt.hashCode ^
         userId.hashCode ^
         serviceRating.hashCode ^
         serviceImageUrl.hashCode ^

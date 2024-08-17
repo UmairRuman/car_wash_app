@@ -5,6 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/intial_list.dart';
 import 'package:car_wash_app/ModelClasses/previous_work_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +49,7 @@ class _AdminPreviousWorkImagesState
     var intialList = ref.read(previousServiceStateProvider.notifier).intialList;
     return Builder(builder: (context) {
       if (state is PreviousDataInitialState) {
-        return IntialListPreviousWork(
+        return AdminSideIntialListPreviousWork(
           intialList: intialList,
         );
       } else if (state is PreviousDataLoadingState) {
@@ -60,147 +62,147 @@ class _AdminPreviousWorkImagesState
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: state.list.length,
-              itemBuilder: (context, index) =>
-                  AnimationConfiguration.staggeredList(
-                duration: const Duration(seconds: 1),
-                position: index,
-                child: SlideAnimation(
-                  verticalOffset: -50,
-                  child: FadeInAnimation(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8),
-                      child: FlipCard(
-                        controller: _controller[index],
-                        direction: FlipDirection.VERTICAL,
-                        //Back Side
-                        back: InkWell(
-                          onLongPress: () {
-                            log("Clicked on Back Side ");
-                            _controller[index].toggleCard();
-                          },
-                          child: Container(
-                            height: constraints.maxHeight,
-                            width: constraints.maxWidth / 2,
-                            decoration: const BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+              itemBuilder: (context, index) {
+                DateTime date = state.list[index].serviceProvideTime;
+                String currentDate = "${date.day}-${date.month}-${date.year}";
+                String formattedDate = convertDateFormat(currentDate);
+                return AnimationConfiguration.staggeredList(
+                  duration: const Duration(seconds: 1),
+                  position: index,
+                  child: SlideAnimation(
+                    verticalOffset: -50,
+                    child: FadeInAnimation(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: FlipCard(
+                          controller: _controller[index],
+                          direction: FlipDirection.VERTICAL,
+                          //Back Side
+                          back: InkWell(
+                            onLongPress: () {
+                              log("Clicked on Back Side ");
+                              _controller[index].toggleCard();
+                            },
+                            child: Container(
+                              height: constraints.maxHeight,
+                              width: constraints.maxWidth / 2,
+                              decoration: const BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color:
+                                            Color.fromARGB(255, 12, 136, 238),
+                                        offset: Offset(3, 3),
+                                        blurRadius: 3)
+                                  ]),
+                              child: InkWell(
+                                onTap: () {
+                                  //Delete previous Work
+                                  ref
+                                      .read(
+                                          previousServiceStateProvider.notifier)
+                                      .deleteSpecificPreviousData(
+                                          state.list[index].id);
+                                  //Also deleting image from firesbase storage
+                                  FirebaseStorage.instance
+                                      .ref()
+                                      .child("Images")
+                                      .child(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .child("previousWorkImages")
+                                      .child(state.list[index].serviceName)
+                                      .delete();
+                                },
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 60,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Color.fromARGB(255, 12, 136, 238),
-                                      offset: Offset(3, 3),
-                                      blurRadius: 3)
-                                ]),
-                            child: InkWell(
-                              onTap: () {
-                                //Delete previous Work
-                                ref
-                                    .read(previousServiceStateProvider.notifier)
-                                    .deleteSpecificPreviousData(
-                                        state.list[index].id);
-                              },
-                              child: const Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                                size: 60,
                               ),
                             ),
                           ),
-                        ),
-                        //Front side
-                        front: InkWell(
-                          onLongPress: () {
-                            log("Clicked on Front Side ");
-                            _controller[index].toggleCard();
-                          },
-                          child: SizedBox(
-                            height: constraints.maxHeight,
-                            width: constraints.maxWidth / 2,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    flex: 75,
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20)),
-                                      child: state.list[index].isAssetImage
-                                          ? Image.asset(
-                                              state.list[index]
-                                                  .previousWorkImage,
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              height: double.infinity,
-                                            )
-                                          : CachedNetworkImage(
-                                              imageUrl: state.list[index]
-                                                  .previousWorkImage,
-                                              placeholder: (context, url) =>
-                                                  const Center(
-                                                      child:
-                                                          CircularProgressIndicator()),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              height: double.infinity,
-                                            ),
+                          //Front side
+                          front: InkWell(
+                            onLongPress: () {
+                              log("Clicked on Front Side ");
+                              _controller[index].toggleCard();
+                            },
+                            child: SizedBox(
+                              height: constraints.maxHeight,
+                              width: constraints.maxWidth / 2,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      flex: 75,
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20)),
+                                        child: state.list[index].isAssetImage
+                                            ? Image.asset(
+                                                state.list[index]
+                                                    .previousWorkImage,
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                              )
+                                            : CachedNetworkImage(
+                                                imageUrl: state.list[index]
+                                                    .previousWorkImage,
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                        child:
+                                                            CircularProgressIndicator()),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                              ),
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 25,
-                                    child: Row(children: [
-                                      const Spacer(
-                                        flex: 5,
-                                      ),
-                                      Expanded(
-                                        flex: 40,
-                                        child: AutoSizeText(
-                                          state.list[index].serviceName,
-                                          style: const TextStyle(fontSize: 16),
-                                          maxLines: 1,
-                                          minFontSize: 12,
-                                          overflow: TextOverflow.ellipsis,
+                                    Expanded(
+                                      flex: 25,
+                                      child: Row(children: [
+                                        const Spacer(
+                                          flex: 5,
                                         ),
-                                      ),
-                                      const Spacer(
-                                        flex: 5,
-                                      ),
-                                      Expanded(
+                                        Expanded(
                                           flex: 40,
-                                          child: Row(
-                                            children: [
-                                              const Spacer(
-                                                flex: 20,
-                                              ),
-                                              Expanded(
-                                                flex: 30,
-                                                child: Text(state
-                                                    .list[index].serviceRating
-                                                    .toString()),
-                                              ),
-                                              const Expanded(
-                                                flex: 30,
-                                                child: Icon(
-                                                  Icons.star,
-                                                  color: Colors.amber,
-                                                ),
-                                              ),
-                                              const Spacer(
-                                                flex: 20,
-                                              ),
-                                            ],
-                                          ))
-                                    ]),
-                                  ),
-                                ],
+                                          child: AutoSizeText(
+                                            state.list[index].serviceName,
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                            maxLines: 1,
+                                            minFontSize: 12,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const Spacer(
+                                          flex: 10,
+                                        ),
+                                        Expanded(
+                                          flex: 45,
+                                          child: AutoSizeText(
+                                            formattedDate,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blue),
+                                          ),
+                                        )
+                                      ]),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -208,8 +210,8 @@ class _AdminPreviousWorkImagesState
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         );

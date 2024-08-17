@@ -15,6 +15,7 @@ class AddingPreviousDataVariables {
 
 void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
   showDialog(
+      barrierDismissible: false,
       useSafeArea: true,
       context: context,
       builder: (BuildContext context) {
@@ -23,7 +24,7 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
               borderRadius: BorderRadius.circular(20.0)), //this right here
           child: StatefulBuilder(
             builder: (context, setState) => Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 2.5,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
@@ -75,32 +76,6 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                                                     .imageFilePath = file.path;
                                                 AddingPreviousDataVariables
                                                     .isClickedOnCamera = true;
-
-                                                FirebaseStorage.instance
-                                                    .ref()
-                                                    .child("Images")
-                                                    .child(FirebaseAuth.instance
-                                                        .currentUser!.uid)
-                                                    .child(
-                                                        "PreviousServiceImages")
-                                                    .child(ref
-                                                        .read(
-                                                            previousServiceStateProvider
-                                                                .notifier)
-                                                        .previousServiceNameTEC
-                                                        .text)
-                                                    .putFile(File(file.path))
-                                                    .then((snapshot) async {
-                                                  var imagePath = await snapshot
-                                                      .ref
-                                                      .getDownloadURL();
-                                                  ref
-                                                      .read(
-                                                          previousServiceStateProvider
-                                                              .notifier)
-                                                      .setNewPreviousImage(
-                                                          imagePath);
-                                                });
                                               });
                                             }
                                           },
@@ -141,11 +116,11 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                       child: Row(
                         children: [
                           const Spacer(
-                            flex: 6,
+                            flex: 10,
                           ),
                           Expanded(
-                            flex: 40,
-                            child: FloatingActionButton(
+                            flex: 35,
+                            child: MaterialButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 setState(() {
@@ -153,7 +128,7 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                                       .isClickedOnCamera = false;
                                 });
                               },
-                              backgroundColor: const Color(0xFF1BC0C5),
+                              color: Colors.blue,
                               child: const Text(
                                 "Cancel",
                                 style: TextStyle(color: Colors.white),
@@ -161,22 +136,35 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                             ),
                           ),
                           const Spacer(
-                            flex: 8,
+                            flex: 10,
                           ),
                           Expanded(
-                            flex: 40,
-                            child: FloatingActionButton(
-                              onPressed: () {
+                            flex: 35,
+                            child: MaterialButton(
+                              onPressed: () async {
+                                dialogForAddingPreviousService(context);
+                                var serviceName = ref
+                                    .read(previousServiceStateProvider.notifier)
+                                    .previousServiceNameTEC
+                                    .text;
+                                //We have also add previous images in firebase Storage box
+                                if (AddingPreviousDataVariables.imageFilePath !=
+                                    null) {
+                                  await addPreviousImagesToFirebaseFirestore(
+                                      serviceName,
+                                      AddingPreviousDataVariables
+                                          .imageFilePath!,
+                                      ref);
+                                }
                                 ref
                                     .read(previousServiceStateProvider.notifier)
                                     .insertPreviousData();
                                 Navigator.of(context).pop();
-                                setState(() {
-                                  AddingPreviousDataVariables
-                                      .isClickedOnCamera = false;
-                                });
+                                Navigator.of(context).pop();
+                                AddingPreviousDataVariables.isClickedOnCamera =
+                                    false;
                               },
-                              backgroundColor: const Color(0xFF1BC0C5),
+                              color: Colors.blue,
                               child: const Text(
                                 "Save",
                                 style: TextStyle(color: Colors.white),
@@ -199,4 +187,56 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
           ),
         );
       });
+}
+
+Future<void> addPreviousImagesToFirebaseFirestore(
+    String serviceName, String file, WidgetRef ref) async {
+  var snapshot = await FirebaseStorage.instance
+      .ref()
+      .child("Images")
+      .child(FirebaseAuth.instance.currentUser!.uid)
+      .child("previousWorkImages")
+      .child(serviceName)
+      .putFile(File(file));
+
+  var imagePath = await snapshot.ref.getDownloadURL();
+  ref
+      .read(previousServiceStateProvider.notifier)
+      .setNewPreviousImage(imagePath);
+}
+
+void dialogForAddingPreviousService(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Container(
+          height: 100,
+          width: 200,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          child: const Center(
+              child: Row(
+            children: [
+              SizedBox(
+                width: 20,
+              ),
+              CircularProgressIndicator(),
+              SizedBox(
+                width: 20,
+              ),
+              Text(
+                "Adding previous service...",
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              )
+            ],
+          )),
+        ),
+      );
+    },
+  );
 }

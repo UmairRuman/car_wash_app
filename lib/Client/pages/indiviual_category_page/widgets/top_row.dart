@@ -9,13 +9,12 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
   final String serviceId;
   bool isFavourite;
   final String serviceImageUrl;
-  final String favouriteServiceId;
+
   TopRowIndiviualCategoryPage(
       {super.key,
       required this.serviceImageUrl,
       required this.serviceName,
       required this.isFavourite,
-      required this.favouriteServiceId,
       required this.serviceId});
 
   @override
@@ -57,8 +56,8 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                       isFavourite = true;
                       ref
                           .read(favouriteServiceProvider.notifier)
-                          .addToFavourite(serviceName, serviceImageUrl,
-                              serviceId.toString());
+                          .addToFavourite(
+                              serviceName, serviceImageUrl, serviceId);
                       ref
                           .read(allServiceDataStateProvider.notifier)
                           .updateService(serviceId, serviceName, isFavourite);

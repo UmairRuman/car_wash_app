@@ -48,6 +48,8 @@ class FavouriteServiceList extends ConsumerWidget {
                         flex: 30,
                         child: InkWell(
                             child: FavouriteCategoryBookButton(
+                          serviceImage:
+                              listOfFavouriteServices[index].serviceImageUrl,
                           serviceId:
                               listOfFavouriteServices[index].favouriteServiceId,
                           serviceName:
@@ -117,6 +119,8 @@ class FavouriteServiceList extends ConsumerWidget {
                     Expanded(
                         flex: 30,
                         child: FavouriteCategoryBookButton(
+                          serviceImage: state
+                              .listOfFavouriteServices[index].serviceImageUrl,
                           serviceId: state.listOfFavouriteServices[index]
                               .favouriteServiceId,
                           serviceName: serviceName,

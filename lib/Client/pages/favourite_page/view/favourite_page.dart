@@ -29,7 +29,7 @@ class FavouritePage extends StatelessWidget {
                         flex: 2,
                       ),
                       Expanded(flex: 5, child: FavouritePageTitle()),
-                      const Spacer(
+                      Spacer(
                         flex: 3,
                       ),
                       Expanded(flex: 93, child: FavouriteServiceList())

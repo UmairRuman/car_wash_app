@@ -14,24 +14,16 @@ class AdminSideBookingPageTitle extends ConsumerWidget {
         const Spacer(
           flex: 5,
         ),
-        Expanded(
+        const Expanded(
             flex: 50,
-            child: Row(
-              children: [
-                const Expanded(
-                  flex: 80,
-                  child: FittedBox(
-                      child: Text(
-                    "All Bookings",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-                ),
-                Expanded(flex: 20, child: Image.asset(bookingPageImage))
-              ],
-            )),
+            child: FittedBox(
+                child: Text(
+              "All Bookings",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ))),
         const Spacer(
           flex: 15,
         ),

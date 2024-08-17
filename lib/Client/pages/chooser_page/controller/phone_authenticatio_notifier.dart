@@ -58,6 +58,7 @@ class PhoneNumberStateController extends Notifier<String> {
       } catch (e) {
         if (e is FirebaseAuthException) {
           if (e.code == 'credential-already-in-use') {
+            ref.read(verficationStateProvider.notifier).onVerficationPassed();
             Fluttertoast.showToast(
                 msg: "This phone number is already registered.",
                 toastLength: Toast.LENGTH_LONG,

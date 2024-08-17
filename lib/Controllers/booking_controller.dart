@@ -6,6 +6,7 @@ import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_s
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/admin_booking_collection_count.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/user_booking_count_collection.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/bookings.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
@@ -31,6 +32,7 @@ class BookingController extends Notifier<BookingStates> {
   bool? isCarAssetImage;
   String? carImagePath;
   List<Bookings> listOfAdminRealBookings = [];
+  UserCollection userCollection = UserCollection();
   BookingCollection bookingCollection = BookingCollection();
   AdminBookingCollectionCount adminBookingCollectionCount =
       AdminBookingCollectionCount();
@@ -63,8 +65,10 @@ class BookingController extends Notifier<BookingStates> {
           carType != null &&
           carPrice != null &&
           timeSlot != null) {
+        String phoneNo = FirebaseAuth.instance.currentUser!.phoneNumber ?? "";
         //Adding Booking in client Collection
         bookingCollection.addBooking(Bookings(
+            bookerPhoneNo: phoneNo,
             bookerName: bookerName!,
             userBookingId: userBookingId,
             userId: userId,
@@ -80,6 +84,7 @@ class BookingController extends Notifier<BookingStates> {
 
         //Adding booking at Admin Collection
         bookingCollection.addBooking(Bookings(
+            bookerPhoneNo: phoneNo,
             bookerName: bookerName,
             userBookingId: adminBookingId,
             userId: adminId!,
@@ -92,6 +97,10 @@ class BookingController extends Notifier<BookingStates> {
             serviceImageUrl: serviceImageUrl,
             serviceName: serviceName,
             timeSlot: timeSlot!));
+        //After adding booking we also have to add bonus points and no of services to user and admin side
+        await userCollection.updateUserNoOfServices(userId);
+        await userCollection.updateUserNoOfServices(adminId!);
+        await userCollection.updateUserBonusPoints(userId);
         //Adding Message to the Admin Side to show Admin messages of one day
         log("Reached at Adding messages");
         await ref

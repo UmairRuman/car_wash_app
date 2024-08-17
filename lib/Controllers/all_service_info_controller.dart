@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/rating_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
-import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
@@ -31,6 +31,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
       : prefs!.getString(SharedPreferncesConstants.adminkey);
   List<Services> intialListOfService = [];
   ServiceCollection serviceCollection = ServiceCollection();
+  FavouriteCollection favouriteCollection = FavouriteCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
       FavouriteServicesCounterCollection();
   ServiceCounterCollection serviceCounterCollection =
@@ -38,6 +39,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
   TimeSlotCollection timeSlotCollection = TimeSlotCollection();
   String iconUrl = "";
   bool isFavourite = false;
+  String carImageUrl = "";
   String serviceName = "";
   List<Car> listOfCars = [];
 
@@ -73,13 +75,18 @@ class AllServiceInfoController extends Notifier<DataStates> {
     String carPrice =
         ref.read(carInfoProvider.notifier).carCurrentPrice.toString();
     String carPicUrl = ref.read(carInfoProvider.notifier).carImagePath;
+
     if (carPicUrl != "" && carName != "" && carPrice != "") {
-      log("Car added");
-      listOfCars.add(Car(
+      log("Adding Car");
+      Car car = Car(
           carName: carName,
           price: "$carPrice\$",
-          url: carPicUrl,
-          isAsset: false));
+          url: carImageUrl,
+          isAsset: false);
+      await serviceCollection.updateCarList(
+          adminId!, serviceId, serviceName, car);
+
+      await fetchServiceData(serviceName, serviceId);
     }
     ref.read(carInfoProvider.notifier).carName = "";
     ref.read(carInfoProvider.notifier).carCurrentPrice = 1;
@@ -102,7 +109,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
   //Update Service
 
-  void updateService(
+  Future<void> updateService(
       String serviceId, String serviceName, bool isFavourite) async {
     var userId = FirebaseAuth.instance.currentUser!.uid;
     var service = await serviceCollection.getSpecificService(
@@ -120,19 +127,11 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
     String imageUrl = ref.read(serviceInfoProvider.notifier).imagePath;
 
-    var favouriteServiceCount = await favouriteServicesCounterCollection
-        .getAllUserBookingsCount(userId);
-    var favouriteServiceIdCount = favouriteServiceCount.length + 1;
-    var favouriteServiceId = "$favouriteServiceIdCount";
-    if (favouriteServiceIdCount < 10) {
-      favouriteServiceId = "0$favouriteServiceIdCount";
-    }
-
     if (imageUrl == "") {
       imageUrl = service.imageUrl;
       isAssetImage = service.isAssetImage;
     }
-    if (service.serviceId.length <= 6) {
+    if (int.parse(service.serviceId) <= 7) {
       isAssetIcon = true;
     }
 
@@ -152,7 +151,6 @@ class AllServiceInfoController extends Notifier<DataStates> {
       String? phoneNo = prefs!.getString(SharedPreferncesConstants.phoneNo);
 
       serviceCollection.updateNewService(Services(
-          serviceFavouriteId: favouriteServiceId,
           rating: 5,
           isAssetImage: isAssetImage,
           isAssetIcon: isAssetIcon,
@@ -166,8 +164,8 @@ class AllServiceInfoController extends Notifier<DataStates> {
           imageUrl: imageUrl,
           availableDates: listOfDates,
           adminPhoneNo: phoneNo!));
-      favouriteServicesCounterCollection.addAdminBookingCount(
-          FavouriteServiceCounter(count: favouriteServiceId, userId: userId));
+      // favouriteServicesCounterCollection.addAdminBookingCount(
+      //     FavouriteServiceCounter(count: favouriteServiceId, userId: userId));
     }
     await fetchServiceData(serviceName, serviceId);
   }

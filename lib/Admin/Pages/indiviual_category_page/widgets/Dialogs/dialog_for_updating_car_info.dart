@@ -95,7 +95,7 @@ void dialogForUpdatingCarInfo(
                                     .child("Images")
                                     .child(
                                         FirebaseAuth.instance.currentUser!.uid)
-                                    .child("serviceImages")
+                                    .child("ServiceAssets")
                                     .child(serviceName)
                                     .child("carImages")
                                     .child(CarInfoUpdatingModel.carOldName)

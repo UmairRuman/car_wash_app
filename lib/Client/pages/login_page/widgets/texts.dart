@@ -1,6 +1,7 @@
 import 'package:car_wash_app/Client/pages/sign_up_page/view/sign_up_page.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
 class LoginPageTitle extends StatelessWidget {
   const LoginPageTitle({super.key});
@@ -69,10 +70,10 @@ class TextWidgetDontHaveAccount extends StatelessWidget {
         ),
         Expanded(
             flex: 15,
-            child: GestureDetector(
+            child: TouchRippleEffect(
+              rippleColor: Colors.lightBlue,
               onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed(SignUpPage.pageName);
+                Navigator.of(context).pushReplacementNamed(SignUpPage.pageName);
               },
               child: FittedBox(
                 child: Text(

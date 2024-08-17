@@ -1,6 +1,7 @@
 import 'package:car_wash_app/Client/pages/login_page/view/login_page.dart';
 import 'package:car_wash_app/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
 // This is the text for Title of the sign page like "Sign Up"
 class TextTitle extends StatelessWidget {
@@ -34,10 +35,10 @@ class TextWidgetAlreadyHaveAnAccount extends StatelessWidget {
         ),
         Expanded(
             flex: 14,
-            child: GestureDetector(
+            child: TouchRippleEffect(
+              rippleColor: Colors.lightBlue,
               onTap: () {
-                Navigator.of(context).pop();
-                Navigator.pushNamed(context, LoginPage.pageName);
+                Navigator.pushReplacementNamed(context, LoginPage.pageName);
               },
               child: FittedBox(
                 child: Text(

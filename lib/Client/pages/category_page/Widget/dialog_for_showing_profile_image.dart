@@ -8,35 +8,28 @@ void dialogForShowingProfileImage(BuildContext context, String userProfilePic) {
     builder: (context) {
       var screenWidth = MediaQuery.of(context).size.width;
       var screenHeight = MediaQuery.of(context).size.height;
-      return Container(
-        height: screenHeight / 3,
-        width: screenWidth / 3,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-                image: userProfilePic == ""
-                    ? AssetImage(emptyImage)
-                    : CachedNetworkImageProvider(userProfilePic),
-                fit: BoxFit.fill)),
-        child: userProfilePic == ""
-            ? null
-            : CachedNetworkImage(
-                imageUrl: userProfilePic,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                imageBuilder: (context, imageProvider) => Container(
-                  height: screenHeight / 3,
-                  width: screenWidth / 3,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(screenHeight *
+              0.2), // Large border radius to maintain the circular shape
+        ),
+        backgroundColor: Colors.transparent, // Transparent background
+        child: ClipOval(
+          child: SizedBox(
+            width: screenWidth * 0.5, // Adjust as needed
+            height: screenHeight * 0.4, // Adjust as needed
+            child: userProfilePic.isEmpty
+                ? Image.asset(emptyImage, fit: BoxFit.cover)
+                : CachedNetworkImage(
+                    imageUrl: userProfilePic,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        const Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
-                ),
-              ),
+          ),
+        ),
       );
     },
   );

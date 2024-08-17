@@ -10,6 +10,7 @@ class NotificationModel {
   String userId;
   String bookerName;
   String bookerPic;
+  DateTime notificationDeliveredDate;
   NotificationModel({
     required this.timeSlot,
     required this.carWashDate,
@@ -17,6 +18,7 @@ class NotificationModel {
     required this.userId,
     required this.bookerName,
     required this.bookerPic,
+    required this.notificationDeliveredDate,
   });
 
   NotificationModel copyWith({
@@ -26,6 +28,7 @@ class NotificationModel {
     String? userId,
     String? bookerName,
     String? bookerPic,
+    DateTime? notificationDeliveredDate,
   }) {
     return NotificationModel(
       timeSlot: timeSlot ?? this.timeSlot,
@@ -34,6 +37,8 @@ class NotificationModel {
       userId: userId ?? this.userId,
       bookerName: bookerName ?? this.bookerName,
       bookerPic: bookerPic ?? this.bookerPic,
+      notificationDeliveredDate:
+          notificationDeliveredDate ?? this.notificationDeliveredDate,
     );
   }
 
@@ -45,6 +50,8 @@ class NotificationModel {
       'userId': userId,
       'bookerName': bookerName,
       'bookerPic': bookerPic,
+      'notificationDeliveredDate':
+          Timestamp.fromDate(notificationDeliveredDate),
     };
   }
 
@@ -56,6 +63,8 @@ class NotificationModel {
       userId: map['userId'] as String,
       bookerName: map['bookerName'] as String,
       bookerPic: map['bookerPic'] as String,
+      notificationDeliveredDate:
+          (map['notificationDeliveredDate'] as Timestamp).toDate(),
     );
   }
 
@@ -66,7 +75,7 @@ class NotificationModel {
 
   @override
   String toString() {
-    return 'NotificationModel(timeSlot: $timeSlot, carWashDate: $carWashDate, serviceName: $serviceName, userId: $userId, bookerName: $bookerName, bookerPic: $bookerPic)';
+    return 'NotificationModel(timeSlot: $timeSlot, carWashDate: $carWashDate, serviceName: $serviceName, userId: $userId, bookerName: $bookerName, bookerPic: $bookerPic, notificationDeliveredDate: $notificationDeliveredDate)';
   }
 
   @override
@@ -78,7 +87,8 @@ class NotificationModel {
         other.serviceName == serviceName &&
         other.userId == userId &&
         other.bookerName == bookerName &&
-        other.bookerPic == bookerPic;
+        other.bookerPic == bookerPic &&
+        other.notificationDeliveredDate == notificationDeliveredDate;
   }
 
   @override
@@ -88,6 +98,7 @@ class NotificationModel {
         serviceName.hashCode ^
         userId.hashCode ^
         bookerName.hashCode ^
-        bookerPic.hashCode;
+        bookerPic.hashCode ^
+        notificationDeliveredDate.hashCode;
   }
 }

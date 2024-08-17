@@ -10,6 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
 class ChooserPageUserName extends StatelessWidget {
   const ChooserPageUserName({super.key});
@@ -62,7 +63,9 @@ class EditIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
+    return TouchRippleEffect(
+      rippleColor: Colors.yellow,
+      borderRadius: BorderRadius.circular(150),
       onTap: () async {
         var file = await ImagePicker().pickImage(source: ImageSource.gallery);
         if (file != null) {
@@ -83,6 +86,12 @@ class EditIcon extends ConsumerWidget {
               ref
                   .read(userAdditionStateProvider.notifier)
                   .listOfUserInfo[MapForUserInfo.profilePicUrl] = imagePath;
+
+              log(
+                  ref
+                      .read(userAdditionStateProvider.notifier)
+                      .listOfUserInfo[MapForUserInfo.profilePicUrl],
+                  name: "Profile Pic Url ");
             },
           );
         }

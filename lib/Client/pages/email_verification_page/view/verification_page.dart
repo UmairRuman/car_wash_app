@@ -3,9 +3,9 @@ import 'package:car_wash_app/Client/pages/sign_up_page/model/model_for_sending_u
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class EmailVerficationPage extends StatelessWidget {
+class EmailVerificationPage extends StatelessWidget {
   static const pageName = "/emailVerficationPage";
-  const EmailVerficationPage({super.key});
+  const EmailVerificationPage({super.key});
 
   @override
   Widget build(BuildContext context) {

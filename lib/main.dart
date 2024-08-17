@@ -10,7 +10,6 @@ import 'package:car_wash_app/Client/pages/sign_up_page/controller/auth_state_cha
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/admin_info_function.dart';
-import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/firebase_notifications/notification_service.dart';
@@ -45,12 +44,12 @@ class MyApp extends ConsumerWidget {
     for (var imagespath in listOfPreviousWorkImages) {
       precacheImage(AssetImage(imagespath), context);
     }
-    log("Main App rebuild");
+
     ref.watch(authStateProvider);
     return MaterialApp(
       initialRoute: FirstPage.pageName,
       onGenerateRoute: onGenerateRoute,
-      title: 'Flutter Demo',
+      title: 'Car Wash App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -79,6 +78,9 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
     notificationServices.getMessageOnAppOnOpen(context, ref);
     notificationServices.redirectWhenAppInBgOrTermianted(context, ref);
 
+    checkAdminDataInSharedPrefrences();
+    // asyncOperations();
+
     notificationServices.messaging.onTokenRefresh.listen(
       (token) async {
         log("Device Token : $token ");
@@ -92,49 +94,69 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
     );
   }
 
-  Future<void> getPosition() async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      String userLocation = await userCollection
-          .getUserLocation(FirebaseAuth.instance.currentUser!.uid);
-      if (userLocation == "") {
-        if (context.mounted) {
-          var position = await determinePosition(context);
-          currentUserPostion = position;
-        }
-      }
-    } else {
-      var position = await determinePosition(context);
-      currentUserPostion = position;
-    }
+  void checkAdminDataInSharedPrefrences() async {
+    await getAdminIdFromFireStore(ref);
   }
 
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback(
-      (timeStamp) async {
-        await getAdminIdFromFireStore(ref);
-        await getPosition();
-        // log("Longitude ${currentUserPostion!.longitude}");
-        // log("Lotitude ${currentUserPostion!.latitude}");
-      },
-    );
+    // ref.listen(connectivityProvider, (previous, next) {
+    //   if (next.asData?.value == ConnectivityResult.none) {
+    //     ref
+    //         .read(connectivityStatusProvider.notifier)
+    //         .updateConnectivityStatus(false, context);
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       const SnackBar(
+    //           content:
+    //               Text("You are offline. Some features may be unavailable.")),
+    //     );
+    //   } else {
+    //     ref
+    //         .read(connectivityStatusProvider.notifier)
+    //         .updateConnectivityStatus(true, context);
+    //   }
+    // });
+
+    // log("Twitter access token  ${prefs!.getString('twitterAccessToken')!}");
+    log("Auth handler page rebuild");
 
     final authState = ref.watch(authStateProvider);
     final currentUser = FirebaseAuth.instance.currentUser;
-    log("Auth Handler Rebuild");
+
     return authState.when(
       data: (user) {
         if (user == null) {
           return const FirstPage();
         } else if (currentUser!.phoneNumber != null &&
+            currentUser!.phoneNumber != "" &&
             prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
                 null &&
             prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
+          log("Is service Provider in condtion ${prefs!.getBool(SharedPreferncesConstants.isServiceProvider)}");
           //If the service provider is true then we will show him Admin Home Page
           return const AdminSideHomePage();
-        } else if (currentUser.phoneNumber != null) {
+        } else if (currentUser.phoneNumber != null &&
+            currentUser!.phoneNumber != "" &&
+            prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
+                null &&
+            !prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
           //If the
           return const HomePage();
+        } else if (prefs!
+                    .getString(SharedPreferncesConstants.twitterAccessToken) !=
+                null ||
+            prefs!.getString(SharedPreferncesConstants.twitterAccessToken) !=
+                    "" &&
+                currentUser.phoneNumber == "" ||
+            currentUser.phoneNumber == null) {
+          // If the user is logged in through Twitter and phone number is null
+          SchedulerBinding.instance.addPostFrameCallback(
+            (timeStamp) {
+              Navigator.pushReplacementNamed(context, ChooserPage.pageName);
+            },
+          );
+          log('User logged in via Twitter but phone number is null.');
+          return const SizedBox.shrink(); // Temporary widget until redirection
         } else if (currentUser.emailVerified) {
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
@@ -149,11 +171,10 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
           ref
               .read(userAdditionStateProvider.notifier)
               .listOfUserInfo[MapForUserInfo.email] = user.email;
-          ref.read(userAdditionStateProvider.notifier).deviceToken =
-              notificationServices.getTokken();
+
           return const ChooserPage();
         } else {
-          return const EmailVerficationPage();
+          return const EmailVerificationPage();
         }
       },
       loading: () => const Scaffold(

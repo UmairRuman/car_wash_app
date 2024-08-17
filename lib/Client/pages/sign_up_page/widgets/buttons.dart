@@ -64,7 +64,7 @@ class _BtnCreateAccountState extends ConsumerState<BtnCreateAccount>
                     if (signInMethods.isEmpty) {
                       // Email not registered, proceed to create the user
                       Navigator.of(context).pushNamed(
-                          EmailVerficationPage.pageName,
+                          EmailVerificationPage.pageName,
                           arguments: ModelForUserInfo(
                               userEmail: emailController.text,
                               userName: nameController.text,

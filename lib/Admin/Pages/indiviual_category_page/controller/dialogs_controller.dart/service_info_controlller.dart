@@ -19,11 +19,12 @@ class ServiceInfoControlller extends Notifier<String> {
       state = newImagePath;
       imagePath = newImagePath;
     }
-    phoneNo = phoneNoTEC.text;
   }
 
   onChangeText(String serviceDescription) {
-    intialServiceDescription = serviceDescription;
+    intialServiceDescription = serviceDescription == ""
+        ? intialServiceDescription
+        : serviceDescription;
   }
 }
 

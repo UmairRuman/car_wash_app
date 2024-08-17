@@ -14,6 +14,7 @@ class TimeSlotVariables {
 void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
     String serviceId, String serviceName) {
   showDialog(
+      barrierDismissible: false,
       useSafeArea: true,
       context: context,
       builder: (BuildContext context) {
@@ -72,7 +73,7 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                                     Expanded(
                                       flex: 40,
                                       child: FloatingActionButton(
-                                        backgroundColor: Colors.amber,
+                                        backgroundColor: Colors.green,
                                         onPressed: () {
                                           Navigator.of(context).push(
                                             showPicker(
@@ -135,7 +136,7 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                                     Expanded(
                                       flex: 40,
                                       child: FloatingActionButton(
-                                        backgroundColor: Colors.amber,
+                                        backgroundColor: Colors.green,
                                         onPressed: () {
                                           Navigator.of(context).push(
                                             showPicker(
@@ -200,11 +201,11 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                               ),
                               Expanded(
                                 flex: 40,
-                                child: FloatingActionButton(
+                                child: MaterialButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  backgroundColor: const Color(0xFF1BC0C5),
+                                  color: Colors.blue,
                                   child: const Text(
                                     "Cancel",
                                     style: TextStyle(color: Colors.white),
@@ -216,7 +217,7 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                               ),
                               Expanded(
                                 flex: 40,
-                                child: FloatingActionButton(
+                                child: MaterialButton(
                                   onPressed: () {
                                     ref
                                         .read(timeSlotsStateProvider.notifier)
@@ -242,7 +243,7 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                                             .notifier)
                                         .onSaveButtonClick();
                                   },
-                                  backgroundColor: const Color(0xFF1BC0C5),
+                                  color: Colors.blue,
                                   child: const Text(
                                     "Save",
                                     style: TextStyle(color: Colors.white),

@@ -3,7 +3,6 @@ import 'package:car_wash_app/Admin/Pages/profile_page/widgets/containers.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/widgets/icons.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/widgets/profile_pic.dart';
 import 'package:car_wash_app/Client/pages/profile_page/controller/profile_state_controller.dart';
-import 'package:car_wash_app/Client/pages/profile_page/widgets/containers.dart';
 import 'package:car_wash_app/Client/pages/profile_page/widgets/profile_pic.dart';
 import 'package:car_wash_app/Client/pages/profile_page/widgets/top_container_decoration.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
@@ -28,6 +27,7 @@ class AdminSideProfilePage extends ConsumerWidget {
     ];
     return SafeArea(
         child: Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Expanded(
@@ -70,7 +70,7 @@ class AdminSideProfilePage extends ConsumerWidget {
             flex: 5,
           ),
           Expanded(
-              flex: 50,
+              flex: 45,
               child: AdminSideProfileInfoContainersList(
                 list: list,
               )),
@@ -88,6 +88,9 @@ class AdminSideProfilePage extends ConsumerWidget {
             flex: 2,
           ),
           const Expanded(flex: 8, child: AdminSideLogOutProfileButton()),
+          const Spacer(
+            flex: 5,
+          ),
         ],
       ),
     ));

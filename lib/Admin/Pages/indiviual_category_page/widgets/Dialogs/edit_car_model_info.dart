@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
@@ -14,11 +15,14 @@ class CarInfoVariables {
   static String? imageFilePath;
   static int maxValue = 1000;
   static bool isClickedOnCamera = false;
+  static String downloadedImagePath = "";
 }
 
 void dialogForEditCarInfo(BuildContext context, String serviceName,
     String serviceId, WidgetRef ref, bool isFavourite) {
+  String newImagePath = "";
   showDialog(
+      barrierDismissible: false,
       useSafeArea: true,
       context: context,
       builder: (BuildContext context) {
@@ -93,36 +97,6 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
                                                     CarInfoVariables
                                                             .isClickedOnCamera =
                                                         true;
-
-                                                    FirebaseStorage.instance
-                                                        .ref()
-                                                        .child("Images")
-                                                        .child(FirebaseAuth
-                                                            .instance
-                                                            .currentUser!
-                                                            .uid)
-                                                        .child("serviceImages")
-                                                        .child(serviceName)
-                                                        .child("carImages")
-                                                        .child(ref
-                                                            .read(
-                                                                carInfoProvider
-                                                                    .notifier)
-                                                            .carNameTEC
-                                                            .text)
-                                                        .putFile(
-                                                            File(file.path))
-                                                        .then((snapshot) async {
-                                                      var imagePath =
-                                                          await snapshot.ref
-                                                              .getDownloadURL();
-
-                                                      ref
-                                                          .read(carInfoProvider
-                                                              .notifier)
-                                                          .onChangeCarPic(
-                                                              imagePath);
-                                                    });
                                                   });
                                                 }
                                               },
@@ -199,7 +173,7 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
                               ),
                               Expanded(
                                 flex: 40,
-                                child: FloatingActionButton(
+                                child: MaterialButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     setState(() {
@@ -208,7 +182,7 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
                                           false;
                                     });
                                   },
-                                  backgroundColor: const Color(0xFF1BC0C5),
+                                  color: Colors.blue,
                                   child: const Text(
                                     "Cancel",
                                     style: TextStyle(color: Colors.white),
@@ -220,28 +194,55 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
                               ),
                               Expanded(
                                 flex: 40,
-                                child: FloatingActionButton(
-                                  onPressed: () {
-                                    setState(() {
+                                child: MaterialButton(
+                                  onPressed: () async {
+                                    // Show loading dialog
+                                    dialogForLoadingCarImage(context);
+
+                                    try {
+                                      // Store car image in Firebase Storage
+                                      if (CarInfoVariables.imageFilePath !=
+                                          null) {
+                                        await storingServiceCarImagesAtFireStore(
+                                            ref,
+                                            CarInfoVariables.imageFilePath!,
+                                            serviceName);
+                                        log("In save button ${CarInfoVariables.downloadedImagePath}");
+                                        // Update the car info with the new image path
+                                        ref
+                                            .read(carInfoProvider.notifier)
+                                            .onChangeCarPic(CarInfoVariables
+                                                .downloadedImagePath);
+                                      }
+                                      ref
+                                              .read(allServiceDataStateProvider
+                                                  .notifier)
+                                              .carImageUrl =
+                                          CarInfoVariables.downloadedImagePath;
+                                      // Reset variables
                                       CarInfoVariables.isClickedOnCamera =
                                           false;
                                       CarInfoVariables.imageFilePath = null;
-                                    });
 
-                                    ref
-                                        .read(carInfoProvider.notifier)
-                                        .onSaveButtonClick();
-                                    ref
-                                        .read(allServiceDataStateProvider
-                                            .notifier)
-                                        .updateService(serviceId, serviceName,
-                                            isFavourite);
-
-                                    //After performing operation set all values to intial
-
-                                    Navigator.of(context).pop();
+                                      // Call save button logic
+                                      ref
+                                          .read(carInfoProvider.notifier)
+                                          .onSaveButtonClick();
+                                      await ref
+                                          .read(allServiceDataStateProvider
+                                              .notifier)
+                                          .addCars(serviceId, serviceName);
+                                    } finally {
+                                      // Ensure dialog is closed even if an error occurs
+                                      if (context.mounted) {
+                                        Navigator.of(context)
+                                            .pop(); // Close loading dialog
+                                        Navigator.of(context)
+                                            .pop(); // Close the edit dialog
+                                      }
+                                    }
                                   },
-                                  backgroundColor: const Color(0xFF1BC0C5),
+                                  color: Colors.blue,
                                   child: const Text(
                                     "Save",
                                     style: TextStyle(color: Colors.white),
@@ -261,4 +262,56 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
           ),
         );
       });
+}
+
+Future<void> storingServiceCarImagesAtFireStore(
+    WidgetRef ref, String file, String serviceName) async {
+  var snapshot = await FirebaseStorage.instance
+      .ref()
+      .child("Images")
+      .child(FirebaseAuth.instance.currentUser!.uid)
+      .child("ServiceAssets")
+      .child(serviceName)
+      .child("carImages")
+      .child(ref.read(carInfoProvider.notifier).carNameTEC.text)
+      .putFile(File(file));
+
+  var imagePath = await snapshot.ref.getDownloadURL();
+  CarInfoVariables.downloadedImagePath = imagePath;
+}
+
+void dialogForLoadingCarImage(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Container(
+          height: 100,
+          width: 200,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          child: const Center(
+              child: Row(
+            children: [
+              SizedBox(
+                width: 20,
+              ),
+              CircularProgressIndicator(),
+              SizedBox(
+                width: 20,
+              ),
+              Text(
+                "Adding Car data...",
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              )
+            ],
+          )),
+        ),
+      );
+    },
+  );
 }

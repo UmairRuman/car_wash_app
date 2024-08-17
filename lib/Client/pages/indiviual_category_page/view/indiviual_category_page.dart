@@ -33,7 +33,6 @@ class IndiviualCategoryPage extends ConsumerWidget {
       resizeToAvoidBottomInset: false,
       body: Builder(builder: (context) {
         if (state is DataLoadedState) {
-          var favouriteServiceId = state.service.serviceFavouriteId;
           var name = state.service.serviceName;
           var serviceImage = state.service.imageUrl;
           var serviceDescription = state.service.description;
@@ -51,7 +50,6 @@ class IndiviualCategoryPage extends ConsumerWidget {
                   flex: 5,
                   child: TopRowIndiviualCategoryPage(
                     serviceImageUrl: serviceImage,
-                    favouriteServiceId: favouriteServiceId,
                     serviceId: serviceId,
                     isFavourite: isFavourite,
                     serviceName: name,

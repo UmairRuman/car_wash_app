@@ -233,6 +233,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  connectivity:
+    dependency: "direct main"
+    description:
+      name: connectivity
+      sha256: a8e91263cf3e25fb5cc95e19dfde4999e32a648ac3b9e8a558a28165731678f8
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.6"
+  connectivity_for_web:
+    dependency: transitive
+    description:
+      name: connectivity_for_web
+      sha256: "01a390c1d5adc2ed1fa1f52d120c07fe9fd01166a93f965a832fd6cfc0ea6482"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+1"
+  connectivity_macos:
+    dependency: transitive
+    description:
+      name: connectivity_macos
+      sha256: "51ae08d5162eca9669b9d8951ed83ce19c5355a81149f94e4dee2740beb93628"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1+2"
+  connectivity_platform_interface:
+    dependency: transitive
+    description:
+      name: connectivity_platform_interface
+      sha256: "2d82e942df9d49f29a24bb07fb5ce085d4a53e47818c62364d2b6deb9e0d7a8e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   convert:
     dependency: transitive
     description:
@@ -265,6 +297,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  curved_navigation_bar:
+    dependency: "direct main"
+    description:
+      name: curved_navigation_bar
+      sha256: bb4ab128fcb6f4a9f0f1f72d227db531818b20218984789777f049fcbf919279
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
   dart_style:
     dependency: transitive
     description:
@@ -929,7 +969,7 @@ packages:
     source: hosted
     version: "1.1.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
@@ -1192,6 +1232,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  plus:
+    dependency: "direct main"
+    description:
+      name: plus
+      sha256: "98e9bc160d0c4be0b1881b0ff86f052f15afb59d2040ed0f2f888e3cade82c24"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0+1"
   pool:
     dependency: transitive
     description:
@@ -1200,6 +1248,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  progress_state_button:
+    dependency: "direct main"
+    description:
+      name: progress_state_button
+      sha256: "8efbe7978995d3e20f3987022d4851d6615b25d227c17c3eb22f4dfc0c08811e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   pub_semver:
     dependency: transitive
     description:
@@ -1240,6 +1296,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  searchable_listview:
+    dependency: "direct main"
+    description:
+      name: searchable_listview
+      sha256: "398357b5b966a87bb1cfec8f5d5f4ba80885bdcd329abcaf5545d04a4f673f80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.15.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1485,6 +1549,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  touch_ripple_effect:
+    dependency: "direct main"
+    description:
+      name: touch_ripple_effect
+      sha256: "370229cc0647744ae22ec3e7738eddcb90a55f7c26aadbe553839cb6a7393948"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.1"
   typed_data:
     dependency: transitive
     description:

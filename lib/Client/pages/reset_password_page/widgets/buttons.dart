@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Client/pages/reset_password_page/model/text_controller.dart';
 import 'package:car_wash_app/utils/validations/email_validation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,7 +15,9 @@ class BtnResetPassword extends ConsumerWidget {
     return MaterialButton(
       onPressed: () {
         bool validEmail = state.isValidEmail();
-        if (FirebaseAuth.instance.currentUser != null && validEmail) {
+        log(validEmail.toString(), name: "Valid Email");
+        if (validEmail) {
+          log("Condtion Satified");
           FirebaseAuth.instance.sendPasswordResetEmail(email: state);
         }
       },

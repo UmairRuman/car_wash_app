@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
@@ -121,7 +122,7 @@ class NotificationServices {
       ref.read(bookingStateProvider.notifier).dateTimeForFilter =
           DateTime(carWashDate.year, carWashDate.month, carWashDate.day);
       try {
-        Navigator.of(context).pushNamed(NotificationPage.pageName);
+        Navigator.of(context).pushNamed(AdminSideNotificationPage.pageName);
         await ref
             .read(messageStateProvider.notifier)
             .getAllNotificationsByUserId();

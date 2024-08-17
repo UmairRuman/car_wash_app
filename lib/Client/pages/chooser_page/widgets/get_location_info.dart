@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Client/pages/chooser_page/controller/location_notifier.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
-import 'package:car_wash_app/Client/pages/chooser_page/controller/location_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
@@ -30,6 +30,10 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
               "${placemark.country},${placemark.locality}";
           log(" Country : ${placemark.country}, Locality :  ${placemark.locality}, Postal Code : ${placemark.postalCode}, Administrative Area : ${placemark.administrativeArea} , Street : ${placemark.street} ,Sub_location ${placemark.subLocality}");
           success = true;
+          ref
+                  .read(userAdditionStateProvider.notifier)
+                  .listOfUserInfo[MapForUserInfo.userLocation] =
+              "${placemark.country},${placemark.locality}";
         } catch (e) {
           retryCount++;
           log("Attempt $retryCount failed: $e");
@@ -47,12 +51,11 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
         ),
         Expanded(
             flex: 40,
-            child: FloatingActionButton(
-              heroTag: "11",
+            child: MaterialButton(
               onPressed: () {
                 coordinatesIntoLocation();
               },
-              backgroundColor: const Color.fromARGB(255, 14, 63, 103),
+              color: const Color.fromARGB(255, 14, 63, 103),
               child: const Text(
                 "Add Location",
                 style: TextStyle(color: Colors.white),

@@ -15,7 +15,8 @@ class NotificationCollection {
       await UserCollection.userCollection
           .doc(notificationModel.userId)
           .collection(notificationCollection)
-          .doc(notificationModel.timeSlot)
+          .doc(
+              "${notificationModel.carWashDate.day}/${notificationModel.timeSlot}")
           .set(notificationModel.toMap());
       return true;
     } catch (e) {
@@ -28,7 +29,8 @@ class NotificationCollection {
       await UserCollection.userCollection
           .doc(notificationModel.userId)
           .collection(notificationCollection)
-          .doc(notificationModel.timeSlot)
+          .doc(
+              "${notificationModel.carWashDate.day}/${notificationModel.timeSlot}")
           .delete();
       return true;
     } catch (e) {
@@ -41,7 +43,8 @@ class NotificationCollection {
       await UserCollection.userCollection
           .doc(notificationModel.userId)
           .collection(notificationCollection)
-          .doc(notificationModel.timeSlot)
+          .doc(
+              "${notificationModel.carWashDate.day}/${notificationModel.timeSlot}")
           .update(notificationModel.toMap());
       return true;
     } catch (e) {

@@ -13,6 +13,7 @@ class Bookings {
   String price;
   String bookingStatus;
   DateTime bookingDate;
+  String bookerPhoneNo;
   String serviceImageUrl;
   String serviceName;
   String timeSlot;
@@ -26,6 +27,7 @@ class Bookings {
     required this.price,
     required this.bookingStatus,
     required this.bookingDate,
+    required this.bookerPhoneNo,
     required this.serviceImageUrl,
     required this.serviceName,
     required this.timeSlot,
@@ -41,6 +43,7 @@ class Bookings {
     String? price,
     String? bookingStatus,
     DateTime? bookingDate,
+    String? bookerPhoneNo,
     String? serviceImageUrl,
     String? serviceName,
     String? timeSlot,
@@ -55,6 +58,7 @@ class Bookings {
       price: price ?? this.price,
       bookingStatus: bookingStatus ?? this.bookingStatus,
       bookingDate: bookingDate ?? this.bookingDate,
+      bookerPhoneNo: bookerPhoneNo ?? this.bookerPhoneNo,
       serviceImageUrl: serviceImageUrl ?? this.serviceImageUrl,
       serviceName: serviceName ?? this.serviceName,
       timeSlot: timeSlot ?? this.timeSlot,
@@ -72,6 +76,7 @@ class Bookings {
       'price': price,
       'bookingStatus': bookingStatus,
       'bookingDate': Timestamp.fromDate(bookingDate),
+      'bookerPhoneNo': bookerPhoneNo,
       'serviceImageUrl': serviceImageUrl,
       'serviceName': serviceName,
       'timeSlot': timeSlot,
@@ -89,6 +94,7 @@ class Bookings {
       price: map['price'] as String,
       bookingStatus: map['bookingStatus'] as String,
       bookingDate: (map['bookingDate'] as Timestamp).toDate(),
+      bookerPhoneNo: map['bookerPhoneNo'] as String,
       serviceImageUrl: map['serviceImageUrl'] as String,
       serviceName: map['serviceName'] as String,
       timeSlot: map['timeSlot'] as String,
@@ -102,7 +108,7 @@ class Bookings {
 
   @override
   String toString() {
-    return 'Bookings(userBookingId: $userBookingId, bookerName: $bookerName, userId: $userId, serviceId: $serviceId, carType: $carType, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, serviceImageUrl: $serviceImageUrl, serviceName: $serviceName, timeSlot: $timeSlot)';
+    return 'Bookings(userBookingId: $userBookingId, bookerName: $bookerName, userId: $userId, serviceId: $serviceId, carType: $carType, carWashdate: $carWashdate, price: $price, bookingStatus: $bookingStatus, bookingDate: $bookingDate, bookerPhoneNo: $bookerPhoneNo, serviceImageUrl: $serviceImageUrl, serviceName: $serviceName, timeSlot: $timeSlot)';
   }
 
   @override
@@ -118,6 +124,7 @@ class Bookings {
         other.price == price &&
         other.bookingStatus == bookingStatus &&
         other.bookingDate == bookingDate &&
+        other.bookerPhoneNo == bookerPhoneNo &&
         other.serviceImageUrl == serviceImageUrl &&
         other.serviceName == serviceName &&
         other.timeSlot == timeSlot;
@@ -134,6 +141,7 @@ class Bookings {
         price.hashCode ^
         bookingStatus.hashCode ^
         bookingDate.hashCode ^
+        bookerPhoneNo.hashCode ^
         serviceImageUrl.hashCode ^
         serviceName.hashCode ^
         timeSlot.hashCode;

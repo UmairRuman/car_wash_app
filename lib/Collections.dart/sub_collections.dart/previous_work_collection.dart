@@ -53,6 +53,27 @@ class PreviousWorkCollection {
     }
   }
 
+  Future<String> getLastPreviousWorkId(String userId) async {
+    try {
+      var snapShots = await UserCollection.userCollection
+          .doc(userId)
+          .collection(previousWorkCollectionName)
+          .get();
+      var list = snapShots.docs
+          .map(
+            (doc) => PreviousWorkModel.fromMap(doc.data()),
+          )
+          .toList();
+      if (list.isEmpty) {
+        return "";
+      }
+
+      return list.last.id;
+    } catch (e) {
+      return "";
+    }
+  }
+
   Future<List<PreviousWorkModel>> getAllPreviousWork(String userId) async {
     try {
       var snapshot = await UserCollection.userCollection

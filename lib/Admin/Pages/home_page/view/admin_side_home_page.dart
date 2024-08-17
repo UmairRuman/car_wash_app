@@ -14,26 +14,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class AdminSideHomePage extends ConsumerWidget {
+class AdminSideHomePage extends ConsumerStatefulWidget {
   static const String pageName = '/adminSideHomePage';
   const AdminSideHomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final initializationState = ref.watch(initializationProvider);
-    // ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings();
-    // log("Total List of intial Messages ${MessageDatabase.getMessages()}");
+  ConsumerState<AdminSideHomePage> createState() => _AdminSideHomePageState();
+}
+
+class _AdminSideHomePageState extends ConsumerState<AdminSideHomePage> {
+  @override
+  void initState() {
+    super.initState();
     ref.read(profileDataStateProvider.notifier).getUserAllDData();
     ref
         .read(previousServiceStateProvider.notifier)
         .getIntialListPreviousServices();
     ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices();
     ref.read(favouriteServiceProvider.notifier).getAllIntialFavouriteServices();
-    // ref.read(messageStateProvider.notifier).intialMessages();
-    // ref.read(defaultServicesStateProvider.notifier).addDefaultService();
-    // ref
-    //     .read(previousServiceStateProvider.notifier)
-    //     .addDefaultPreviousWorkCategories();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    log("Home Page Rebuild");
+    final initializationState = ref.watch(initializationProvider);
+
     return initializationState.when(
       data: (_) {
         var state = ref.watch(userAdditionStateProvider);
@@ -41,6 +46,7 @@ class AdminSideHomePage extends ConsumerWidget {
 
         if (state is AddittionLoadedState) {
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             bottomNavigationBar: const AdminSideHomePageBottomNavigationBar(),
             body: currentIndex == 0
                 ? AdminSideCategoryPage(

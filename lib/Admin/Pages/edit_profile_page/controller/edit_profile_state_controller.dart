@@ -8,11 +8,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final editProfileInfoProvider =
-    NotifierProvider<EditProfileStateController, String>(
-        EditProfileStateController.new);
+final adminSideEditProfileInfoProvider =
+    NotifierProvider<AdminSideEditProfileStateController, String>(
+        AdminSideEditProfileStateController.new);
 
-class EditProfileStateController extends Notifier<String> {
+class AdminSideEditProfileStateController extends Notifier<String> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   String profileImagePath = "";
   UserCollection userCollection = UserCollection();
@@ -59,7 +59,7 @@ class EditProfileStateController extends Notifier<String> {
       await userCollection.updateUserLocation(userId, editLocationTEC.text);
       await adminKeyCollection
           .updateAdminKey(AdminKey(pin: editPasswordTEC.text));
-      ref.read(userAdditionStateProvider.notifier).getUser(userId);
+      await ref.read(userAdditionStateProvider.notifier).getUser(userId);
       Navigator.of(context).pop();
     } catch (e) {
       log("Error in updating all info");

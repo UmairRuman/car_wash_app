@@ -14,13 +14,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   static const String pageName = '/homePage';
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final initializationState = ref.watch(initializationProvider);
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  void initState() {
+    super.initState();
     ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings();
     ref.read(favouriteServiceProvider.notifier).getAllIntialFavouriteServices();
     ref.read(profileDataStateProvider.notifier).getUserAllDData();
@@ -28,10 +33,12 @@ class HomePage extends ConsumerWidget {
         .read(previousServiceStateProvider.notifier)
         .getIntialListPreviousServices();
     ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices();
-    // ref
-    //     .read(previousServiceStateProvider.notifier)
-    //     .addDefaultPreviousWorkCategories();
-    // ref.read(defaultServicesStateProvider.notifier).addDefaultService();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final initializationState = ref.watch(initializationProvider);
+
     return initializationState.when(
       data: (_) {
         var state = ref.watch(userAdditionStateProvider);

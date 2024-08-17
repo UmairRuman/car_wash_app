@@ -20,21 +20,24 @@ class PaymentPage extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
               },
-              child: const Icon(Icons.arrow_back)),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              )),
         ),
         body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              stops: [0.3, 0.6, 0.9],
-              colors: [
-                Color.fromARGB(255, 187, 33, 243),
-                Color.fromARGB(255, 233, 30, 220),
-                Color.fromARGB(255, 108, 39, 176),
-              ],
-            ),
-          ),
+          decoration: const BoxDecoration(color: Colors.blue
+              // gradient: LinearGradient(
+              //   begin: Alignment.topRight,
+              //   end: Alignment.bottomLeft,
+              //   stops: [0.3, 0.6, 0.9],
+              //   colors: [
+              //     Color.fromARGB(255, 187, 33, 243),
+              //     Color.fromARGB(255, 233, 30, 220),
+              //     Color.fromARGB(255, 108, 39, 176),
+              //   ],
+              // ),
+              ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
@@ -53,14 +56,11 @@ class PaymentPage extends StatelessWidget {
                   ]),
               child: Column(
                 children: [
-                  const Spacer(
-                    flex: 3,
-                  ),
                   Expanded(
                       flex: 10,
                       child: BookingServiceText(serviceName: data.serviceName)),
                   Expanded(
-                      flex: 32,
+                      flex: 35,
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: SelectedCarContainer(

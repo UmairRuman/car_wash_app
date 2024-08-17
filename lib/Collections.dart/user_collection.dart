@@ -81,12 +81,16 @@ class UserCollection {
     }
   }
 
-  Future<bool> updateUserNoOfServices(
-      String userId, String serviceConsumed) async {
+  Future<bool> updateUserNoOfServices(String userId) async {
     try {
+      //For updating services firstly we have to get user no of services
+      var querrySnapShot = await userCollection.doc(userId).get();
+      int noOfServices =
+          Users.fromMap(querrySnapShot.data()!).serviceConsumed as int;
+      noOfServices += 1;
       await userCollection
           .doc(userId)
-          .update({"serviceConsumed": serviceConsumed});
+          .update({"serviceConsumed": noOfServices});
       return true;
     } catch (e) {
       log("Error in updating useer consumed services ${e.toString()}");
@@ -104,8 +108,11 @@ class UserCollection {
     }
   }
 
-  Future<bool> updateUserBonusPoints(String userId, String bonusPoints) async {
+  Future<bool> updateUserBonusPoints(String userId) async {
     try {
+      var querrySnapShot = await userCollection.doc(userId).get();
+      double bonusPoints = Users.fromMap(querrySnapShot.data()!).bonusPoints;
+      bonusPoints += 300;
       await userCollection.doc(userId).update({"bonusPoints": bonusPoints});
       return true;
     } catch (e) {
@@ -131,6 +138,16 @@ class UserCollection {
       return Users.fromMap(querrySnapshot.data()!).phoneNumber;
     } catch (e) {
       return "";
+    }
+  }
+
+  Future<bool> getUserInfo(String userId) async {
+    try {
+      var querrySnapshot = await userCollection.doc(userId).get();
+
+      return Users.fromMap(querrySnapshot.data()!).isServiceProvider;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -166,7 +183,7 @@ class UserCollection {
     var snapshot = await userCollection.doc(userId).get();
 
     var singleUserData = Users.fromMap(snapshot.data()!);
-    log(snapshot.data()!.toString());
+
     return singleUserData;
   }
 }

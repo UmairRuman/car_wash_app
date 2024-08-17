@@ -81,14 +81,15 @@ class _BtnLoginState extends ConsumerState<BtnLogin>
                       if (user != null && userPhoneNumber != "") {
                         SchedulerBinding.instance.addPostFrameCallback(
                           (timeStamp) {
-                            Navigator.of(context).pushNamed(HomePage.pageName);
+                            Navigator.of(context)
+                                .pushReplacementNamed(HomePage.pageName);
                           },
                         );
                       } else if (user != null && userPhoneNumber == "") {
                         SchedulerBinding.instance.addPostFrameCallback(
                           (timeStamp) {
                             Navigator.of(context)
-                                .pushNamed(ChooserPage.pageName);
+                                .pushReplacementNamed(ChooserPage.pageName);
                           },
                         );
                       }

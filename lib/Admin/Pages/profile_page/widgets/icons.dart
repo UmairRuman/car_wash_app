@@ -27,7 +27,7 @@ class AdminProfilePageEditIcon extends ConsumerWidget {
               .then((snapshot) async {
             var imagePath = await snapshot.ref.getDownloadURL();
             await ref
-                .read(editProfileInfoProvider.notifier)
+                .read(adminSideEditProfileInfoProvider.notifier)
                 .onUpdateImage(imagePath, context);
           });
         }

@@ -4,12 +4,14 @@ import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_count_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/Users.dart';
 import 'package:car_wash_app/ModelClasses/admin_count.dart';
 import 'package:car_wash_app/ModelClasses/admin_device_token.dart';
 import 'package:car_wash_app/ModelClasses/admin_info.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/firebase_notifications/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +21,10 @@ final userAdditionStateProvider =
         UserStateNotifier.new);
 
 class UserStateNotifier extends Notifier<UserAdditionStates> {
+  NotificationServices notificationServices = NotificationServices();
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
   AdminCountCollection adminCountCollection = AdminCountCollection();
+
   AdminDeviceTokenCollection adminDeviceTokenCollection =
       AdminDeviceTokenCollection();
   String phoneNumberForLogin = "";
@@ -79,14 +83,22 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     log("Is Service Provider ${listOfUserInfo[MapForUserInfo.isServiceProvider]}");
     log("User Location ${listOfUserInfo[MapForUserInfo.userLocation]}");
     log("Phone No ${FirebaseAuth.instance.currentUser!.phoneNumber!}");
-
-    var realToken = await deviceToken;
+    //In user collection firstly we get user device token
+    var realToken = await notificationServices.getTokken();
     log("Device Token $realToken");
+    //Getting admin info to add in user shared prefrences to avoid from firebase cost
+    var realAdminInfo =
+        await adminInfoCollection.getAdminsInfoAtSpecificId("01");
+    //We have to get all admin device tokens
+    var allAdminsDeviceTokenlist =
+        await adminDeviceTokenCollection.getAllAdminDeviceTokens();
 
     var userName = listOfUserInfo[MapForUserInfo.userName] == ""
         ? FirebaseAuth.instance.currentUser!.displayName
         : listOfUserInfo[MapForUserInfo.userName];
-    var userId = listOfUserInfo[MapForUserInfo.userId];
+    var userId = listOfUserInfo[MapForUserInfo.userId] == ""
+        ? FirebaseAuth.instance.currentUser!.uid
+        : listOfUserInfo[MapForUserInfo.userId];
     var userPhoneNo = listOfUserInfo[MapForUserInfo.phoneNumber] == ""
         ? FirebaseAuth.instance.currentUser!.phoneNumber
         : listOfUserInfo[MapForUserInfo.phoneNumber];
@@ -97,10 +109,10 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     if (listOFAdminCount.length < 9) {
       adminNo = "0${listOFAdminCount.length + 1}";
     }
-
+    //If the user is admin, then we add user data in collection.
     if (listOfUserInfo[MapForUserInfo.isServiceProvider]) {
       adminInfoCollection.insertAdminInfo(AdminInfo(
-          adminDeviceToken: realToken!,
+          adminDeviceToken: realToken,
           adminName: userName,
           adminId: userId,
           adminNo: adminNo,
@@ -113,31 +125,52 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
       //Now we will also increment one in that Admin Count Collection
       await adminCountCollection
           .increamentAdminAdd(AdminCounter(count: adminNo));
-      // sharedPreferences.setString(
-      //     SharedPreferncesConstants.adminTokenKey, realToken);
-
-      sharedPreferences.setBool(SharedPreferncesConstants.isServiceProvider,
-          listOfUserInfo[MapForUserInfo.isServiceProvider]);
     }
+    //We also set is service provider in shared prefrences to avoid from the cost got every time for getting data from firestore
+    sharedPreferences.setBool(SharedPreferncesConstants.isServiceProvider,
+        listOfUserInfo[MapForUserInfo.isServiceProvider]);
+
+    //Getting main admin data and then add to added user
+    //Firstly we check if the admin is added before
+    List<String> listOfTokens = [];
+    for (int index = 0; index < allAdminsDeviceTokenlist.length; index++) {
+      listOfTokens.add(allAdminsDeviceTokenlist[index].deviceToken);
+    }
+
+    if (realAdminInfo.adminId != "") {
+      //Storing all the admin info iin shared prefrences
+      storeServiceProviderTokens(listOfTokens);
+      sharedPreferences.setString(
+          SharedPreferncesConstants.phoneNo, realAdminInfo.adminPhoneNo);
+      sharedPreferences.setString(
+          SharedPreferncesConstants.adminkey, realAdminInfo.adminId);
+      sharedPreferences.setInt(
+          SharedPreferncesConstants.adminCount, int.parse(adminNo));
+    }
+
+    log("User Shared Prefrences");
+    log("Phone number in shared prefrences ${sharedPreferences.getString(SharedPreferncesConstants.phoneNo)}");
+    log("Admin Id in shared prefrences ${sharedPreferences.getString(SharedPreferncesConstants.adminkey)}");
+    log("Admin Device Token in shared prefrences ${sharedPreferences.getString(SharedPreferncesConstants.adminTokenKey)}");
 
     log("All data added");
     isUserDataAdded = true;
     bool isUserAdd = await userCollection.addUser(Users(
-        deviceToken: realToken!,
+        deviceToken: realToken,
         userId: userId,
         name: userName,
-        email: listOfUserInfo[MapForUserInfo.email],
+        email: listOfUserInfo[MapForUserInfo.email] ?? "",
         profilePicUrl: listOfUserInfo[MapForUserInfo.profilePicUrl],
         phoneNumber: userPhoneNo,
         isServiceProvider: listOfUserInfo[MapForUserInfo.isServiceProvider],
         bonusPoints: listOfUserInfo[MapForUserInfo.bonusPoints],
         serviceConsumed: listOfUserInfo[MapForUserInfo.serviceConsumed],
-        createdAt: listOfUserInfo[MapForUserInfo.createdAt],
+        createdAt: DateTime.now(),
         userLocation: listOfUserInfo[MapForUserInfo.userLocation]));
     log("User  added $isUserAdd");
   }
 
-  void getUser(String userId) async {
+  Future<void> getUser(String userId) async {
     await Future.delayed(const Duration(seconds: 3));
     state = AdditionLoadingState();
 

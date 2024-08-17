@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
@@ -16,6 +17,7 @@ class ServiceIconCategoryVariables {
 
 void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
   showDialog(
+      barrierDismissible: false,
       useSafeArea: true,
       context: context,
       builder: (BuildContext context) {
@@ -24,7 +26,7 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
               borderRadius: BorderRadius.circular(20.0)), //this right here
           child: StatefulBuilder(
             builder: (context, setState) => Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 2.5,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
@@ -88,29 +90,6 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
                                                 ServiceIconCategoryVariables
                                                     .isIconModified = true;
                                               });
-                                              FirebaseStorage.instance
-                                                  .ref()
-                                                  .child("Images")
-                                                  .child(FirebaseAuth.instance
-                                                      .currentUser!.uid)
-                                                  .child("serviceIcons")
-                                                  .child(ref
-                                                      .read(
-                                                          serviceAddtionStateProvider
-                                                              .notifier)
-                                                      .serviecNameTEC
-                                                      .text)
-                                                  .putFile(File(file.path))
-                                                  .then((snapshot) async {
-                                                var imagePath = await snapshot
-                                                    .ref
-                                                    .getDownloadURL();
-                                                ref
-                                                    .read(
-                                                        serviceAddtionStateProvider
-                                                            .notifier)
-                                                    .onChangeIconUrl(imagePath);
-                                              });
                                             }
                                           },
                                           child: Image.asset(cameraImage))),
@@ -150,11 +129,11 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
                       child: Row(
                         children: [
                           const Spacer(
-                            flex: 6,
+                            flex: 10,
                           ),
                           Expanded(
-                            flex: 40,
-                            child: FloatingActionButton(
+                            flex: 35,
+                            child: MaterialButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 setState(() {
@@ -164,7 +143,7 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
                                       .isClickedOnCamera = false;
                                 });
                               },
-                              backgroundColor: const Color(0xFF1BC0C5),
+                              color: Colors.blue,
                               child: const Text(
                                 "Cancel",
                                 style: TextStyle(color: Colors.white),
@@ -172,25 +151,37 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
                             ),
                           ),
                           const Spacer(
-                            flex: 8,
+                            flex: 10,
                           ),
                           Expanded(
-                            flex: 40,
-                            child: FloatingActionButton(
-                              onPressed: () {
-                                setState(() {
+                            flex: 35,
+                            child: MaterialButton(
+                              onPressed: () async {
+                                dialogForAddingService(context);
+                                //On save button click we have to upload image to the firebaseStorage box
+                                log("File path ${ServiceIconCategoryVariables.imageFilePath}");
+                                if (ServiceIconCategoryVariables
+                                        .imageFilePath !=
+                                    null) {
+                                  await storingServiceIconAtFireStore(
+                                      ref,
+                                      ServiceIconCategoryVariables
+                                          .imageFilePath!);
+
                                   ServiceIconCategoryVariables.imageFilePath =
                                       null;
                                   ServiceIconCategoryVariables
                                       .isClickedOnCamera = false;
-                                  Navigator.of(context).pop();
-                                  ref
+
+                                  await ref
                                       .read(
                                           serviceAddtionStateProvider.notifier)
                                       .onSaveBtnClick();
-                                });
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                }
                               },
-                              backgroundColor: const Color(0xFF1BC0C5),
+                              color: Colors.blue,
                               child: const Text(
                                 "Save",
                                 style: TextStyle(color: Colors.white),
@@ -198,7 +189,7 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
                             ),
                           ),
                           const Spacer(
-                            flex: 6,
+                            flex: 10,
                           ),
                         ],
                       ),
@@ -213,4 +204,54 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
           ),
         );
       });
+}
+
+Future<void> storingServiceIconAtFireStore(WidgetRef ref, String file) async {
+  String serviceName =
+      ref.read(serviceAddtionStateProvider.notifier).serviecNameTEC.text;
+  final path =
+      "Images/${FirebaseAuth.instance.currentUser!.uid}/ServiceAssets/$serviceName/icon";
+  final snapshot =
+      await FirebaseStorage.instance.ref().child(path).putFile(File(file));
+  log("Uploaded path: $path");
+
+  var imagePath = await snapshot.ref.getDownloadURL();
+  log("Downloaded path $imagePath");
+  ref.read(serviceAddtionStateProvider.notifier).onChangeIconUrl(imagePath);
+}
+
+void dialogForAddingService(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Container(
+          height: 100,
+          width: 200,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          child: const Center(
+              child: Row(
+            children: [
+              SizedBox(
+                width: 20,
+              ),
+              CircularProgressIndicator(),
+              SizedBox(
+                width: 20,
+              ),
+              Text(
+                "Adding service...",
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              )
+            ],
+          )),
+        ),
+      );
+    },
+  );
 }

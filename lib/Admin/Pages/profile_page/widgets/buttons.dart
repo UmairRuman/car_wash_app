@@ -1,4 +1,3 @@
-import 'package:car_wash_app/Admin/Pages/profile_page/controller/key_state_controller.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/widgets/dialog.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
@@ -19,7 +18,6 @@ class AdminSideEditProfileButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var state = ref.watch(keyStateProvider);
     AdminKeyCollection adminKeyCollection = AdminKeyCollection();
     return Row(
       children: [
@@ -30,7 +28,7 @@ class AdminSideEditProfileButton extends ConsumerWidget {
             flex: 80,
             child: MaterialButton(
               onPressed: () async {
-                showDialogForEnteringOwnerKeyInProfilePage(
+                showBottomSheetForEnteringOwnerKeyInProfilePage(
                     context, ref, adminKeyCollection, name, phoneNo, location);
               },
               color: Colors.blue,
@@ -51,6 +49,85 @@ class AdminSideEditProfileButton extends ConsumerWidget {
 class AdminSideLogOutProfileButton extends StatelessWidget {
   const AdminSideLogOutProfileButton({super.key});
 
+  void dialogForLogOut(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Container(
+            height: 200,
+            width: 300,
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(30)),
+            child: Column(
+              children: [
+                const Spacer(
+                  flex: 30,
+                ),
+                const Expanded(
+                    flex: 20,
+                    child: Text(
+                      "Do You really want to logout?",
+                      textAlign: TextAlign.center,
+                    )),
+                const Spacer(
+                  flex: 10,
+                ),
+                Expanded(
+                    flex: 30,
+                    child: Row(
+                      children: [
+                        const Spacer(
+                          flex: 15,
+                        ),
+                        Expanded(
+                            flex: 30,
+                            child: MaterialButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              color: Colors.blue,
+                              child: const Text("No",
+                                  style: TextStyle(color: Colors.white)),
+                            )),
+                        const Spacer(
+                          flex: 10,
+                        ),
+                        Expanded(
+                            flex: 30,
+                            child: MaterialButton(
+                              onPressed: () {
+                                FirebaseAuth.instance.signOut();
+                                SchedulerBinding.instance.addPostFrameCallback(
+                                  (timeStamp) {
+                                    Navigator.of(context).pushReplacementNamed(
+                                        FirstPage.pageName);
+                                  },
+                                );
+                              },
+                              color: Colors.blue,
+                              child: const Text(
+                                "Yes",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )),
+                        const Spacer(
+                          flex: 15,
+                        ),
+                      ],
+                    )),
+                const Spacer(
+                  flex: 10,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -62,12 +139,7 @@ class AdminSideLogOutProfileButton extends StatelessWidget {
             flex: 60,
             child: MaterialButton(
               onPressed: () {
-                FirebaseAuth.instance.signOut();
-                SchedulerBinding.instance.addPostFrameCallback(
-                  (timeStamp) {
-                    Navigator.of(context).pushNamed(FirstPage.pageName);
-                  },
-                );
+                dialogForLogOut(context);
               },
               color: Colors.blue,
               child: const Text(

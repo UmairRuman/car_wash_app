@@ -27,7 +27,7 @@ class AdminHomePageServiceText extends ConsumerWidget {
         Expanded(
           flex: 15,
           child: Padding(
-            padding: const EdgeInsets.only(left: 6, right: 6),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             child: InkWell(
               onTap: () {
                 dialogForAddingServiceCategory(context, ref);

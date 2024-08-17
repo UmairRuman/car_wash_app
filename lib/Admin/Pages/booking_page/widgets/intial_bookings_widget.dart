@@ -41,6 +41,8 @@ class AdminSideIntialBookings extends ConsumerWidget {
                               horizontalOffset: 50,
                               child: FadeInAnimation(
                                 child: AdminBookedInfoContainer(
+                                  bookerPhoneNo: finalIntialListOfBooking[index]
+                                      .bookerPhoneNo,
                                   carName:
                                       finalIntialListOfBooking[index].carType,
                                   bookerName: finalIntialListOfBooking[index]

@@ -9,14 +9,17 @@ class BookedServiceImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          image: DecorationImage(
-              image: imagepath[0] == "a"
-                  ? AssetImage(imagepath)
-                  : CachedNetworkImageProvider(imagepath),
-              fit: BoxFit.cover)),
+        borderRadius: BorderRadius.circular(20),
+        image: DecorationImage(
+          image: imagepath[0] == "a"
+              ? AssetImage(imagepath) as ImageProvider
+              : CachedNetworkImageProvider(imagepath),
+          fit: BoxFit
+              .cover, // Ensures both asset and network images cover the whole area
+        ),
+      ),
       child: imagepath[0] == "a"
-          ? Image.asset(imagepath)
+          ? null // The image is already being handled by DecorationImage
           : CachedNetworkImage(
               imageUrl: imagepath,
               placeholder: (context, url) =>

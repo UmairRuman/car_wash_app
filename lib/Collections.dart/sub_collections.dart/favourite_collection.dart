@@ -49,11 +49,29 @@ class FavouriteCollection {
     }
   }
 
+  Future<String> getLastFavouriteServiceId(String userId) async {
+    try {
+      var snapshots = await UserCollection.userCollection
+          .doc(userId)
+          .collection(favouriteCollection)
+          .get();
+      var list = snapshots.docs
+          .map(
+            (doc) => FavouriteServices.fromMap(doc.data()),
+          )
+          .toList();
+      return list.last.favouriteServiceId;
+    } catch (e) {
+      return "";
+    }
+  }
+
   Future<List<FavouriteServices>> fetchAllServices(String userId) async {
     try {
       var querrySnapshots = await UserCollection.userCollection
           .doc(userId)
           .collection(favouriteCollection)
+          .orderBy("createdAt", descending: false)
           .get();
       return querrySnapshots.docs
           .map(

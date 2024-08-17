@@ -4,4 +4,6 @@ class SharedPreferncesConstants {
   static const String isServiceProvider = "isServiceProvider";
   static const String adminTokenKey = "adminDeviceToken";
   static const String adminCount = "Admin Count";
+  static const String twitterAccessToken = "twitterAccessToken";
+  static const String twitterAccessTokenSecret = "twitterAccessTokenSecret";
 }

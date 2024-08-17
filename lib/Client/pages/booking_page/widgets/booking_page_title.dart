@@ -9,31 +9,23 @@ class BookingPageTitle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
+    return const Row(
       children: [
-        const Spacer(
-          flex: 25,
+        Spacer(
+          flex: 30,
         ),
         Expanded(
-            flex: 50,
-            child: Row(
-              children: [
-                const Expanded(
-                  flex: 70,
-                  child: FittedBox(
-                      child: Text(
-                    "Your Bookings",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-                ),
-                Expanded(flex: 30, child: Image.asset(bookingPageImage)),
-              ],
-            )),
+            flex: 40,
+            child: FittedBox(
+                child: Text(
+              "Your Bookings",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ))),
         Spacer(
-          flex: 25,
+          flex: 30,
         ),
       ],
     );
