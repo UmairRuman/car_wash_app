@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widgets/admin_side_state_widgets.dart';
@@ -113,10 +114,9 @@ class CategoriesList extends ConsumerWidget {
                                 ),
                                 Expanded(
                                     flex: 40,
-                                    child: FittedBox(
-                                      child: Text(
-                                        state.services[index].serviceName,
-                                      ),
+                                    child: AutoSizeText(
+                                      overflow: TextOverflow.ellipsis,
+                                      state.services[index].serviceName,
                                     ))
                               ],
                             ),

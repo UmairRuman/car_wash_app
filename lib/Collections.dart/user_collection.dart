@@ -85,12 +85,15 @@ class UserCollection {
     try {
       //For updating services firstly we have to get user no of services
       var querrySnapShot = await userCollection.doc(userId).get();
-      int noOfServices =
-          Users.fromMap(querrySnapShot.data()!).serviceConsumed as int;
+      double noOfServices =
+          Users.fromMap(querrySnapShot.data()!).serviceConsumed as double;
+      log("No of servicces $noOfServices");
       noOfServices += 1;
+      log("No of servicces $noOfServices");
+      int actualNoOfServices = noOfServices.toInt();
       await userCollection
           .doc(userId)
-          .update({"serviceConsumed": noOfServices});
+          .update({"serviceConsumed": actualNoOfServices});
       return true;
     } catch (e) {
       log("Error in updating useer consumed services ${e.toString()}");

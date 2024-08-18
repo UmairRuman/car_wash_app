@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Client/pages/NotificationPage/model/notification_model.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 
@@ -12,14 +14,17 @@ class NotificationCollection {
 
   Future<bool> addNotification(NotificationModel notificationModel) async {
     try {
+      log("In Add notification method");
       await UserCollection.userCollection
           .doc(notificationModel.userId)
           .collection(notificationCollection)
           .doc(
-              "${notificationModel.carWashDate.day}/${notificationModel.timeSlot}")
+              "${notificationModel.timeSlot} at ${notificationModel.carWashDate.day}")
           .set(notificationModel.toMap());
+
       return true;
     } catch (e) {
+      log(e.toString());
       return false;
     }
   }
@@ -30,7 +35,7 @@ class NotificationCollection {
           .doc(notificationModel.userId)
           .collection(notificationCollection)
           .doc(
-              "${notificationModel.carWashDate.day}/${notificationModel.timeSlot}")
+              "${notificationModel.timeSlot} at ${notificationModel.carWashDate.day}")
           .delete();
       return true;
     } catch (e) {
@@ -44,7 +49,7 @@ class NotificationCollection {
           .doc(notificationModel.userId)
           .collection(notificationCollection)
           .doc(
-              "${notificationModel.carWashDate.day}/${notificationModel.timeSlot}")
+              "${notificationModel.timeSlot} at ${notificationModel.carWashDate.day}")
           .update(notificationModel.toMap());
       return true;
     } catch (e) {

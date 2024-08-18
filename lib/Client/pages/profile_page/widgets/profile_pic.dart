@@ -1,38 +1,53 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:car_wash_app/utils/images_path.dart';
+import 'package:car_wash_app/Admin/Pages/profile_page/controller/profile_pic_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfilePagePic extends StatelessWidget {
+class ProfilePagePic extends ConsumerWidget {
   final String profileImageUrl;
   const ProfilePagePic({super.key, required this.profileImageUrl});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(profilePicProvider);
     return Container(
-      decoration: BoxDecoration(
-          border: Border.all(width: 3, color: Colors.white),
-          shape: BoxShape.circle,
-          image: DecorationImage(
-              image: CachedNetworkImageProvider(profileImageUrl),
-              fit: BoxFit.none)),
-      child: profileImageUrl == ""
-          ? Image.asset(emptyImage)
-          : CachedNetworkImage(
-              imageUrl: profileImageUrl,
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
+        decoration: BoxDecoration(
+            border: Border.all(width: 3, color: Colors.white),
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                image: CachedNetworkImageProvider(profileImageUrl),
+                fit: BoxFit.none)),
+        child: state == ""
+            ? CachedNetworkImage(
+                imageUrl: profileImageUrl,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-            ),
-    );
+              )
+            : CachedNetworkImage(
+                imageUrl: profileImageUrl,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ));
   }
 }
 

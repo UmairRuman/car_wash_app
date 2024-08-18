@@ -9,6 +9,7 @@ import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
 class ProfilePic extends StatelessWidget {
   final String userProfilePic;
@@ -86,7 +87,8 @@ class NotificationIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
+    return TouchRippleEffect(
+      rippleColor: Colors.yellow,
       onTap: () async {
         await ref.read(messageStateProvider.notifier).intialMessages();
         Navigator.pushNamed(context, NotificationPage.pageName);

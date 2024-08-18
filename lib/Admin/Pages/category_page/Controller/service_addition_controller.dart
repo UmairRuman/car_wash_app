@@ -69,8 +69,6 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
       log("Icon URl in adding service : $iconUrl");
       log("Adding service");
       //Adding plus one in the counter collection
-      serviceCounterCollection.addCount(
-          ServiceCounter(count: serviceId), adminId!);
 
       serviceCollection.addNewService(Services(
           rating: 5,

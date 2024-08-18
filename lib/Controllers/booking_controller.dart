@@ -131,7 +131,7 @@ class BookingController extends Notifier<BookingStates> {
           userBookingCountCollection.addUserBookingCount(UserBookingCounter(
               userId: userId, count: "${userBookingsTotalCount.length + 1}"));
         }
-        // await getBookings(userId);
+        await getBookings(userId);
 
         await ref
             .read(messageStateProvider.notifier)

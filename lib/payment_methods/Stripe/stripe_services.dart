@@ -100,9 +100,9 @@ class StripeServices {
           .read(messageStateProvider.notifier)
           .getAllNotificationsByUserId();
       log("Getting all bookings ");
-      await ref
-          .read(bookingStateProvider.notifier)
-          .getBookings(FirebaseAuth.instance.currentUser!.uid);
+      // await ref
+      //     .read(bookingStateProvider.notifier)
+      //     .getBookings(FirebaseAuth.instance.currentUser!.uid);
       var listOfAdminToken =
           await adminDeviceTokenCollection.getAllAdminDeviceTokens();
 

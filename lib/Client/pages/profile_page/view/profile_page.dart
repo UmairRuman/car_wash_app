@@ -52,16 +52,16 @@ class ProfilePage extends ConsumerWidget {
                       width: constraints.maxWidth / 1.5,
                       left: constraints.maxWidth / 2 -
                           (constraints.maxWidth / 1.5) / 2,
-                      bottom: constraints.maxHeight / 8 -
+                      bottom: constraints.maxHeight / 7 -
                           (constraints.maxHeight / 1.5) / 2,
                       child: ProfilePagePic(
                         profileImageUrl: userData.profilePicUrl,
                       )),
                   Positioned(
-                      height: screenHeight / 9.5,
+                      height: screenHeight / 8.5,
                       width: screenWidth / 9.5,
                       left: (screenWidth / 2) + (screenWidth / 20),
-                      top: screenHeight / 7.5 - (screenHeight / 9) / 2,
+                      top: screenHeight / 6 - (screenHeight / 8.5) / 2,
                       child: const AdminProfilePageEditIcon())
                 ]),
               )),

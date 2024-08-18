@@ -95,6 +95,8 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
   }
 
   void checkAdminDataInSharedPrefrences() async {
+    String deviceToken = await notificationServices.getTokken();
+    log("Admin Device Token : $deviceToken");
     await getAdminIdFromFireStore(ref);
   }
 

@@ -77,11 +77,11 @@ class AdminSideCategoryPage extends ConsumerWidget {
             const Spacer(
               flex: 2,
             ),
-            const Expanded(flex: 5, child: AdminHomePageServiceText()),
+            const Expanded(flex: 7, child: AdminHomePageServiceText()),
             const Spacer(
               flex: 2,
             ),
-            const Expanded(flex: 22, child: AdminSideCategoriesList()),
+            const Expanded(flex: 20, child: AdminSideCategoriesList()),
             const Expanded(flex: 10, child: AdminHomePagePreviousServiceText()),
             const Expanded(flex: 26, child: AdminPreviousWorkImages()),
             const Spacer(

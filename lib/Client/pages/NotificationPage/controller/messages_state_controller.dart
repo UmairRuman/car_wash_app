@@ -45,7 +45,12 @@ class MessagesStateController extends Notifier<MessageStates> {
       timeSlot: timeSlot,
       userId: adminId!,
     );
-    await notificationCollection.addNotification(notificationModel);
+
+    try {
+      await notificationCollection.addNotification(notificationModel);
+    } catch (e) {
+      log("Error in storing notification at admin side ");
+    }
   }
 
   Future<void> addNotificationAtUserSide(String bookerName, String serviceName,
@@ -60,7 +65,11 @@ class MessagesStateController extends Notifier<MessageStates> {
       timeSlot: timeSlot,
       userId: currentUserId,
     );
-    await notificationCollection.addNotification(notificationModel);
+    try {
+      await notificationCollection.addNotification(notificationModel);
+    } catch (e) {
+      log("Error in adding notification at user side ");
+    }
   }
 
   Future<void> getAllNotificationsByUserId() async {

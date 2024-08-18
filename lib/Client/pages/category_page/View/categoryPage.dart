@@ -77,11 +77,11 @@ class CategoryPage extends ConsumerWidget {
               const Spacer(
                 flex: 2,
               ),
-              const Expanded(flex: 5, child: HomePageServiceText()),
+              const Expanded(flex: 7, child: HomePageServiceText()),
               const Spacer(
                 flex: 2,
               ),
-              const Expanded(flex: 22, child: CategoriesList()),
+              const Expanded(flex: 20, child: CategoriesList()),
               const Expanded(flex: 8, child: HomePagePreviousServiceText()),
               const Expanded(flex: 27, child: PreviousWorkImages()),
               const Spacer(

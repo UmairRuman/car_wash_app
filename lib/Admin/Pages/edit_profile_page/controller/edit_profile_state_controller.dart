@@ -36,11 +36,12 @@ class AdminSideEditProfileStateController extends Notifier<String> {
 
   Future<void> onUpdateImage(String newImagePath, BuildContext context) async {
     log("On Update image Method");
+
     profileImagePath = newImagePath;
-    dialogForUpdatingProfilePicProvider(context);
+    // dialogForUpdatingProfilePicProvider(context);
     await userCollection.updateUserProfilePic(userId, newImagePath);
-    ref.read(userAdditionStateProvider.notifier).getUser(userId);
-    Navigator.of(context).pop();
+    // ref.read(userAdditionStateProvider.notifier).getUser(userId);
+    // Navigator.of(context).pop();
   }
 
   onClickEditProfile(
@@ -117,18 +118,29 @@ void dialogForUpdatingProfilePicProvider(BuildContext context) {
           child: const Center(
               child: Row(
             children: [
-              SizedBox(
-                width: 20,
+              Spacer(
+                flex: 10,
               ),
-              CircularProgressIndicator(),
-              SizedBox(
-                width: 20,
+              Expanded(
+                flex: 10,
+                child: CircularProgressIndicator(),
               ),
-              Text(
-                "Updating Profile Pic",
-                style:
-                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              )
+              Spacer(
+                flex: 20,
+              ),
+              Expanded(
+                flex: 50,
+                child: FittedBox(
+                  child: Text(
+                    "Updating Profile Pic",
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Spacer(
+                flex: 10,
+              ),
             ],
           )),
         ),
