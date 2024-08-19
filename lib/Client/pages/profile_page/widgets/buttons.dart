@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:car_wash_app/Client/pages/edit_profile_page/controller/edit_profile_state_controller.dart';
 import 'package:car_wash_app/Client/pages/edit_profile_page/view/edit_profile_page.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -28,16 +29,24 @@ class EditProfileButton extends ConsumerWidget {
         Expanded(
             flex: 80,
             child: MaterialButton(
-              onPressed: () {
-                log(name);
-                log(phoneNo);
-                log(location);
-
-                ref
-                    .read(editProfileInfoProvider.notifier)
-                    .onClickEditProfile(name, phoneNo, location);
-                Navigator.of(context)
-                    .pushNamed(ClientSideEditProfilePage.pageName);
+              onPressed: () async {
+                final connectivityResult =
+                    await Connectivity().checkConnectivity();
+                if (connectivityResult[0] == ConnectivityResult.none) {
+                  // No internet connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No internet connection'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  ref
+                      .read(editProfileInfoProvider.notifier)
+                      .onClickEditProfile(name, phoneNo, location);
+                  Navigator.of(context)
+                      .pushNamed(ClientSideEditProfilePage.pageName);
+                }
               },
               color: Colors.blue,
               child: const Text(

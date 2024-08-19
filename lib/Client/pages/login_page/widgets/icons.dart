@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/utils/images_path.dart'; // Assuming you have this file for the icon paths.
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -201,12 +202,34 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
     }
   }
 
-  void onTapGoogleIcon() {
-    signInWithGoogle();
+  void onTapGoogleIcon() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult[0] == ConnectivityResult.none) {
+      // No internet connection
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No internet connection'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      signInWithGoogle();
+    }
   }
 
-  void onTapTwitterIcon() {
-    signInWithTwitter();
+  void onTapTwitterIcon() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult[0] == ConnectivityResult.none) {
+      // No internet connection
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No internet connection'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      signInWithTwitter();
+    }
   }
 
   @override

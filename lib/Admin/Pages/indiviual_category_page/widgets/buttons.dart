@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -53,9 +54,40 @@ class AdminSideLowerContainer extends ConsumerWidget {
     );
   }
 
+  void onClickDeleteButton(WidgetRef ref, BuildContext context) async {
+    dialogFordeletingService(context);
+    await ref
+        .read(serviceAddtionStateProvider.notifier)
+        .deleteSpecificService(serviceName, serviceId);
+    Navigator.pop(context);
+    Navigator.pop(context);
+    final folderPath =
+        "Images/${FirebaseAuth.instance.currentUser!.uid}/ServiceAssets/$serviceName";
+
+    log("Deleting folder path: $folderPath");
+
+    try {
+      // List all files within the folder
+      final ListResult result =
+          await FirebaseStorage.instance.ref(folderPath).listAll();
+
+      // Delete each file
+      for (var ref in result.items) {
+        log("Deleting file: ${ref.fullPath}");
+        await ref.delete();
+      }
+
+      log("All files deleted successfully.");
+      //After it we also have to delete it from firestore
+    } catch (e) {
+      log("Error deleting files: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ServiceCollection serviceCollection = ServiceCollection();
+
     return Container(
       decoration: const BoxDecoration(
           color: Color.fromARGB(255, 201, 217, 230),
@@ -70,32 +102,18 @@ class AdminSideLowerContainer extends ConsumerWidget {
           child: FloatingActionButton(
             heroTag: "12",
             onPressed: () async {
-              dialogFordeletingService(context);
-              await ref
-                  .read(serviceAddtionStateProvider.notifier)
-                  .deleteSpecificService(serviceName, serviceId);
-              Navigator.pop(context);
-              Navigator.pop(context);
-              final folderPath =
-                  "Images/${FirebaseAuth.instance.currentUser!.uid}/ServiceAssets/$serviceName";
-
-              log("Deleting folder path: $folderPath");
-
-              try {
-                // List all files within the folder
-                final ListResult result =
-                    await FirebaseStorage.instance.ref(folderPath).listAll();
-
-                // Delete each file
-                for (var ref in result.items) {
-                  log("Deleting file: ${ref.fullPath}");
-                  await ref.delete();
-                }
-
-                log("All files deleted successfully.");
-                //After it we also have to delete it from firestore
-              } catch (e) {
-                log("Error deleting files: $e");
+              final connectivityResult =
+                  await Connectivity().checkConnectivity();
+              if (connectivityResult[0] == ConnectivityResult.none) {
+                // No internet connection
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('No internet connection'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              } else {
+                onClickDeleteButton(ref, context);
               }
             },
             backgroundColor: Colors.blue,

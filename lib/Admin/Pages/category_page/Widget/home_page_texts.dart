@@ -1,5 +1,6 @@
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/dialog_for_adding_category.dart';
 import 'package:car_wash_app/utils/strings.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,8 +30,21 @@ class AdminHomePageServiceText extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: InkWell(
-              onTap: () {
-                dialogForAddingServiceCategory(context, ref);
+              onTap: () async {
+                final connectivityResult =
+                    await Connectivity().checkConnectivity();
+                if (connectivityResult[0] == ConnectivityResult.none) {
+                  // No internet connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No internet connection'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  // Internet is connected, perform your operation here
+                  dialogForAddingServiceCategory(context, ref);
+                }
               },
               child: Container(
                   decoration: const BoxDecoration(

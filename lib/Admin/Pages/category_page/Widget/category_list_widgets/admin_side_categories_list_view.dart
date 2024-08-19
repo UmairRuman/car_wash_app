@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
@@ -9,12 +7,32 @@ import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/time
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/rating_controller.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class AdminSideCategoriesList extends ConsumerWidget {
   const AdminSideCategoriesList({super.key});
+
+  void onServiceClick(WidgetRef ref, BuildContext context, String serviceName,
+      String serviceId, String serviceImage) async {
+    ref
+        .read(ratingStateProvider.notifier)
+        .getAllRatings(serviceId, serviceName);
+    ref
+        .read(allServiceDataStateProvider.notifier)
+        .fetchServiceData(serviceName, serviceId);
+    ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
+          DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day),
+        );
+    Navigator.of(context).pushNamed(AdminSideIndiviualCategoryPage.pageName,
+        arguments: AdminSideImageAndServiceNameSender(
+            serviceID: serviceId,
+            categoryName: serviceName,
+            imagePath: serviceImage));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,35 +71,26 @@ class AdminSideCategoriesList extends ConsumerWidget {
                         verticalOffset: 50,
                         child: FadeInAnimation(
                           child: InkWell(
-                            onTap: () {
-                              ref
-                                  .read(ratingStateProvider.notifier)
-                                  .getAllRatings(
-                                      state.services[index].serviceId,
-                                      state.services[index].serviceName);
-                              ref
-                                  .read(allServiceDataStateProvider.notifier)
-                                  .fetchServiceData(
-                                      state.services[index].serviceName,
-                                      state.services[index].serviceId);
-                              ref
-                                  .read(timeSlotsStateProvider.notifier)
-                                  .getTimeSlots(
-                                    DateTime(
-                                        DateTime.now().year,
-                                        DateTime.now().month,
-                                        DateTime.now().day),
-                                  );
-                              Navigator.of(context).pushNamed(
-                                  AdminSideIndiviualCategoryPage.pageName,
-                                  arguments: AdminSideImageAndServiceNameSender(
-                                      serviceID:
-                                          state.services[index].serviceId,
-                                      categoryName:
-                                          state.services[index].serviceName,
-                                      imagePath:
-                                          state.services[index].iconUrl));
-                              log("Clicked on $index");
+                            onTap: () async {
+                              final connectivityResult =
+                                  await Connectivity().checkConnectivity();
+                              if (connectivityResult[0] ==
+                                  ConnectivityResult.none) {
+                                // No internet connection
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('No internet connection'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } else {
+                                onServiceClick(
+                                    ref,
+                                    context,
+                                    state.services[index].serviceName,
+                                    state.services[index].serviceId,
+                                    state.services[index].imageUrl);
+                              }
                             },
                             child: Column(
                               children: [

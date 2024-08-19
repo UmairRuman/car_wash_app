@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/bookings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookingCollection {
   static final BookingCollection instance = BookingCollection._internal();
@@ -45,6 +48,25 @@ class BookingCollection {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<void> deleteOldBookings(String userId) async {
+    try {
+      final now = DateTime.now();
+      final cutoff = now.subtract(const Duration(hours: 48));
+
+      var query = await UserCollection.userCollection
+          .doc(userId)
+          .collection(BookingCollection.bookingCollection)
+          .where('bookingDate', isLessThanOrEqualTo: Timestamp.fromDate(cutoff))
+          .get();
+
+      for (var doc in query.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      log("Error deleting old bookings: $e");
     }
   }
 

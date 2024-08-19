@@ -5,6 +5,7 @@ import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:car_wash_app/utils/gradients.dart';
 import 'package:car_wash_app/utils/strings.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -39,6 +40,51 @@ class _BtnLoginState extends ConsumerState<BtnLogin>
     super.dispose();
   }
 
+  Future<void> onLoginClick(
+      BuildContext context, String email, String password) async {
+    {
+      await animationController.forward();
+      await Future.delayed(const Duration(milliseconds: 100));
+      await animationController.reverse();
+      if (loginPageEmailKey.currentState!.validate() &&
+          loginPagePasswordKey.currentState!.validate()) {
+        try {
+          var userSignInCredentials = await FirebaseAuth.instance
+              .signInWithEmailAndPassword(email: email, password: password);
+          User? user = userSignInCredentials.user;
+          await ref
+              .read(userAdditionStateProvider.notifier)
+              .getUserPhoneNumber(FirebaseAuth.instance.currentUser!.uid);
+          String userPhoneNumber =
+              ref.read(userAdditionStateProvider.notifier).phoneNumberForLogin;
+          if (user != null && userPhoneNumber != "") {
+            SchedulerBinding.instance.addPostFrameCallback(
+              (timeStamp) {
+                Navigator.of(context).pushReplacementNamed(HomePage.pageName);
+              },
+            );
+          } else if (user != null && userPhoneNumber == "") {
+            SchedulerBinding.instance.addPostFrameCallback(
+              (timeStamp) {
+                Navigator.of(context)
+                    .pushReplacementNamed(ChooserPage.pageName);
+              },
+            );
+          }
+        } catch (e) {
+          Fluttertoast.showToast(
+              msg: "Wrong password or email ! ${e.toString()}",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 12.0);
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var emailController = ref.read(signInInfoProvider.notifier).emailSignInTEC;
@@ -59,51 +105,19 @@ class _BtnLoginState extends ConsumerState<BtnLogin>
                 borderRadius: BorderRadius.circular(24),
               ),
               onPressed: () async {
-                {
-                  await animationController.forward();
-                  await Future.delayed(const Duration(milliseconds: 100));
-                  await animationController.reverse();
-                  if (loginPageEmailKey.currentState!.validate() &&
-                      loginPagePasswordKey.currentState!.validate()) {
-                    try {
-                      var userSignInCredentials = await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: emailController.text,
-                              password: passwordController.text);
-                      User? user = userSignInCredentials.user;
-                      await ref
-                          .read(userAdditionStateProvider.notifier)
-                          .getUserPhoneNumber(
-                              FirebaseAuth.instance.currentUser!.uid);
-                      String userPhoneNumber = ref
-                          .read(userAdditionStateProvider.notifier)
-                          .phoneNumberForLogin;
-                      if (user != null && userPhoneNumber != "") {
-                        SchedulerBinding.instance.addPostFrameCallback(
-                          (timeStamp) {
-                            Navigator.of(context)
-                                .pushReplacementNamed(HomePage.pageName);
-                          },
-                        );
-                      } else if (user != null && userPhoneNumber == "") {
-                        SchedulerBinding.instance.addPostFrameCallback(
-                          (timeStamp) {
-                            Navigator.of(context)
-                                .pushReplacementNamed(ChooserPage.pageName);
-                          },
-                        );
-                      }
-                    } catch (e) {
-                      Fluttertoast.showToast(
-                          msg: "Wrong password or email ! ${e.toString()}",
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          fontSize: 12.0);
-                    }
-                  }
+                final connectivityResult =
+                    await Connectivity().checkConnectivity();
+                if (connectivityResult[0] == ConnectivityResult.none) {
+                  // No internet connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No internet connection'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  await onLoginClick(
+                      context, emailController.text, passwordController.text);
                 }
               },
               backgroundColor:

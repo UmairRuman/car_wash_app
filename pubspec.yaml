@@ -67,7 +67,7 @@ dependencies:
   http: ^0.13.6
   flutter_staggered_animations: ^1.1.1
   cached_network_image: ^3.3.1
-  url_launcher: ^6.0.20
+  url_launcher: ^6.3.0
   oauth1: ^2.0.0
   webview_flutter: ^2.0.10
   flip_card: ^0.7.0
@@ -82,10 +82,10 @@ dependencies:
   intl: ^0.19.0
   touch_ripple_effect: ^2.5.1
   searchable_listview: ^2.15.0
-  connectivity: ^3.0.6
-  plus: ^0.1.0+1
   progress_state_button: ^1.0.4
   curved_navigation_bar: ^1.0.6
+  image_cropper: ^4.0.1
+  connectivity_plus: ^6.0.5
   
   
   

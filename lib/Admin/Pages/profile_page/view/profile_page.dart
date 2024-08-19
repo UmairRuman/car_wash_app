@@ -2,8 +2,8 @@ import 'package:car_wash_app/Admin/Pages/profile_page/widgets/buttons.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/widgets/containers.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/widgets/icons.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/widgets/profile_pic.dart';
+import 'package:car_wash_app/Client/pages/category_page/Widget/profile_info.dart';
 import 'package:car_wash_app/Client/pages/profile_page/controller/profile_state_controller.dart';
-import 'package:car_wash_app/Client/pages/profile_page/widgets/profile_pic.dart';
 import 'package:car_wash_app/Client/pages/profile_page/widgets/top_container_decoration.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class AdminSideProfilePage extends ConsumerWidget {
                           (constraints.maxWidth / 2) / 2,
                       top: constraints.maxHeight / 3 -
                           (constraints.maxHeight / 2.5) / 2,
-                      child: UserName(
+                      child: UserNameText(
                         userName: userData.name,
                       )),
                   Positioned(
@@ -62,7 +62,7 @@ class AdminSideProfilePage extends ConsumerWidget {
                       height: screenHeight / 9.5,
                       width: screenWidth / 9.5,
                       left: (screenWidth / 2) + (screenWidth / 20),
-                      top: screenHeight / 7.5 - (screenHeight / 9) / 2,
+                      top: screenHeight / 6 - (screenHeight / 9.5) / 2,
                       child: const AdminProfilePageEditIcon())
                 ]),
               )),

@@ -77,9 +77,10 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
     notificationServices.requestPermission();
     notificationServices.getMessageOnAppOnOpen(context, ref);
     notificationServices.redirectWhenAppInBgOrTermianted(context, ref);
-
     checkAdminDataInSharedPrefrences();
-    // asyncOperations();
+    // if (FirebaseAuth.instance.currentUser != null) {
+    //   startBackgroundCleanup(FirebaseAuth.instance.currentUser!.uid);
+    // }
 
     notificationServices.messaging.onTokenRefresh.listen(
       (token) async {

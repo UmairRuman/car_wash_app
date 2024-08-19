@@ -1,6 +1,7 @@
 import 'package:car_wash_app/payment_methods/Stripe/stripe_services.dart';
 import 'package:car_wash_app/payment_methods/paypal/paypal_services.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +19,28 @@ class PaypalPaymentMethodBtn extends ConsumerWidget {
       required this.serviceImagePath,
       required this.carWashDate});
 
+  void onClickPaypalPaymentMethod(WidgetRef ref, BuildContext context) async {
+    var finalPayment =
+        int.parse(paymentAmount.substring(0, paymentAmount.length - 1));
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => payPallmethod(
+          context,
+          finalPayment,
+          <PaypalItems>[
+            PaypalItems(
+              name: serviceName,
+              quantity: 1,
+              price: finalPayment.toDouble(),
+            )
+          ],
+          serviceName,
+          serviceImagePath,
+          id,
+          carWashDate,
+          ref),
+    ));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
@@ -28,26 +51,20 @@ class PaypalPaymentMethodBtn extends ConsumerWidget {
         Expanded(
             flex: 60,
             child: MaterialButton(
-                onPressed: () {
-                  var finalPayment = int.parse(
-                      paymentAmount.substring(0, paymentAmount.length - 1));
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => payPallmethod(
-                        context,
-                        finalPayment,
-                        <PaypalItems>[
-                          PaypalItems(
-                            name: serviceName,
-                            quantity: 1,
-                            price: finalPayment.toDouble(),
-                          )
-                        ],
-                        serviceName,
-                        serviceImagePath,
-                        id,
-                        carWashDate,
-                        ref),
-                  ));
+                onPressed: () async {
+                  final connectivityResult =
+                      await Connectivity().checkConnectivity();
+                  if (connectivityResult[0] == ConnectivityResult.none) {
+                    // No internet connection
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No internet connection'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    onClickPaypalPaymentMethod(ref, context);
+                  }
                 },
                 child: Image.asset(paypalImage))),
         const Spacer(
@@ -72,6 +89,13 @@ class StripePaymentMethodBtn extends ConsumerWidget {
       required this.serviceImagePath,
       required this.serviceName});
 
+  void onStripePaymentMethodClick(WidgetRef ref) {
+    var finalPayment =
+        int.parse(paymentAmount.substring(0, paymentAmount.length - 1));
+    StripeServices.instance.makePayment(finalPayment, "usd", id, serviceName,
+        ref, serviceImagePath, carWashDate);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
@@ -82,11 +106,20 @@ class StripePaymentMethodBtn extends ConsumerWidget {
         Expanded(
             flex: 60,
             child: MaterialButton(
-                onPressed: () {
-                  var finalPayment = int.parse(
-                      paymentAmount.substring(0, paymentAmount.length - 1));
-                  StripeServices.instance.makePayment(finalPayment, "usd", id,
-                      serviceName, ref, serviceImagePath, carWashDate);
+                onPressed: () async {
+                  final connectivityResult =
+                      await Connectivity().checkConnectivity();
+                  if (connectivityResult[0] == ConnectivityResult.none) {
+                    // No internet connection
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No internet connection'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    onStripePaymentMethodClick(ref);
+                  }
                 },
                 child: Image.asset(stripeImage))),
         const Spacer(

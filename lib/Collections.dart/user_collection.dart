@@ -22,6 +22,17 @@ class UserCollection {
     }
   }
 
+  Future<String> getUserName(String userId) async {
+    try {
+      var snapShot = await userCollection.doc(userId).get();
+
+      return Users.fromMap(snapShot.data()!).name;
+      ;
+    } catch (e) {
+      return "";
+    }
+  }
+
   Future<bool> updateUser(Users user) async {
     try {
       await userCollection.doc(user.userId).update(user.toMap());

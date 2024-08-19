@@ -38,7 +38,7 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                      flex: 20,
+                      flex: 25,
                       child: Column(
                         children: [
                           Expanded(
@@ -82,16 +82,16 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                         ],
                       )),
                   Expanded(
-                    flex: 80,
+                    flex: 75,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Column(
                         children: [
                           const Spacer(
-                            flex: 5,
+                            flex: 3,
                           ),
                           Expanded(
-                              flex: 35,
+                              flex: 37,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -114,10 +114,10 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                     ]),
                               )),
                           const Spacer(
-                            flex: 35,
+                            flex: 5,
                           ),
                           Expanded(
-                              flex: 35,
+                              flex: 37,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -145,10 +145,10 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                               child: Row(
                                 children: [
                                   const Spacer(
-                                    flex: 60,
+                                    flex: 50,
                                   ),
                                   Expanded(
-                                      flex: 40,
+                                      flex: 50,
                                       child: FittedBox(
                                           child: Text(
                                               notificationDeleiveredData))),

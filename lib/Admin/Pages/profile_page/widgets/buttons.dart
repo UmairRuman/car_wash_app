@@ -1,6 +1,7 @@
 import 'package:car_wash_app/Admin/Pages/profile_page/widgets/dialog.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -28,8 +29,20 @@ class AdminSideEditProfileButton extends ConsumerWidget {
             flex: 80,
             child: MaterialButton(
               onPressed: () async {
-                showBottomSheetForEnteringOwnerKeyInProfilePage(
-                    context, ref, adminKeyCollection, name, phoneNo, location);
+                final connectivityResult =
+                    await Connectivity().checkConnectivity();
+                if (connectivityResult[0] == ConnectivityResult.none) {
+                  // No internet connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No internet connection'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  showBottomSheetForEnteringOwnerKeyInProfilePage(context, ref,
+                      adminKeyCollection, name, phoneNo, location);
+                }
               },
               color: Colors.blue,
               child: const Text(

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Client/pages/NotificationPage/model/notification_model.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationCollection {
   static final NotificationCollection instance =
@@ -54,6 +55,26 @@ class NotificationCollection {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<void> deleteOldNotifications(String userId) async {
+    try {
+      final now = DateTime.now();
+      final cutoff = now.subtract(const Duration(hours: 24));
+
+      var query = await UserCollection.userCollection
+          .doc(userId)
+          .collection(NotificationCollection.notificationCollection)
+          .where('notificationDeliveredDate',
+              isLessThanOrEqualTo: Timestamp.fromDate(cutoff))
+          .get();
+
+      for (var doc in query.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      log("Error deleting old notifications: $e");
     }
   }
 

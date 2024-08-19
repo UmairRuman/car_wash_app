@@ -47,7 +47,7 @@ class BookingController extends Notifier<BookingStates> {
       String serviceId, String serviceName, String serviceImageUrl) async {
     try {
       final userId = FirebaseAuth.instance.currentUser!.uid;
-      final bookerName = FirebaseAuth.instance.currentUser!.displayName;
+      final bookerName = await userCollection.getUserName(userId);
       var adminBookingsTotalCount =
           await adminBookingCollectionCount.getAllUserBookingsCount(adminId!);
       var userBookingsTotalCount =

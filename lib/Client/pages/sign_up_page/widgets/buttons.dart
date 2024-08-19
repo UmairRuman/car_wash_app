@@ -4,6 +4,7 @@ import 'package:car_wash_app/Client/pages/sign_up_page/model/model_for_sending_u
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:car_wash_app/utils/gradients.dart';
 import 'package:car_wash_app/utils/strings.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +32,52 @@ class _BtnCreateAccountState extends ConsumerState<BtnCreateAccount>
     animationForSize = tween.animate(animationController);
   }
 
+  Future<void> onClickSignUpButton(
+      String email, String userName, String userPassword) async {
+    await animationController.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await animationController.reverse();
+    if (signUpPagePasswordKey.currentState!.validate() &&
+        signUpPageEmailKey.currentState!.validate() &&
+        signUpPageNameKey.currentState!.validate()) {
+      // Check if the email is already registered
+      try {
+        List<String> signInMethods =
+            await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+
+        if (signInMethods.isEmpty) {
+          // Email not registered, proceed to create the user
+          Navigator.of(context).pushNamed(EmailVerificationPage.pageName,
+              arguments: ModelForUserInfo(
+                  userEmail: email,
+                  userName: userName,
+                  userPassword: userPassword));
+        } else {
+          // Email already registered, show an error message
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Email is already registered')));
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'network-request-failed') {
+          Fluttertoast.showToast(
+              msg: "Check your Internet Connection",
+              backgroundColor: Colors.green,
+              textColor: Colors.white);
+        } else {
+          Fluttertoast.showToast(
+              msg: "An error occurred: ${e.message}",
+              backgroundColor: Colors.red,
+              textColor: Colors.white);
+        }
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: "An unexpected error occurred: $e",
+            backgroundColor: Colors.red,
+            textColor: Colors.white);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var emailController = ref.read(signUpPageProvider.notifier).emailTEC;
@@ -50,48 +97,19 @@ class _BtnCreateAccountState extends ConsumerState<BtnCreateAccount>
                 borderRadius: BorderRadius.circular(24),
               ),
               onPressed: () async {
-                await animationController.forward();
-                await Future.delayed(const Duration(milliseconds: 100));
-                await animationController.reverse();
-                if (signUpPagePasswordKey.currentState!.validate() &&
-                    signUpPageEmailKey.currentState!.validate() &&
-                    signUpPageNameKey.currentState!.validate()) {
-                  // Check if the email is already registered
-                  try {
-                    List<String> signInMethods = await FirebaseAuth.instance
-                        .fetchSignInMethodsForEmail(emailController.text);
-
-                    if (signInMethods.isEmpty) {
-                      // Email not registered, proceed to create the user
-                      Navigator.of(context).pushNamed(
-                          EmailVerificationPage.pageName,
-                          arguments: ModelForUserInfo(
-                              userEmail: emailController.text,
-                              userName: nameController.text,
-                              userPassword: passWordController.text));
-                    } else {
-                      // Email already registered, show an error message
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Email is already registered')));
-                    }
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'network-request-failed') {
-                      Fluttertoast.showToast(
-                          msg: "Check your Internet Connection",
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white);
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: "An error occurred: ${e.message}",
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white);
-                    }
-                  } catch (e) {
-                    Fluttertoast.showToast(
-                        msg: "An unexpected error occurred: $e",
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white);
-                  }
+                final connectivityResult =
+                    await Connectivity().checkConnectivity();
+                if (connectivityResult[0] == ConnectivityResult.none) {
+                  // No internet connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No internet connection'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  await onClickSignUpButton(emailController.text,
+                      nameController.text, passWordController.text);
                 }
               },
               backgroundColor: Colors.transparent,

@@ -4,6 +4,7 @@ import 'package:car_wash_app/Client/pages/chooser_page/controller/location_notif
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
@@ -52,8 +53,20 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
         Expanded(
             flex: 40,
             child: MaterialButton(
-              onPressed: () {
-                coordinatesIntoLocation();
+              onPressed: () async {
+                final connectivityResult =
+                    await Connectivity().checkConnectivity();
+                if (connectivityResult[0] == ConnectivityResult.none) {
+                  // No internet connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No internet connection'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  coordinatesIntoLocation();
+                }
               },
               color: const Color.fromARGB(255, 14, 63, 103),
               child: const Text(

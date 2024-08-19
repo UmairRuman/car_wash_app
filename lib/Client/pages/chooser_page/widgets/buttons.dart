@@ -9,6 +9,7 @@ import 'package:car_wash_app/Client/pages/chooser_page/controller/verification_s
 import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,6 +74,47 @@ class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
     );
   }
 
+  void onClickContinueButton(bool userSavedState) async {
+    await animationController.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await animationController.reverse();
+    if (userSavedState) {
+      log("Is User Data Added Continue ${ref.read(userAdditionStateProvider.notifier).isUserDataAdded}");
+      if (ref.read(userAdditionStateProvider.notifier).isUserDataAdded) {
+        //If Service provider is true then i take user to the admin home page
+        if (ref
+            .read(userAdditionStateProvider.notifier)
+            .listOfUserInfo[MapForUserInfo.isServiceProvider]) {
+          log("Lets navigate to Admin home page ");
+
+          log("Admin Key is null");
+          myDialog(context);
+
+          await ref
+              .read(previousServiceStateProvider.notifier)
+              .addDefaultPreviousWorkCategories();
+          await ref
+              .read(defaultServicesStateProvider.notifier)
+              .addDefaultService();
+          Navigator.of(context).pop();
+
+          Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
+        } else {
+          log("Lets navigate to client home page ");
+          //If Service provider is false then i take user to the  home page
+          Navigator.of(context).pushNamed(HomePage.pageName);
+        }
+      }
+    } else {
+      Fluttertoast.showToast(
+          msg: "Click on save button to save you configurations!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.white,
+          backgroundColor: Colors.red);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool userSaveState = ref.watch(userSaveStateProvider);
@@ -88,46 +130,18 @@ class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
               child: FloatingActionButton(
                 heroTag: "22",
                 onPressed: () async {
-                  await animationController.forward();
-                  await Future.delayed(const Duration(milliseconds: 100));
-                  await animationController.reverse();
-                  if (userSaveState) {
-                    log("Is User Data Added Continue ${ref.read(userAdditionStateProvider.notifier).isUserDataAdded}");
-                    if (ref
-                        .read(userAdditionStateProvider.notifier)
-                        .isUserDataAdded) {
-                      //If Service provider is true then i take user to the admin home page
-                      if (ref
-                          .read(userAdditionStateProvider.notifier)
-                          .listOfUserInfo[MapForUserInfo.isServiceProvider]) {
-                        log("Lets navigate to Admin home page ");
-
-                        log("Admin Key is null");
-                        myDialog(context);
-
-                        await ref
-                            .read(previousServiceStateProvider.notifier)
-                            .addDefaultPreviousWorkCategories();
-                        await ref
-                            .read(defaultServicesStateProvider.notifier)
-                            .addDefaultService();
-                        Navigator.of(context).pop();
-
-                        Navigator.of(context)
-                            .pushNamed(AdminSideHomePage.pageName);
-                      } else {
-                        log("Lets navigate to client home page ");
-                        //If Service provider is false then i take user to the  home page
-                        Navigator.of(context).pushNamed(HomePage.pageName);
-                      }
-                    }
+                  final connectivityResult =
+                      await Connectivity().checkConnectivity();
+                  if (connectivityResult[0] == ConnectivityResult.none) {
+                    // No internet connection
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No internet connection'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                   } else {
-                    Fluttertoast.showToast(
-                        msg: "Click on save button to save you configurations!",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        textColor: Colors.white,
-                        backgroundColor: Colors.red);
+                    onClickContinueButton(userSaveState);
                   }
                 },
                 backgroundColor: const Color.fromARGB(255, 14, 63, 103),
@@ -148,104 +162,85 @@ class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
 class BtnVerifyChooserPage extends ConsumerWidget {
   const BtnVerifyChooserPage({super.key});
 
+  //Function
+  void onClickVerifyButton(
+      WidgetRef ref, BuildContext context, String phoneNumber) {
+    FirebaseAuth.instance.verifyPhoneNumber(
+      timeout: const Duration(minutes: 2),
+      phoneNumber: phoneNumber,
+      verificationCompleted: (phoneAuthCredential) {
+        log("Verification Completed");
+      },
+      verificationFailed: (error) {
+        Fluttertoast.showToast(
+            msg: "Verfication Failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        log("Verification Failed");
+        if (error.code == 'invalid-phone-number') {
+          log('The provided phone number is not valid.');
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Invalid, phone number!")));
+        }
+      },
+      codeSent: (verificationId, forceResendingToken) {
+        log("Verification ID: $verificationId");
+        ref.read(verficationStateProvider.notifier).onVerficationPassed();
+        Fluttertoast.showToast(
+            msg: "Sending you OTP ...",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 12.0);
+        ref
+            .read(phoneNumberStateProvider.notifier)
+            .setVerificationId(verificationId);
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
+        log("Code Auto Retrival called ");
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var phoneNumber = ref.watch(phoneNumberStateProvider);
-    return StatefulBuilder(
-      builder: (context, setState) {
-        ButtonState btnCurrentState = ButtonState.idle;
-        return Row(
-          children: [
-            const Spacer(
-              flex: 30,
-            ),
-            Expanded(
-                flex: 40,
-                child: ProgressButton.icon(
-                    iconedButtons: {
-                      ButtonState.idle: IconedButton(
-                          text: "Verify",
-                          icon: const Icon(Icons.send, color: Colors.white),
-                          color: Colors.deepPurple.shade500),
-                      ButtonState.loading: IconedButton(
-                          text: "Loading", color: Colors.deepPurple.shade700),
-                      ButtonState.fail: IconedButton(
-                          text: "Failed",
-                          icon: Icon(Icons.cancel, color: Colors.white),
-                          color: Colors.red.shade300),
-                      ButtonState.success: IconedButton(
-                          text: "Success",
-                          icon: Icon(
-                            Icons.check_circle,
-                            color: Colors.white,
-                          ),
-                          color: Colors.green.shade400)
-                    },
-                    onPressed: () {
-                      setState(() {
-                        btnCurrentState = ButtonState.loading;
-                      });
 
-                      FirebaseAuth.instance.verifyPhoneNumber(
-                        timeout: const Duration(minutes: 2),
-                        phoneNumber: phoneNumber,
-                        verificationCompleted: (phoneAuthCredential) {
-                          log("Verification Completed");
-                        },
-                        verificationFailed: (error) {
-                          setState(() {
-                            btnCurrentState = ButtonState.fail;
-                          });
-
-                          Fluttertoast.showToast(
-                              msg: "Verfication Failed",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                          log("Verification Failed");
-                          if (error.code == 'invalid-phone-number') {
-                            log('The provided phone number is not valid.');
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("Invalid, phone number!")));
-                          }
-                        },
-                        codeSent: (verificationId, forceResendingToken) {
-                          setState(() {
-                            btnCurrentState = ButtonState.success;
-                          });
-
-                          log("Verification ID: $verificationId");
-                          ref
-                              .read(verficationStateProvider.notifier)
-                              .onVerficationPassed();
-                          Fluttertoast.showToast(
-                              msg: "Sending you OTP ...",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.green,
-                              textColor: Colors.white,
-                              fontSize: 12.0);
-                          ref
-                              .read(phoneNumberStateProvider.notifier)
-                              .setVerificationId(verificationId);
-                        },
-                        codeAutoRetrievalTimeout: (verificationId) {
-                          log("Code Auto Retrival called ");
-                        },
-                      );
-                    },
-                    state: btnCurrentState)),
-            const Spacer(
-              flex: 30,
-            ),
-          ],
-        );
-      },
+    return Row(
+      children: [
+        const Spacer(
+          flex: 30,
+        ),
+        Expanded(
+          flex: 40,
+          child: MaterialButton(
+            onPressed: () async {
+              final connectivityResult =
+                  await Connectivity().checkConnectivity();
+              if (connectivityResult[0] == ConnectivityResult.none) {
+                // No internet connection
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('No internet connection'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              } else {
+                onClickVerifyButton(ref, context, phoneNumber);
+              }
+            },
+          ),
+        ),
+        const Spacer(
+          flex: 30,
+        ),
+      ],
     );
   }
 }

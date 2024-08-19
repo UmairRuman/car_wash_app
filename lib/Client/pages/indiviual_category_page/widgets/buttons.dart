@@ -2,6 +2,7 @@ import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/payment_methods/model/data_sender_model.dart';
 import 'package:car_wash_app/payment_methods/view/payment_page.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,6 +41,43 @@ class _ButtonBookAWashState extends ConsumerState<ButtonBookAWash>
     super.dispose();
   }
 
+  void onBookButtonClick(WidgetRef ref) async {
+    await animationController.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await animationController.reverse();
+    var carPrice = ref.read(bookingStateProvider.notifier).carPrice;
+    var isCarAssetImage =
+        ref.read(bookingStateProvider.notifier).isCarAssetImage;
+    var carName = ref.read(bookingStateProvider.notifier).carType;
+    var selectedDate = ref.read(bookingStateProvider.notifier).carWashDate;
+    var carImage = ref.read(bookingStateProvider.notifier).carImagePath;
+    var timeSlot = ref.read(bookingStateProvider.notifier).timeSlot;
+    // ref
+    //     .read(bookingStateProvider.notifier)
+    //     .addBooking(serviceId, serviceName, serviceImageUrl);
+    if (carPrice != null &&
+        isCarAssetImage != null &&
+        carName != null &&
+        selectedDate != null &&
+        carImage != null &&
+        timeSlot != null) {
+      Navigator.of(context).pushNamed(PaymentPage.pageName,
+          arguments: BookingPageDataSendingModel(
+              serviceId: widget.serviceId,
+              serviceImagePath: widget.serviceImageUrl,
+              serviceName: widget.serviceName,
+              isCarAssetImage: isCarAssetImage,
+              imagePath: carImage,
+              carName: carName,
+              price: carPrice,
+              timeSlot: timeSlot,
+              dateTime: selectedDate));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Kindly Choose all the given fields")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double scale = 1.0;
@@ -66,43 +104,18 @@ class _ButtonBookAWashState extends ConsumerState<ButtonBookAWash>
               scale: animationForSize,
               child: FloatingActionButton(
                 onPressed: () async {
-                  await animationController.forward();
-                  await Future.delayed(const Duration(milliseconds: 100));
-                  await animationController.reverse();
-                  var carPrice =
-                      ref.read(bookingStateProvider.notifier).carPrice;
-                  var isCarAssetImage =
-                      ref.read(bookingStateProvider.notifier).isCarAssetImage;
-                  var carName = ref.read(bookingStateProvider.notifier).carType;
-                  var selectedDate =
-                      ref.read(bookingStateProvider.notifier).carWashDate;
-                  var carImage =
-                      ref.read(bookingStateProvider.notifier).carImagePath;
-                  var timeSlot =
-                      ref.read(bookingStateProvider.notifier).timeSlot;
-                  // ref
-                  //     .read(bookingStateProvider.notifier)
-                  //     .addBooking(serviceId, serviceName, serviceImageUrl);
-                  if (carPrice != null &&
-                      isCarAssetImage != null &&
-                      carName != null &&
-                      selectedDate != null &&
-                      carImage != null &&
-                      timeSlot != null) {
-                    Navigator.of(context).pushNamed(PaymentPage.pageName,
-                        arguments: BookingPageDataSendingModel(
-                            serviceId: widget.serviceId,
-                            serviceImagePath: widget.serviceImageUrl,
-                            serviceName: widget.serviceName,
-                            isCarAssetImage: isCarAssetImage,
-                            imagePath: carImage,
-                            carName: carName,
-                            price: carPrice,
-                            timeSlot: timeSlot,
-                            dateTime: selectedDate));
+                  final connectivityResult =
+                      await Connectivity().checkConnectivity();
+                  if (connectivityResult[0] == ConnectivityResult.none) {
+                    // No internet connection
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No internet connection'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Kindly Choose all the given fields")));
+                    onBookButtonClick(ref);
                   }
                 },
                 backgroundColor: Colors.blue,

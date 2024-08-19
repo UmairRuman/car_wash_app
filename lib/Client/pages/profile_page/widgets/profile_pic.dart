@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/controller/profile_pic_controller.dart';
 import 'package:flutter/material.dart';
@@ -17,21 +19,13 @@ class ProfilePagePic extends ConsumerWidget {
             image: DecorationImage(
                 image: CachedNetworkImageProvider(profileImageUrl),
                 fit: BoxFit.none)),
-        child: state == ""
-            ? CachedNetworkImage(
-                imageUrl: profileImageUrl,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
+        child: state != ""
+            ? Container(
+                decoration: BoxDecoration(
+                    border: Border.all(width: 3, color: Colors.white),
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                        image: FileImage(File(state)), fit: BoxFit.none)),
               )
             : CachedNetworkImage(
                 imageUrl: profileImageUrl,

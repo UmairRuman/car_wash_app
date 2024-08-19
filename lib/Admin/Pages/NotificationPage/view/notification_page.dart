@@ -138,10 +138,10 @@ class AdminSideNotificationPage extends ConsumerWidget {
                               child: Column(
                                 children: [
                                   const Spacer(
-                                    flex: 5,
+                                    flex: 3,
                                   ),
                                   Expanded(
-                                      flex: 35,
+                                      flex: 37,
                                       child: RichText(
                                         text: TextSpan(
                                             style: const TextStyle(
@@ -156,7 +156,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                                       color: Colors.orange)),
                                               const TextSpan(
                                                   text:
-                                                      " have successfully booked service "),
+                                                      " have successfully booked service. "),
                                               TextSpan(
                                                   text: state
                                                       .listOfMessageModel[index]
@@ -169,7 +169,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                     flex: 5,
                                   ),
                                   Expanded(
-                                      flex: 35,
+                                      flex: 37,
                                       child: RichText(
                                         text: TextSpan(
                                             style: const TextStyle(
@@ -184,7 +184,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                                       color: Colors.red)),
                                               const TextSpan(
                                                   text:
-                                                      " slot has reserved for Date "),
+                                                      " slot has reserved for Date. "),
                                               TextSpan(
                                                   text: carWashDate,
                                                   style: const TextStyle(
@@ -209,7 +209,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                         ],
                                       )),
                                   const Spacer(
-                                    flex: 5,
+                                    flex: 3,
                                   ),
                                 ],
                               ),
