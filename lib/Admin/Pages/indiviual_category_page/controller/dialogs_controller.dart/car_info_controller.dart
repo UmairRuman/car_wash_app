@@ -28,6 +28,11 @@ class CarInfoController extends Notifier<String> {
     carCurrentPrice = carNewPrice;
   }
 
+  void onCancelButtonClick() {
+    carImagePath = "";
+    carNameTEC.text = "";
+  }
+
   onSaveButtonClick() {
     carName = carNameTEC.text;
     if (isPickImage && isChangeCarPrice) {

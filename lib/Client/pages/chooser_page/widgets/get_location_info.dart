@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Client/pages/chooser_page/controller/location_notifier.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 
 class BtnAddLocationChooserPage extends ConsumerWidget {
@@ -18,6 +20,7 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
       const int maxRetries = 3;
       int retryCount = 0;
       bool success = false;
+      informerDialog(context, "Getting location");
 
       while (retryCount < maxRetries && !success) {
         try {
@@ -35,11 +38,17 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
                   .read(userAdditionStateProvider.notifier)
                   .listOfUserInfo[MapForUserInfo.userLocation] =
               "${placemark.country},${placemark.locality}";
+          Navigator.pop(context);
         } catch (e) {
           retryCount++;
           log("Attempt $retryCount failed: $e");
           if (retryCount >= maxRetries) {
             log("Max retries reached. Could not fetch location.");
+            Fluttertoast.showToast(
+                msg: "Failed in Getting Location",
+                textColor: Colors.white,
+                backgroundColor: Colors.red);
+            Navigator.pop(context);
           }
         }
       }

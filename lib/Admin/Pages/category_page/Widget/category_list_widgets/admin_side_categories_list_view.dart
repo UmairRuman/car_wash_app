@@ -3,10 +3,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widgets/admin_side_state_widgets.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/incrementing_days_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/view/admin_side_indiviual_category_page.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/rating_controller.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +19,18 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 class AdminSideCategoriesList extends ConsumerWidget {
   const AdminSideCategoriesList({super.key});
 
+  void checkIntialDayCounts(WidgetRef ref) async {
+    TimeSlotCollection timeSlotCollection = TimeSlotCollection();
+    var list = await timeSlotCollection
+        .getAllTimeSlots(prefs!.getString(SharedPreferncesConstants.adminkey)!);
+    ref.read(increamentingDaysStateProvider.notifier).intialShowingDates =
+        list.length;
+  }
+
   void onServiceClick(WidgetRef ref, BuildContext context, String serviceName,
       String serviceId, String serviceImage) async {
+    checkIntialDayCounts(ref);
+
     ref
         .read(ratingStateProvider.notifier)
         .getAllRatings(serviceId, serviceName);

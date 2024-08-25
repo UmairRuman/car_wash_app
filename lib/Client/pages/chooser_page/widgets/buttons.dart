@@ -8,6 +8,7 @@ import 'package:car_wash_app/Client/pages/chooser_page/controller/save_data_noti
 import 'package:car_wash_app/Client/pages/chooser_page/controller/verification_state_notifier.dart';
 import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,8 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:progress_state_button/iconed_button.dart';
-import 'package:progress_state_button/progress_button.dart';
 
 class BtnContinueChooserPage extends ConsumerStatefulWidget {
   const BtnContinueChooserPage({super.key});
@@ -165,6 +164,7 @@ class BtnVerifyChooserPage extends ConsumerWidget {
   //Function
   void onClickVerifyButton(
       WidgetRef ref, BuildContext context, String phoneNumber) {
+    informerDialog(context, "Verifying number");
     FirebaseAuth.instance.verifyPhoneNumber(
       timeout: const Duration(minutes: 2),
       phoneNumber: phoneNumber,
@@ -172,6 +172,7 @@ class BtnVerifyChooserPage extends ConsumerWidget {
         log("Verification Completed");
       },
       verificationFailed: (error) {
+        Navigator.pop(context);
         Fluttertoast.showToast(
             msg: "Verfication Failed",
             toastLength: Toast.LENGTH_SHORT,
@@ -188,6 +189,7 @@ class BtnVerifyChooserPage extends ConsumerWidget {
         }
       },
       codeSent: (verificationId, forceResendingToken) {
+        Navigator.pop(context);
         log("Verification ID: $verificationId");
         ref.read(verficationStateProvider.notifier).onVerficationPassed();
         Fluttertoast.showToast(
@@ -220,6 +222,9 @@ class BtnVerifyChooserPage extends ConsumerWidget {
         Expanded(
           flex: 40,
           child: MaterialButton(
+            color: Colors.blue,
+            child:
+                const Text("Verify Otp", style: TextStyle(color: Colors.white)),
             onPressed: () async {
               final connectivityResult =
                   await Connectivity().checkConnectivity();

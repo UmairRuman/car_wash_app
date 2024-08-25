@@ -1,16 +1,34 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/NotificationPage/widget/messsage_intial_widget.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
+import 'package:car_wash_app/isolate_manager/notification_del_isolate.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AdminSideNotificationPage extends ConsumerWidget {
+class AdminSideNotificationPage extends ConsumerStatefulWidget {
   static const String pageName = "/AdminSideNotificationPage";
   const AdminSideNotificationPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AdminSideNotificationPage> createState() =>
+      _AdminSideNotificationPageState();
+}
+
+class _AdminSideNotificationPageState
+    extends ConsumerState<AdminSideNotificationPage> {
+  NotificationCleanupIsolateManager notificationCleanupIsolateManager =
+      NotificationCleanupIsolateManager.instance;
+  @override
+  void initState() {
+    super.initState();
+    notificationCleanupIsolateManager
+        .startNotificationCleanup(FirebaseAuth.instance.currentUser!.uid);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var listOfIntialMessages =
         ref.read(messageStateProvider.notifier).listOfIntialMessage;
     var state = ref.watch(messageStateProvider);
@@ -86,7 +104,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                               child: Column(
                                 children: [
                                   Expanded(
-                                      flex: 50,
+                                      flex: 70,
                                       child: Container(
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
@@ -120,14 +138,14 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                                     shape: BoxShape.circle,
                                                     image: DecorationImage(
                                                       image: imageProvider,
-                                                      fit: BoxFit.cover,
+                                                      fit: BoxFit.fill,
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                       )),
                                   const Spacer(
-                                    flex: 50,
+                                    flex: 30,
                                   )
                                 ],
                               )),
@@ -192,10 +210,10 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                             ]),
                                       )),
                                   const Spacer(
-                                    flex: 3,
+                                    flex: 2,
                                   ),
                                   Expanded(
-                                      flex: 12,
+                                      flex: 14,
                                       child: Row(
                                         children: [
                                           const Spacer(
@@ -209,7 +227,7 @@ class AdminSideNotificationPage extends ConsumerWidget {
                                         ],
                                       )),
                                   const Spacer(
-                                    flex: 3,
+                                    flex: 2,
                                   ),
                                 ],
                               ),

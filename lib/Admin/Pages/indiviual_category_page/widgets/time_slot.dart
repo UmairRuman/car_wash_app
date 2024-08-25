@@ -54,12 +54,7 @@ class _AdminSideTimeSlotState extends ConsumerState<AdminSideTimeSlot> {
           child: Text("No Time slot added"),
         );
       } else if (state is TimeSlotLoadedState) {
-        // if (flipControllers.length != state.list.length) {
-        //   log("Length of flip controllers in Loaded State ${flipControllers.length}");
-        //   log("Length of list in Loaded State ${state.list.length}");
-        //   initializeControllers();
-        // }
-
+        initializeControllers();
         return AnimationLimiter(
           child: ListView.builder(
             scrollDirection: Axis.horizontal,

@@ -30,6 +30,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
       ? FirebaseAuth.instance.currentUser!.uid
       : prefs!.getString(SharedPreferncesConstants.adminkey);
   List<Services> intialListOfService = [];
+  bool isNewServiceAdded = false;
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteCollection favouriteCollection = FavouriteCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
@@ -60,10 +61,11 @@ class AllServiceInfoController extends Notifier<DataStates> {
     }
   }
 
-  void getServiceName(String name, String newiconUrl) {
-    serviceName = name;
-    iconUrl = newiconUrl;
-  }
+  // void getServiceName(String name, String newiconUrl) {
+  //   serviceName = name;
+  //   iconUrl = newiconUrl;
+  //   isNewServiceAdded = true;
+  // }
 
   //Method for Adding Cars
 
@@ -112,11 +114,13 @@ class AllServiceInfoController extends Notifier<DataStates> {
   Future<void> updateService(
       String serviceId, String serviceName, bool isFavourite) async {
     var userId = FirebaseAuth.instance.currentUser!.uid;
-    var service = await serviceCollection.getSpecificService(
+    Services service = await serviceCollection.getSpecificService(
         adminId!, serviceName, serviceId);
     bool isAssetImage = false;
     bool isAssetIcon = false;
-
+    if (!isNewServiceAdded) {
+      iconUrl = service.iconUrl;
+    }
     await addCars(serviceId, serviceName);
     DateTime now =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);

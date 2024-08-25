@@ -221,18 +221,24 @@ void dialogForAddingPreviousService(BuildContext context) {
           child: const Center(
               child: Row(
             children: [
-              SizedBox(
-                width: 20,
+              Spacer(
+                flex: 10,
               ),
-              CircularProgressIndicator(),
-              SizedBox(
-                width: 20,
+              Expanded(flex: 20, child: CircularProgressIndicator()),
+              Spacer(
+                flex: 10,
               ),
-              Text(
-                "Adding previous service...",
-                style:
-                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              )
+              Expanded(
+                flex: 50,
+                child: FittedBox(
+                  child: Text(
+                    "Adding previous service...",
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Spacer(flex: 10),
             ],
           )),
         ),

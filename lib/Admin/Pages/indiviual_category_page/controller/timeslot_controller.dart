@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/incrementing_days_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/time_slot_decider_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
@@ -31,12 +32,53 @@ class TimeslotController extends Notifier<TimeSlotStates> {
     }
   }
 
-  void addTimeSlots() {
+  Future<void> addTimeSlots(int noOfDaysToShow) async {
     var startTime = ref.read(timeSlotTimingStateProvider.notifier).startIndex;
     var endTime = ref.read(timeSlotTimingStateProvider.notifier).endIndex;
+    log("Start time $startTime");
+    log("end Time $endTime");
+    bool isDataChangedThroughIncreamentingDaysDialog = ref
+        .read(increamentingDaysStateProvider.notifier)
+        .isDataChangedThroughIncreamentingDaysDialog;
+    //This condition is true when admin wants to change the no of dates to show to client for booking
+    if (isDataChangedThroughIncreamentingDaysDialog) {
+      var listOfTimeSlots = await timeSlotCollection.getSpecificDateSlots(
+          adminId,
+          DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day));
+      log("List Of time slot lenght : ${listOfTimeSlots.length}");
+      log("First item of list ${listOfTimeSlots[0]}");
+      String appendingStartTime = listOfTimeSlots.first;
+      String appendingEndTime = listOfTimeSlots.last;
+      int endIndex = 1;
+      startTime = int.parse(appendingStartTime.substring(0, endIndex));
+      while (appendingStartTime[endIndex] != "-") {
+        // appendingStartTime = listOfTimeSlots[0].substring(0, endIndex);
+        startTime = int.parse(appendingStartTime.substring(0, endIndex + 1));
+
+        endIndex++;
+      }
+      // int startIndex = appendingEndTime.length - 3;
+      // while (appendingEndTime[startIndex] != "-") {
+      //   log("Start index $startIndex");
+      //   // appendingEndTime = listOfTimeSlots[0]
+      //   //     .substring(startIndex, listOfTimeSlots.length - 2);
+      //   endTime = int.parse(appendingEndTime.substring(
+      //       startIndex, appendingEndTime.length - 2));
+
+      //   startIndex--;
+      // }
+      endTime = startTime + listOfTimeSlots.length;
+      log("Start Time = $startTime");
+      log("End Time = $endTime ");
+    }
+
+    int intialShowingDates =
+        ref.read(increamentingDaysStateProvider.notifier).intialShowingDates;
     DateTime now =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    DateTime endDate = DateTime(now.year, now.month + 1, now.day);
+    DateTime endDate =
+        DateTime(now.year, now.month, now.day + intialShowingDates);
 
     for (DateTime date = now;
         date.isBefore(endDate);
@@ -53,7 +95,7 @@ class TimeslotController extends Notifier<TimeSlotStates> {
           timeSlots.add("$twelveHourTime-${twelveHourTime + 1}pm");
         }
       }
-      timeSlotCollection.addTimeSlots(
+      await timeSlotCollection.addTimeSlots(
         TimeSlots(currentDate: date, timeslots: timeSlots),
         adminId,
       );

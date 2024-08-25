@@ -25,9 +25,9 @@ class IndiviualCategoryPage extends ConsumerWidget {
     String serviceId = data.serviceID;
     String imagePath = data.imagePath;
     String serviceName = data.categoryName;
-    ref
-        .read(allServiceDataStateProvider.notifier)
-        .getServiceName(serviceName, imagePath);
+    // ref
+    //     .read(allServiceDataStateProvider.notifier)
+    //     .getServiceName(serviceName, imagePath);
     return SafeArea(
         child: Scaffold(
       resizeToAvoidBottomInset: false,

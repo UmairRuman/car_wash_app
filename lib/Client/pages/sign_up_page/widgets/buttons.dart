@@ -52,6 +52,10 @@ class _BtnCreateAccountState extends ConsumerState<BtnCreateAccount>
                   userEmail: email,
                   userName: userName,
                   userPassword: userPassword));
+          Fluttertoast.showToast(
+              msg: "Account created successfully",
+              backgroundColor: Colors.green,
+              textColor: Colors.white);
         } else {
           // Email already registered, show an error message
           ScaffoldMessenger.of(context).showSnackBar(

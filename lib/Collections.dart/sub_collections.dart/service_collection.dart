@@ -58,6 +58,34 @@ class ServiceCollection {
     }
   }
 
+  Future<bool> updateServiceImagePath(String imagePath, String serviceName,
+      String serviceId, String adminId) async {
+    try {
+      await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .update({"imageUrl": imagePath});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateServiceDescription(String serviceDescrptiion,
+      String serviceName, String serviceId, String adminId) async {
+    try {
+      await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .update({"description": serviceDescrptiion});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> updateNewService(Services services) async {
     try {
       await UserCollection.userCollection
@@ -233,6 +261,30 @@ class ServiceCollection {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<double> getServicePrice(
+      String adminId, String serviceName, String serviceId) async {
+    try {
+      var querrySnapShots = await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .get();
+      var list = Services.fromMap(querrySnapShots.data()!).cars;
+      double averagePrice;
+      int sum = 0;
+      for (int index = 0; index < list.length; index++) {
+        String singleCarPrice = list[index].price;
+        int priceInInt =
+            int.parse(singleCarPrice.substring(0, singleCarPrice.length - 1));
+        sum += priceInInt;
+      }
+      averagePrice = sum / list.length;
+      return averagePrice;
+    } catch (e) {
+      return 0.0;
     }
   }
 

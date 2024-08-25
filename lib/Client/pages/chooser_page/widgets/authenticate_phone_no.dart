@@ -44,12 +44,16 @@ class BtnAuthenticatePhoneNo extends ConsumerWidget {
       const Spacer(flex: 30),
       Expanded(
         flex: 40,
-        child: FloatingActionButton(
+        child: MaterialButton(
           onPressed: () async {
             await ref.read(phoneNumberStateProvider.notifier).verifyOtp();
           },
-          backgroundColor: Colors.orange,
-          child: const FittedBox(child: Text("Authenticate")),
+          color: Colors.green,
+          child: const FittedBox(
+              child: Text(
+            "Authenticate",
+            style: TextStyle(color: Colors.white),
+          )),
         ),
       ),
       const Spacer(flex: 30),

@@ -1,9 +1,7 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/time_slot.dart';
-import 'package:car_wash_app/utils/indiviual_catergory_page_res.dart';
 
 class TimeSlotCollection {
   static final TimeSlotCollection instance = TimeSlotCollection._internal();
@@ -93,7 +91,7 @@ class TimeSlotCollection {
           .collection(timeSlotCollection)
           .doc(docId)
           .get();
-
+      log("Path ${UserCollection.userCollection.doc(adminId).collection(timeSlotCollection).doc(docId).path}");
       if (querrySnapshots.exists && querrySnapshots.data() != null) {
         log("Document data: ${querrySnapshots.data()}");
         return TimeSlots.fromMap(querrySnapshots.data()!).timeslots;

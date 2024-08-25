@@ -1,4 +1,5 @@
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
 import 'package:car_wash_app/Client/pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Client/pages/category_page/View/categoryPage.dart';
@@ -33,6 +34,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         .read(previousServiceStateProvider.notifier)
         .getIntialListPreviousServices();
     ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices();
+    ref.read(messageStateProvider.notifier).intialMessages();
   }
 
   @override

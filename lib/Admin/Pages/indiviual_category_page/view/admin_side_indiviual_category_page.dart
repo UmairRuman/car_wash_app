@@ -25,9 +25,9 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
     String serviceId = data.serviceID;
     String imagePath = data.imagePath;
     String serviceName = data.categoryName;
-    ref
-        .read(allServiceDataStateProvider.notifier)
-        .getServiceName(serviceName, imagePath);
+    // ref
+    //     .read(allServiceDataStateProvider.notifier)
+    //     .getServiceName(serviceName, imagePath);
     return SafeArea(
         child: Scaffold(
       resizeToAvoidBottomInset: false,
@@ -81,7 +81,13 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
               const Spacer(
                 flex: 2,
               ),
-              const Expanded(flex: 5, child: AdminSideTextSelectDate()),
+              Expanded(
+                  flex: 5,
+                  child: AdminSideTextSelectDate(
+                    isFavourite: isFavourite,
+                    serviceId: serviceId,
+                    serviceName: serviceName,
+                  )),
               Expanded(
                   flex: 15,
                   child: AdminSideDateTimePicker(

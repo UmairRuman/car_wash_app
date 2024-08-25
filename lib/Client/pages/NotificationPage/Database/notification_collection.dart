@@ -60,6 +60,7 @@ class NotificationCollection {
 
   Future<void> deleteOldNotifications(String userId) async {
     try {
+      log("In delete Old notifications ");
       final now = DateTime.now();
       final cutoff = now.subtract(const Duration(hours: 24));
 
@@ -83,6 +84,7 @@ class NotificationCollection {
       var querrySnapshots = await UserCollection.userCollection
           .doc(userId)
           .collection(notificationCollection)
+          .orderBy("notificationDeliveredDate", descending: false)
           .get();
 
       return querrySnapshots.docs

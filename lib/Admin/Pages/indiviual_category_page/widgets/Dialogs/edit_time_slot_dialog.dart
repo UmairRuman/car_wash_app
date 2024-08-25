@@ -1,3 +1,4 @@
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/incrementing_days_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/time_slot_decider_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
@@ -218,17 +219,20 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                               Expanded(
                                 flex: 40,
                                 child: MaterialButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     ref
                                         .read(timeSlotsStateProvider.notifier)
-                                        .addTimeSlots();
+                                        .addTimeSlots(ref
+                                            .read(increamentingDaysStateProvider
+                                                .notifier)
+                                            .intialShowingDates);
 
-                                    ref
+                                    await ref
                                         .read(allServiceDataStateProvider
                                             .notifier)
                                         .updateService(serviceId, serviceName,
                                             isFavourite);
-                                    ref
+                                    await ref
                                         .read(timeSlotsStateProvider.notifier)
                                         .getTimeSlots(
                                           DateTime(

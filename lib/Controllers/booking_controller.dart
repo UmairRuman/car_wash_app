@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
-
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/admin_booking_collection_count.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
@@ -25,6 +24,7 @@ class BookingController extends Notifier<BookingStates> {
   DateTime dateTimeForFilter =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   MessageDatabase messageDatabase = MessageDatabase();
+  bool isGetBookingCalledAfterPaymment = false;
   String? carType;
   DateTime? carWashDate;
   String? carPrice;
@@ -45,6 +45,7 @@ class BookingController extends Notifier<BookingStates> {
 
   Future<void> addBooking(
       String serviceId, String serviceName, String serviceImageUrl) async {
+    log("In add Booking Method");
     try {
       final userId = FirebaseAuth.instance.currentUser!.uid;
       final bookerName = await userCollection.getUserName(userId);
@@ -67,7 +68,8 @@ class BookingController extends Notifier<BookingStates> {
           timeSlot != null) {
         String phoneNo = FirebaseAuth.instance.currentUser!.phoneNumber ?? "";
         //Adding Booking in client Collection
-        bookingCollection.addBooking(Bookings(
+        log("Adding Booking at User side");
+        await bookingCollection.addBooking(Bookings(
             bookerPhoneNo: phoneNo,
             bookerName: bookerName!,
             userBookingId: userBookingId,
@@ -83,7 +85,8 @@ class BookingController extends Notifier<BookingStates> {
             timeSlot: timeSlot!));
 
         //Adding booking at Admin Collection
-        bookingCollection.addBooking(Bookings(
+        log("Adding booking at admin side");
+        await bookingCollection.addBooking(Bookings(
             bookerPhoneNo: phoneNo,
             bookerName: bookerName,
             userBookingId: adminBookingId,
@@ -131,37 +134,48 @@ class BookingController extends Notifier<BookingStates> {
           userBookingCountCollection.addUserBookingCount(UserBookingCounter(
               userId: userId, count: "${userBookingsTotalCount.length + 1}"));
         }
+        isGetBookingCalledAfterPaymment = true;
         await getBookings(userId);
-
         await ref
             .read(messageStateProvider.notifier)
             .getAllNotificationsByUserId();
       }
+      log("Leaving Booking method");
     } catch (e) {
       log("Error in adding Booking : ${e.toString()} ");
     }
   }
 
   Future<void> getBookings(String userId) async {
+    log("Getting all Bookings");
     state = BookingLoadingState();
     try {
       var listOfClientBookings = await bookingCollection.getAllBookings(userId);
       var listOfAdminBookings =
           await bookingCollection.getAllBookings(adminId!);
+      log("Client Side Booking list ${listOfClientBookings.toString()}");
+      log("Admin Side Booking list ${listOfAdminBookings.toString()}");
       //After getting admin latest bookings we have to navigate admin to the booking page
-      listOfAdminRealBookings = [];
-      if (listOfAdminBookings.isNotEmpty) {
-        for (int index = 0; index < listOfAdminBookings.length; index++) {
-          var carWashdate = listOfAdminBookings[index].carWashdate;
-          var filterDate = dateTimeForFilter;
-          if (carWashdate == filterDate) {
-            listOfAdminBookings.add(listOfAdminBookings[index]);
-            state = BookingLoadedState(
-                listOfClientBookings: listOfClientBookings,
-                listOfAdminBookings: listOfAdminRealBookings);
-          }
-        }
+      if (isGetBookingCalledAfterPaymment) {
+        log("In Condition isGetBookingCalledAfterPayment");
+        state = BookingLoadedState(
+            listOfClientBookings: listOfClientBookings,
+            listOfAdminBookings: listOfAdminRealBookings);
       }
+      // listOfAdminRealBookings = [];
+      // if (listOfAdminBookings.isNotEmpty) {
+      //   for (int index = 0; index < listOfAdminBookings.length; index++) {
+      //     var carWashdate = listOfAdminBookings[index].carWashdate;
+      //     var filterDate = dateTimeForFilter;
+      //     if (carWashdate == filterDate) {
+      //       listOfAdminBookings.add(listOfAdminBookings[index]);
+      //       state = BookingLoadedState(
+      //           listOfClientBookings: listOfClientBookings,
+      //           listOfAdminBookings: listOfAdminRealBookings);
+      //     }
+      //   }
+      // }
+      log("Got all Boookings");
     } catch (e) {
       log("Error in getting Admin Side Bookings");
       state = BookingErrorState(error: e.toString());

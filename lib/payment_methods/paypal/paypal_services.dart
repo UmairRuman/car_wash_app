@@ -73,32 +73,43 @@ Widget payPallmethod(
     note: "Contact us for any questions on your order.",
     onSuccess: (Map params) async {
       log("payment SuccessFull ");
-      await ref
-          .read(bookingStateProvider.notifier)
-          .addBooking(serviceId, serviceName, serviceImagPath);
+      try {
+        await ref
+            .read(bookingStateProvider.notifier)
+            .addBooking(serviceId, serviceName, serviceImagPath);
 
-      //If the payement is successFull then we have to  send notifications to all admin
+        //If the payement is successFull then we have to  send notifications to all admin
 
-      //Show toast to user for successfully reservation of slot
+        //Show toast to user for successfully reservation of slot
 
-      Fluttertoast.showToast(
-          msg: "You have reserved slot successfully",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          textColor: Colors.white,
-          backgroundColor: Colors.green);
+        Fluttertoast.showToast(
+            msg: "You have reserved slot successfully",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            textColor: Colors.white,
+            backgroundColor: Colors.green);
 
-      var listOfAdminToken =
-          await adminDeviceTokenCollection.getAllAdminDeviceTokens();
+        var listOfAdminToken =
+            await adminDeviceTokenCollection.getAllAdminDeviceTokens();
 
-      for (int index = 0; index < listOfAdminToken.length; index++) {
-        messageSender.sendMessage(
-          listOfAdminToken[index].deviceToken,
-          data: {
-            'car_wash_date':
-                carWashDate.toIso8601String(), // include car wash date
-          },
-        );
+        for (int index = 0; index < listOfAdminToken.length; index++) {
+          messageSender.sendMessage(
+            listOfAdminToken[index].deviceToken,
+            data: {
+              'car_wash_date':
+                  carWashDate.toIso8601String(), // include car wash date
+            },
+          );
+        }
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: "Payment Failed ,${e.toString()}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            textColor: Colors.white,
+            backgroundColor: Colors.red);
+        log("Payement Failed");
+        log(e.toString());
       }
 
       log("onSuccess: $params");

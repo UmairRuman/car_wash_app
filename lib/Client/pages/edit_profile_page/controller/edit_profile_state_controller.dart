@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Client/pages/profile_page/controller/profile_state_controller.dart';
 import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
-import 'package:car_wash_app/ModelClasses/admin_key.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,6 +61,7 @@ class EditProfileStateController extends Notifier<String> {
       await userCollection.updateUserLocation(userId, editLocationTEC.text);
 
       await ref.read(userAdditionStateProvider.notifier).getUser(userId);
+      await ref.read(profileDataStateProvider.notifier).getUserAllDData();
       Navigator.of(context).pop();
     } catch (e) {
       log("Error in updating all info");

@@ -40,11 +40,8 @@ class MesssageIntialWidget extends StatelessWidget {
                       flex: 15,
                       child: Row(
                         children: [
-                          const Spacer(
-                            flex: 5,
-                          ),
                           Expanded(
-                            flex: 30,
+                            flex: 35,
                             child: FittedBox(
                               child: RichText(
                                 text: TextSpan(
@@ -73,7 +70,7 @@ class MesssageIntialWidget extends StatelessWidget {
                     flex: 3,
                   ),
                   Expanded(
-                      flex: 28,
+                      flex: 38,
                       child: RichText(
                         text: TextSpan(
                             style: const TextStyle(
@@ -84,7 +81,8 @@ class MesssageIntialWidget extends StatelessWidget {
                                   text:
                                       "You have successfully booked service "),
                               TextSpan(
-                                  text: listOfIntialMessage[index].serviceName,
+                                  text:
+                                      " ${listOfIntialMessage[index].serviceName}.",
                                   style: const TextStyle(color: Colors.amber))
                             ]),
                       )),
@@ -102,7 +100,7 @@ class MesssageIntialWidget extends StatelessWidget {
                               const TextSpan(
                                   text: " slot has reserved for you on Date "),
                               TextSpan(
-                                  text: carWashDate,
+                                  text: "$carWashDate.",
                                   style: const TextStyle(color: Colors.blue)),
                             ]),
                       )),
@@ -110,7 +108,7 @@ class MesssageIntialWidget extends StatelessWidget {
                     flex: 3,
                   ),
                   Expanded(
-                      flex: 15,
+                      flex: 10,
                       child: Row(
                         children: [
                           const Spacer(

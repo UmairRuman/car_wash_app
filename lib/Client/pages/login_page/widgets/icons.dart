@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/utils/images_path.dart'; // Assuming you have this file for the icon paths.
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:oauth1/oauth1.dart' as oauth1;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,9 +75,15 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
       });
       log('Auth URL: $authUrl');
       if (authUrl != null) {
+        Navigator.of(context).pop();
         showWebViewDialog(authUrl!);
       }
     } catch (e) {
+      Navigator.of(context).pop();
+      Fluttertoast.showToast(
+          msg: "Failed to authenticate!",
+          textColor: Colors.white,
+          backgroundColor: Colors.green);
       log('Failed to authenticate: $e');
     }
   }
@@ -172,11 +180,13 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
   }
 
   Future<void> signInWithTwitter() async {
-    authenticateTwitter();
+    informerDialog(context, "Singing in");
+    await authenticateTwitter();
   }
 
   Future<void> signInWithGoogle() async {
     try {
+      informerDialog(context, "Signing In");
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
         scopes: [
           'email',
@@ -196,8 +206,18 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
         await FirebaseAuth.instance.signInWithCredential(credential);
         log('User authenticated successfully with Google: ${googleUser.email}');
         setState(() {});
+        Navigator.pop(context);
+        Fluttertoast.showToast(
+            msg: "Login Successfully",
+            textColor: Colors.white,
+            backgroundColor: Colors.green);
       }
     } catch (e) {
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+          msg: "Failed Login",
+          textColor: Colors.white,
+          backgroundColor: Colors.red);
       log("Error in logging in with Google: ${e.toString()}");
     }
   }

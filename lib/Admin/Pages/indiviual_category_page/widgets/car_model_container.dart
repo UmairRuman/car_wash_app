@@ -1,10 +1,13 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/controller_for_updating_car_info.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/dialog_for_updating_car_info.dart';
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_car_model_info.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -91,11 +94,20 @@ class _AdminSideCarModelContainerState
                                     blurRadius: 3)
                               ]),
                           child: InkWell(
-                            onTap: () {
+                            onTap: () async {
                               ref
                                   .read(allServiceDataStateProvider.notifier)
                                   .deleteCar(index, widget.serviceId,
                                       widget.serviceName);
+                              await FirebaseStorage.instance
+                                  .ref()
+                                  .child("Images")
+                                  .child(FirebaseAuth.instance.currentUser!.uid)
+                                  .child("ServiceAssets")
+                                  .child(widget.serviceName)
+                                  .child("carImages")
+                                  .child(widget.listOfCars[index].carName)
+                                  .delete();
                               log("deleted ");
                             },
                             child: const Icon(
@@ -117,7 +129,10 @@ class _AdminSideCarModelContainerState
                               widget.listOfCars[index].price,
                               widget.listOfCars[index].isAsset,
                               widget.serviceName,
-                              ref);
+                              ref,
+                              ref
+                                  .read(carInfoUpdationProvider.notifier)
+                                  .carNameTEC);
                         },
                         onLongPress: () {
                           _controller[index].toggleCard();

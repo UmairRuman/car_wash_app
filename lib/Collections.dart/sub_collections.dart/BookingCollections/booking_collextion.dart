@@ -53,6 +53,7 @@ class BookingCollection {
 
   Future<void> deleteOldBookings(String userId) async {
     try {
+      log("In delete Old Bookings ");
       final now = DateTime.now();
       final cutoff = now.subtract(const Duration(hours: 48));
 
@@ -63,6 +64,7 @@ class BookingCollection {
           .get();
 
       for (var doc in query.docs) {
+        log("Booking to delete ${doc.data()}");
         await doc.reference.delete();
       }
     } catch (e) {
@@ -75,6 +77,7 @@ class BookingCollection {
       var querrySnapshot = await UserCollection.userCollection
           .doc(userId)
           .collection(bookingCollection)
+          .orderBy("bookingDate", descending: false)
           .get();
       if (querrySnapshot.docs.isNotEmpty) {
         return querrySnapshot.docs

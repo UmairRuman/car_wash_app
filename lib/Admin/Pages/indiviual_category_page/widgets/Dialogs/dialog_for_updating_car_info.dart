@@ -13,6 +13,7 @@ import 'package:numberpicker/numberpicker.dart';
 class CarInfoUpdatingModel {
   static bool isImageUpdated = false;
   static String imagePath = "";
+  static String downloadedImagePath = "";
   static bool isNewImagePicked = false;
   static String carOldName = "";
 }
@@ -25,7 +26,8 @@ void dialogForUpdatingCarInfo(
     String carWashPrice,
     bool isCarAssetImage,
     String serviceName,
-    WidgetRef ref) {
+    WidgetRef ref,
+    TextEditingController carNameTEC) {
   ServiceCollection serviceCollection = ServiceCollection();
   final screenWidth = MediaQuery.of(context).size.width;
   final screenHeight = MediaQuery.of(context).size.height;
@@ -88,25 +90,6 @@ void dialogForUpdatingCarInfo(
                                   CarInfoUpdatingModel.isNewImagePicked = true;
                                   CarInfoUpdatingModel.imagePath = file.path;
                                 });
-
-                                // Upload the image to Firebase Storage
-                                var snapshot = await FirebaseStorage.instance
-                                    .ref()
-                                    .child("Images")
-                                    .child(
-                                        FirebaseAuth.instance.currentUser!.uid)
-                                    .child("ServiceAssets")
-                                    .child(serviceName)
-                                    .child("carImages")
-                                    .child(CarInfoUpdatingModel.carOldName)
-                                    .putFile(File(file.path));
-
-                                // Get the download URL
-                                var imagePath =
-                                    await snapshot.ref.getDownloadURL();
-                                ref
-                                    .read(carInfoUpdationProvider.notifier)
-                                    .onChangeCarImagePath(imagePath);
                               }
                             },
                             child: Container(
@@ -129,8 +112,7 @@ void dialogForUpdatingCarInfo(
                   Expanded(
                     flex: 15,
                     child: TextField(
-                      controller:
-                          ref.read(carInfoUpdationProvider.notifier).carNameTEC,
+                      controller: carNameTEC,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide:
@@ -188,6 +170,7 @@ void dialogForUpdatingCarInfo(
                           child: FloatingActionButton(
                             onPressed: () {
                               Navigator.of(context).pop();
+                              carNameTEC.text = "";
                             },
                             backgroundColor: const Color(0xFF1BC0C5),
                             child: const Text(
@@ -203,20 +186,16 @@ void dialogForUpdatingCarInfo(
                             onPressed: () async {
                               final adminId =
                                   FirebaseAuth.instance.currentUser!.uid;
-
+                              await uploadCarImageOnFirebaseStorageBox(
+                                  serviceName);
                               await serviceCollection.updateCarInfo(
                                   adminId,
                                   serviceId,
                                   CarInfoUpdatingModel.carOldName,
                                   serviceName,
                                   "$currentlySelectedPrice\$",
-                                  ref
-                                      .read(carInfoUpdationProvider.notifier)
-                                      .carNameTEC
-                                      .text,
-                                  ref
-                                      .read(carInfoUpdationProvider.notifier)
-                                      .newCarImagePath,
+                                  carNameTEC.text,
+                                  CarInfoUpdatingModel.downloadedImagePath,
                                   false);
 
                               await ref
@@ -244,4 +223,21 @@ void dialogForUpdatingCarInfo(
       );
     },
   );
+}
+
+Future<void> uploadCarImageOnFirebaseStorageBox(String serviceName) async {
+  // Upload the image to Firebase Storage
+  var snapshot = await FirebaseStorage.instance
+      .ref()
+      .child("Images")
+      .child(FirebaseAuth.instance.currentUser!.uid)
+      .child("ServiceAssets")
+      .child(serviceName)
+      .child("carImages")
+      .child(CarInfoUpdatingModel.carOldName)
+      .putFile(File(CarInfoUpdatingModel.imagePath));
+
+  // Get the download URL
+  CarInfoUpdatingModel.downloadedImagePath =
+      await snapshot.ref.getDownloadURL();
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/service_info_controlller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_service_info.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,13 +103,20 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                         child: LayoutBuilder(
                           builder: (context, constraints) => InkWell(
                             onTap: () {
+                              ref
+                                  .read(serviceInfoProvider.notifier)
+                                  .previousServiceDescription(description);
                               dialogForEdditingServiceImageAndDescription(
                                   context,
                                   serviceName,
                                   serviceId,
                                   imagePath,
                                   ref,
-                                  isFavourite);
+                                  isFavourite,
+                                  description,
+                                  ref
+                                      .read(serviceInfoProvider.notifier)
+                                      .serviceDescriptionTEC);
                             },
                             child: Container(
                               height: constraints.maxHeight,

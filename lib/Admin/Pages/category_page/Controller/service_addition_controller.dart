@@ -107,8 +107,6 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
       var listOfServices =
           await serviceCollection.getAllServicesByAdmin(adminId!);
       state = ServiceDataLoadedState(services: listOfServices);
-      log("List of services length : ${listOfServices.length}");
-      log("Is asset Icon : ${listOfServices[0].isAssetIcon}");
     } catch (e) {
       state = ServiceDataErrorState(error: e.toString());
     }

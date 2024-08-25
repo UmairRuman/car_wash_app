@@ -1,6 +1,5 @@
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
-import 'package:car_wash_app/Controllers/rating_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,7 +29,10 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: const Icon(Icons.arrow_back_ios))),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(Icons.arrow_back_ios),
+                ))),
         const Spacer(
           flex: 20,
         ),

@@ -12,11 +12,17 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
-// Profile picture edit icon
-class AdminProfilePageEditIcon extends ConsumerWidget {
+class AdminProfilePageEditIcon extends ConsumerStatefulWidget {
   const AdminProfilePageEditIcon({super.key});
 
-  Future<void> _pickAndCropImage(BuildContext context, WidgetRef ref) async {
+  @override
+  _AdminProfilePageEditIconState createState() =>
+      _AdminProfilePageEditIconState();
+}
+
+class _AdminProfilePageEditIconState
+    extends ConsumerState<AdminProfilePageEditIcon> {
+  Future<void> _pickAndCropImage(BuildContext context) async {
     // Pick the image from the gallery
     var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     try {
@@ -36,13 +42,13 @@ class AdminProfilePageEditIcon extends ConsumerWidget {
               ),
             ]);
 
-        if (croppedFile != null) {
-          // Update the profile picture locally for instant display
+        if (croppedFile != null && context.mounted) {
+          // Updating the profile picture locally for instant display
           ref
               .read(profilePicProvider.notifier)
               .onChangeProfilePic(croppedFile.path);
 
-          // Upload the image to Firebase Storage
+          // Uploading the image to Firebase Storage
           var snapshot = await FirebaseStorage.instance
               .ref()
               .child("Images")
@@ -50,13 +56,15 @@ class AdminProfilePageEditIcon extends ConsumerWidget {
               .child("userImage")
               .putFile(File(croppedFile.path));
 
-          // Get the download URL
+          // Getting the download URL
           var imagePath = await snapshot.ref.getDownloadURL();
 
-          // Update the Firestore with the new profile image URL
-          await ref
-              .read(adminSideEditProfileInfoProvider.notifier)
-              .onUpdateImage(imagePath, context);
+          // Updating the Firestore with the new profile image URL
+          if (context.mounted) {
+            await ref
+                .read(adminSideEditProfileInfoProvider.notifier)
+                .onUpdateImage(imagePath, context);
+          }
         }
       }
     } catch (e) {
@@ -65,35 +73,38 @@ class AdminProfilePageEditIcon extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return TouchRippleEffect(
       rippleColor: Colors.orange,
       onTap: () async {
         final connectivityResult = await Connectivity().checkConnectivity();
-        if (connectivityResult[0] == ConnectivityResult.none) {
+        if (connectivityResult == ConnectivityResult.none) {
           // No internet connection
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No internet connection'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('No internet connection'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         } else {
-          _pickAndCropImage(context, ref);
+          await _pickAndCropImage(context);
         }
       },
       child: Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(
+            Icons.edit,
+            color: Color.fromARGB(255, 21, 113, 188),
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.edit,
-              color: Color.fromARGB(255, 21, 113, 188),
-            ),
-          )),
+        ),
+      ),
     );
   }
 }

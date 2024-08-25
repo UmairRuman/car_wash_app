@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/search_page.dart';
+import 'package:car_wash_app/Admin/Pages/profile_page/controller/profile_pic_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/dialog_for_showing_profile_image.dart';
@@ -11,13 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
-class ProfilePic extends StatelessWidget {
+class ProfilePic extends ConsumerWidget {
   final String userProfilePic;
   const ProfilePic({super.key, required this.userProfilePic});
 
   @override
-  Widget build(BuildContext context) {
-    log("Profile Pic Url in Page $userProfilePic");
+  Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(profilePicProvider);
+
     return InkWell(
       onTap: () {
         dialogForShowingProfileImage(context, userProfilePic);
@@ -30,8 +33,14 @@ class ProfilePic extends StatelessWidget {
                     ? AssetImage(emptyImage)
                     : CachedNetworkImageProvider(userProfilePic),
                 fit: BoxFit.fill)),
-        child: userProfilePic == ""
-            ? null
+        child: state != ""
+            ? Container(
+                decoration: BoxDecoration(
+                    border: Border.all(width: 3, color: Colors.white),
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: FileImage(File(state)), fit: BoxFit.fill)),
+              )
             : CachedNetworkImage(
                 imageUrl: userProfilePic,
                 placeholder: (context, url) =>
@@ -42,7 +51,7 @@ class ProfilePic extends StatelessWidget {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: imageProvider,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),
@@ -90,7 +99,6 @@ class NotificationIcon extends ConsumerWidget {
     return TouchRippleEffect(
       rippleColor: Colors.yellow,
       onTap: () async {
-        await ref.read(messageStateProvider.notifier).intialMessages();
         Navigator.pushNamed(context, NotificationPage.pageName);
       },
       child: Opacity(

@@ -96,8 +96,7 @@ class UserCollection {
     try {
       //For updating services firstly we have to get user no of services
       var querrySnapShot = await userCollection.doc(userId).get();
-      double noOfServices =
-          Users.fromMap(querrySnapShot.data()!).serviceConsumed as double;
+      var noOfServices = Users.fromMap(querrySnapShot.data()!).serviceConsumed;
       log("No of servicces $noOfServices");
       noOfServices += 1;
       log("No of servicces $noOfServices");
@@ -114,6 +113,7 @@ class UserCollection {
 
   Future<bool> updateUserProfilePic(String userId, String profilePicUrl) async {
     try {
+      log("Updating User profile pic ");
       await userCollection.doc(userId).update({"profilePicUrl": profilePicUrl});
       return true;
     } catch (e) {

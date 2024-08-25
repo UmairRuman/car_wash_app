@@ -42,7 +42,7 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                       child: Column(
                         children: [
                           Expanded(
-                              flex: 50,
+                              flex: 70,
                               child: Container(
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
@@ -70,14 +70,14 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                             shape: BoxShape.circle,
                                             image: DecorationImage(
                                               image: imageProvider,
-                                              fit: BoxFit.cover,
+                                              fit: BoxFit.fill,
                                             ),
                                           ),
                                         ),
                                       ),
                               )),
                           const Spacer(
-                            flex: 50,
+                            flex: 30,
                           )
                         ],
                       )),
@@ -105,7 +105,7 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                               color: Colors.orange)),
                                       const TextSpan(
                                           text:
-                                              "have successfully booked service "),
+                                              " have successfully booked service "),
                                       TextSpan(
                                           text: listOfIntialMessage[index]
                                               .serviceName,
@@ -141,7 +141,7 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                             flex: 3,
                           ),
                           Expanded(
-                              flex: 12,
+                              flex: 14,
                               child: Row(
                                 children: [
                                   const Spacer(
@@ -155,7 +155,7 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                 ],
                               )),
                           const Spacer(
-                            flex: 5,
+                            flex: 3,
                           ),
                         ],
                       ),

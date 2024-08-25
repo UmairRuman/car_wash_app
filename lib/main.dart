@@ -74,17 +74,20 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
   @override
   void initState() {
     super.initState();
+    // log("Current User id ${FirebaseAuth.instance.currentUser!.uid}");
     notificationServices.requestPermission();
     notificationServices.getMessageOnAppOnOpen(context, ref);
     notificationServices.redirectWhenAppInBgOrTermianted(context, ref);
     checkAdminDataInSharedPrefrences();
+    log("Is service Provider in condtion ${prefs!.getBool(SharedPreferncesConstants.isServiceProvider)}");
+
     // if (FirebaseAuth.instance.currentUser != null) {
     //   startBackgroundCleanup(FirebaseAuth.instance.currentUser!.uid);
     // }
 
     notificationServices.messaging.onTokenRefresh.listen(
       (token) async {
-        log("Device Token : $token ");
+        log("On Device Token refresh: $token ");
         if (FirebaseAuth.instance.currentUser != null) {
           ref.read(userAdditionStateProvider.notifier).updateAdminToken(token);
           ref
@@ -96,31 +99,12 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
   }
 
   void checkAdminDataInSharedPrefrences() async {
-    String deviceToken = await notificationServices.getTokken();
-    log("Admin Device Token : $deviceToken");
+    log(" ${await notificationServices.getTokken()} ");
     await getAdminIdFromFireStore(ref);
   }
 
   @override
   Widget build(BuildContext context) {
-    // ref.listen(connectivityProvider, (previous, next) {
-    //   if (next.asData?.value == ConnectivityResult.none) {
-    //     ref
-    //         .read(connectivityStatusProvider.notifier)
-    //         .updateConnectivityStatus(false, context);
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       const SnackBar(
-    //           content:
-    //               Text("You are offline. Some features may be unavailable.")),
-    //     );
-    //   } else {
-    //     ref
-    //         .read(connectivityStatusProvider.notifier)
-    //         .updateConnectivityStatus(true, context);
-    //   }
-    // });
-
-    // log("Twitter access token  ${prefs!.getString('twitterAccessToken')!}");
     log("Auth handler page rebuild");
 
     final authState = ref.watch(authStateProvider);
@@ -130,16 +114,13 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
       data: (user) {
         if (user == null) {
           return const FirstPage();
-        } else if (currentUser!.phoneNumber != null &&
-            currentUser!.phoneNumber != "" &&
+        } else if ((user.phoneNumber != null && user.phoneNumber != "") &&
             prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
                 null &&
             prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
-          log("Is service Provider in condtion ${prefs!.getBool(SharedPreferncesConstants.isServiceProvider)}");
           //If the service provider is true then we will show him Admin Home Page
           return const AdminSideHomePage();
-        } else if (currentUser.phoneNumber != null &&
-            currentUser!.phoneNumber != "" &&
+        } else if ((user.phoneNumber != null && user.phoneNumber != "") &&
             prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
                 null &&
             !prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
@@ -147,11 +128,8 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
           return const HomePage();
         } else if (prefs!
                     .getString(SharedPreferncesConstants.twitterAccessToken) !=
-                null ||
-            prefs!.getString(SharedPreferncesConstants.twitterAccessToken) !=
-                    "" &&
-                currentUser.phoneNumber == "" ||
-            currentUser.phoneNumber == null) {
+                null &&
+            (user.phoneNumber == "" || user.phoneNumber == null)) {
           // If the user is logged in through Twitter and phone number is null
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
@@ -160,7 +138,7 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
           );
           log('User logged in via Twitter but phone number is null.');
           return const SizedBox.shrink(); // Temporary widget until redirection
-        } else if (currentUser.emailVerified) {
+        } else if (user.emailVerified) {
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
               Navigator.pushNamed(context, ChooserPage.pageName);
@@ -176,8 +154,12 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
               .listOfUserInfo[MapForUserInfo.email] = user.email;
 
           return const ChooserPage();
-        } else {
+        } else if (!user.emailVerified) {
           return const EmailVerificationPage();
+        } else {
+          return Container(
+            color: Colors.green,
+          );
         }
       },
       loading: () => const Scaffold(

@@ -1,10 +1,17 @@
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_year_dialog.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/dialog_for_increamenting_dates.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/controller/date_time_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdminSideTextSelectDate extends StatelessWidget {
-  const AdminSideTextSelectDate({super.key});
+  final String serviceId;
+  final String serviceName;
+  final bool isFavourite;
+  const AdminSideTextSelectDate(
+      {super.key,
+      required this.serviceId,
+      required this.isFavourite,
+      required this.serviceName});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,8 @@ class AdminSideTextSelectDate extends StatelessWidget {
             flex: 15,
             child: InkWell(
               onTap: () {
-                dialogForEditYear(context);
+                dialogForIncreametingDates(
+                    context, serviceId, serviceName, isFavourite);
               },
               child: Padding(
                 padding: const EdgeInsets.all(6.0),

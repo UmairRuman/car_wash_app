@@ -1,15 +1,31 @@
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/widget/messsage_intial_widget.dart';
+import 'package:car_wash_app/isolate_manager/notification_del_isolate.dart';
 import 'package:car_wash_app/utils/images_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NotificationPage extends ConsumerWidget {
+class NotificationPage extends ConsumerStatefulWidget {
   static const String pageName = "/NotificationPage";
   const NotificationPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NotificationPage> createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends ConsumerState<NotificationPage> {
+  NotificationCleanupIsolateManager notificationCleanupIsolateManager =
+      NotificationCleanupIsolateManager.instance;
+  @override
+  void initState() {
+    super.initState();
+    notificationCleanupIsolateManager
+        .startNotificationCleanup(FirebaseAuth.instance.currentUser!.uid);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var listOfIntialMessages =
         ref.read(messageStateProvider.notifier).listOfIntialMessage;
     var state = ref.watch(messageStateProvider);
@@ -86,10 +102,10 @@ class NotificationPage extends ConsumerWidget {
                               child: Row(
                                 children: [
                                   const Spacer(
-                                    flex: 5,
+                                    flex: 2,
                                   ),
                                   Expanded(
-                                    flex: 30,
+                                    flex: 33,
                                     child: FittedBox(
                                       child: RichText(
                                         text: TextSpan(
@@ -119,7 +135,7 @@ class NotificationPage extends ConsumerWidget {
                             flex: 3,
                           ),
                           Expanded(
-                              flex: 28,
+                              flex: 38,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -130,8 +146,8 @@ class NotificationPage extends ConsumerWidget {
                                           text:
                                               "You have successfully booked service "),
                                       TextSpan(
-                                          text: state.listOfMessageModel[index]
-                                              .serviceName,
+                                          text:
+                                              "${state.listOfMessageModel[index].serviceName}.",
                                           style: const TextStyle(
                                               color: Colors.amber))
                                     ]),
@@ -153,7 +169,7 @@ class NotificationPage extends ConsumerWidget {
                                           text:
                                               " slot has reserved for you on Date "),
                                       TextSpan(
-                                          text: carWashDate,
+                                          text: "$carWashDate.",
                                           style: const TextStyle(
                                               color: Colors.blue)),
                                     ]),
@@ -162,7 +178,7 @@ class NotificationPage extends ConsumerWidget {
                             flex: 3,
                           ),
                           Expanded(
-                              flex: 15,
+                              flex: 10,
                               child: Row(
                                 children: [
                                   const Spacer(

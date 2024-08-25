@@ -18,14 +18,14 @@ class ProfilePagePic extends ConsumerWidget {
             shape: BoxShape.circle,
             image: DecorationImage(
                 image: CachedNetworkImageProvider(profileImageUrl),
-                fit: BoxFit.none)),
+                fit: BoxFit.fill)),
         child: state != ""
             ? Container(
                 decoration: BoxDecoration(
                     border: Border.all(width: 3, color: Colors.white),
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: FileImage(File(state)), fit: BoxFit.none)),
+                        image: FileImage(File(state)), fit: BoxFit.fill)),
               )
             : CachedNetworkImage(
                 imageUrl: profileImageUrl,
@@ -37,7 +37,7 @@ class ProfilePagePic extends ConsumerWidget {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: imageProvider,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),

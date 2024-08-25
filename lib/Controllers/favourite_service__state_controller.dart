@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
-import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/favourites_booking.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
@@ -18,7 +17,6 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
   final adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
   ServiceCollection serviceCollection = ServiceCollection();
   List<FavouriteServices> listOfFavouriteServices = [];
-  double? servicePrice;
 
   FavouriteCollection favouriteCollection = FavouriteCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
@@ -29,6 +27,7 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
   }
 
   Future<void> getAllIntialFavouriteServices() async {
+    log("In all Intial Favoutire service list ");
     final userId = FirebaseAuth.instance.currentUser!.uid;
     try {
       listOfFavouriteServices =
@@ -58,7 +57,8 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
 
     double serviceRating = await serviceCollection.getServiceRating(
         adminId!, serviceName, serviceId);
-    servicePrice = 50;
+    double servicePrice = await serviceCollection.getServicePrice(
+        adminId!, serviceName, serviceId);
     try {
       if (servicePrice != null && serviceRating != 0.0) {
         await favouriteCollection.addServiceToFavourite(FavouriteServices(
@@ -68,7 +68,7 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
             userId: userId,
             serviceRating: serviceRating,
             serviceImageUrl: serviceImageUrl,
-            servicePrice: servicePrice!));
+            servicePrice: servicePrice));
       }
 
       await getAllFavouriteService(userId);

@@ -36,6 +36,7 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
   }
 
   Future<void> getIntialListPreviousServices() async {
+    log("In intial previous Services");
     try {
       intialList = await previousWorkCollection.getAllPreviousWork(adminId!);
     } catch (e) {

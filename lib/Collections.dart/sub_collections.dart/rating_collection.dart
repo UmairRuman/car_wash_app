@@ -1,6 +1,7 @@
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/Ratings.dart';
+import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 
 class RatingCollection {
   static final RatingCollection instance = RatingCollection._internal();
@@ -12,6 +13,7 @@ class RatingCollection {
 
   Future<bool> addRating(Ratings rating, String adminId) async {
     try {
+      //Adding rating at rating collection
       UserCollection.userCollection
           .doc(adminId)
           .collection(ServiceCollection.serviceCollection)
@@ -19,6 +21,24 @@ class RatingCollection {
           .collection(RatingCollection.ratingCollection)
           .doc(rating.userId)
           .set(rating.toMap());
+
+      //After adding rating we also have to change service rating
+      var listOfRatings =
+          await fetchAllRatings(adminId, rating.serviceId, rating.serviceName);
+
+      double ratingSum = 0;
+      for (var i = 0; i < listOfRatings.length; i++) {
+        ratingSum += listOfRatings[i].rating;
+      }
+
+      double totalRating = ratingSum / listOfRatings.length;
+
+      await UserCollection.userCollection
+          .doc(adminId)
+          .collection(ServiceCollection.serviceCollection)
+          .doc("${rating.serviceId})${rating.serviceName}")
+          .update({"rating": totalRating});
+
       return true;
     } catch (e) {
       return false;

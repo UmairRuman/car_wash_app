@@ -11,7 +11,7 @@ class AdminSideHomePageBottomNavigationBar extends ConsumerWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return CurvedNavigationBar(
-      backgroundColor: Colors.blue,
+      backgroundColor: const Color.fromARGB(255, 191, 214, 232),
       height: 55,
 
       // removeMargins: true,

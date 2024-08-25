@@ -89,11 +89,11 @@ class StripePaymentMethodBtn extends ConsumerWidget {
       required this.serviceImagePath,
       required this.serviceName});
 
-  void onStripePaymentMethodClick(WidgetRef ref) {
+  void onStripePaymentMethodClick(WidgetRef ref, BuildContext context) {
     var finalPayment =
         int.parse(paymentAmount.substring(0, paymentAmount.length - 1));
     StripeServices.instance.makePayment(finalPayment, "usd", id, serviceName,
-        ref, serviceImagePath, carWashDate);
+        ref, serviceImagePath, carWashDate, context);
   }
 
   @override
@@ -118,7 +118,7 @@ class StripePaymentMethodBtn extends ConsumerWidget {
                       ),
                     );
                   } else {
-                    onStripePaymentMethodClick(ref);
+                    onStripePaymentMethodClick(ref, context);
                   }
                 },
                 child: Image.asset(stripeImage))),

@@ -2,10 +2,8 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
-import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -122,13 +120,16 @@ class NotificationServices {
       ref.read(bookingStateProvider.notifier).dateTimeForFilter =
           DateTime(carWashDate.year, carWashDate.month, carWashDate.day);
       try {
+        log("Navigating to the Admin Notification page ");
         Navigator.of(context).pushNamed(AdminSideNotificationPage.pageName);
+        log("Getting Notifications");
         await ref
             .read(messageStateProvider.notifier)
             .getAllNotificationsByUserId();
-        await ref
-            .read(bookingStateProvider.notifier)
-            .getBookings(FirebaseAuth.instance.currentUser!.uid);
+        log("Getting Bookings");
+        // await ref
+        //     .read(bookingStateProvider.notifier)
+        //     .getBookings(FirebaseAuth.instance.currentUser!.uid);
       } catch (e) {
         log("Error in redirect message Method : ${e.toString()}");
       }

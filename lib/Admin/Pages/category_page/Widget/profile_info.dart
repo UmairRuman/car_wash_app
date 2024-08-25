@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/search_page.dart';
-import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
+import 'package:car_wash_app/Admin/Pages/profile_page/controller/profile_pic_controller.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/dialog_for_showing_profile_image.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
@@ -10,12 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 
-class AdminProfilePic extends StatelessWidget {
+class AdminProfilePic extends ConsumerWidget {
   final String userProfilePic;
   const AdminProfilePic({super.key, required this.userProfilePic});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(profilePicProvider);
     return InkWell(
       onTap: () {
         dialogForShowingProfileImage(context, userProfilePic);
@@ -27,9 +30,15 @@ class AdminProfilePic extends StatelessWidget {
                 image: userProfilePic == ""
                     ? AssetImage(profilePic)
                     : CachedNetworkImageProvider(userProfilePic),
-                fit: BoxFit.cover)),
-        child: userProfilePic == ""
-            ? null
+                fit: BoxFit.fill)),
+        child: state != ""
+            ? Container(
+                decoration: BoxDecoration(
+                    border: Border.all(width: 3, color: Colors.white),
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: FileImage(File(state)), fit: BoxFit.fill)),
+              )
             : CachedNetworkImage(
                 imageUrl: userProfilePic,
                 placeholder: (context, url) =>
@@ -40,7 +49,7 @@ class AdminProfilePic extends StatelessWidget {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: imageProvider,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),
@@ -89,7 +98,6 @@ class AdminNotificationIcon extends ConsumerWidget {
         child: TouchRippleEffect(
           rippleColor: Colors.yellow,
           onTap: () async {
-            await ref.read(messageStateProvider.notifier).intialMessages();
             Navigator.of(context).pushNamed(
               AdminSideNotificationPage.pageName,
             );

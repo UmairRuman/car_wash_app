@@ -26,33 +26,23 @@ class PaymentPage extends StatelessWidget {
               )),
         ),
         body: Container(
-          decoration: const BoxDecoration(color: Colors.blue
-              // gradient: LinearGradient(
-              //   begin: Alignment.topRight,
-              //   end: Alignment.bottomLeft,
-              //   stops: [0.3, 0.6, 0.9],
-              //   colors: [
-              //     Color.fromARGB(255, 187, 33, 243),
-              //     Color.fromARGB(255, 233, 30, 220),
-              //     Color.fromARGB(255, 108, 39, 176),
-              //   ],
-              // ),
-              ),
+          decoration: const BoxDecoration(color: Colors.blue),
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(
+                left: 20.0, right: 20, bottom: 20, top: 5),
             child: Container(
               decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(70)),
+                  borderRadius: BorderRadius.all(Radius.circular(40)),
                   boxShadow: [
                     BoxShadow(
-                        offset: Offset(-10, -10),
-                        blurRadius: 10,
-                        color: Colors.blue),
+                        offset: Offset(-5, -5),
+                        blurRadius: 5,
+                        color: Color.fromARGB(255, 138, 193, 238)),
                     BoxShadow(
-                        offset: Offset(10, 10),
-                        blurRadius: 10,
-                        color: Colors.blue)
+                        offset: Offset(5, 5),
+                        blurRadius: 5,
+                        color: Color.fromARGB(255, 138, 193, 238))
                   ]),
               child: Column(
                 children: [
@@ -62,7 +52,7 @@ class PaymentPage extends StatelessWidget {
                   Expanded(
                       flex: 35,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: SelectedCarContainer(
                           carName: data.carName,
                           carPic: data.imagePath,
