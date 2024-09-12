@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
 import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
+import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
@@ -88,7 +89,10 @@ Widget payPallmethod(
             gravity: ToastGravity.CENTER,
             textColor: Colors.white,
             backgroundColor: Colors.green);
-
+    
+        await ref
+          .read(messageStateProvider.notifier)
+          .getAllNotificationsByUserId();
         var listOfAdminToken =
             await adminDeviceTokenCollection.getAllAdminDeviceTokens();
 

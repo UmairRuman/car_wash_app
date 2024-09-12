@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
-void dialogForShowingProfileImage(BuildContext context, String userProfilePic) {
+void dialogForShowingProfileImage(
+    BuildContext context, String userProfilePic, bool isFileImage) {
   showDialog(
     context: context,
     builder: (context) {
@@ -20,14 +23,16 @@ void dialogForShowingProfileImage(BuildContext context, String userProfilePic) {
             height: screenHeight * 0.4, // Adjust as needed
             child: userProfilePic.isEmpty
                 ? Image.asset(emptyImage, fit: BoxFit.cover)
-                : CachedNetworkImage(
-                    imageUrl: userProfilePic,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
+                : isFileImage
+                    ? Image.file(File(userProfilePic))
+                    : CachedNetworkImage(
+                        imageUrl: userProfilePic,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            const Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
           ),
         ),
       );

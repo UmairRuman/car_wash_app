@@ -19,9 +19,12 @@ class ProfileStateController extends Notifier<String> {
 
   Future<void> getUserAllDData() async {
     log("Get User all data Function");
-    final userId = FirebaseAuth.instance.currentUser!.uid;
+
     try {
-      userData = await userCollection.getUser(userId);
+      if (FirebaseAuth.instance.currentUser != null) {
+        final userId = FirebaseAuth.instance.currentUser!.uid;
+        userData = await userCollection.getUser(userId);
+      }
     } catch (e) {
       log("Getting error in fetching data For user");
     }

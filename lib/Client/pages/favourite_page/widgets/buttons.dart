@@ -47,9 +47,6 @@ class FavouriteCategoryBookButton extends ConsumerWidget {
                     ref
                         .read(favouriteServiceProvider.notifier)
                         .deleteFavouriteService(serviceId.toString());
-                    ref
-                        .read(allServiceDataStateProvider.notifier)
-                        .updateService(serviceId, serviceName, isFavourite);
                   },
                   child: const Icon(
                     Icons.favorite,

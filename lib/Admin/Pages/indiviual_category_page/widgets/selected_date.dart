@@ -6,12 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AdminSideTextSelectDate extends StatelessWidget {
   final String serviceId;
   final String serviceName;
-  final bool isFavourite;
+
   const AdminSideTextSelectDate(
-      {super.key,
-      required this.serviceId,
-      required this.isFavourite,
-      required this.serviceName});
+      {super.key, required this.serviceId, required this.serviceName});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +38,7 @@ class AdminSideTextSelectDate extends StatelessWidget {
             flex: 15,
             child: InkWell(
               onTap: () {
-                dialogForIncreametingDates(
-                    context, serviceId, serviceName, isFavourite);
+                dialogForIncreametingDates(context, serviceId, serviceName);
               },
               child: Padding(
                 padding: const EdgeInsets.all(6.0),

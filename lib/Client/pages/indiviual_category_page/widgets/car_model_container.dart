@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -75,8 +77,14 @@ class CarModelContainer extends ConsumerWidget {
                                       flex: 52,
                                       child: (listOfCars[index].isAsset
                                           ? Image.asset(listOfCars[index].url)
-                                          : Image.network(
-                                              listOfCars[index].url))),
+                                          : CachedNetworkImage(
+                                              imageUrl: listOfCars[index].url,
+                                              placeholder: (context, url) =>
+                                                  const CupertinoActivityIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
+                                            ))),
                                   Expanded(
                                       flex: 25,
                                       child: Text(

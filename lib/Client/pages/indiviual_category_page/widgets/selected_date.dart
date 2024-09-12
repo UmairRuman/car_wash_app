@@ -34,17 +34,17 @@ class TextSelectDate extends StatelessWidget {
   }
 }
 
-class SelectedDate extends ConsumerWidget {
-  const SelectedDate({super.key});
+// class SelectedDate extends ConsumerWidget {
+//   const SelectedDate({super.key});
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var currentDate = ref.watch(dateProvider);
-    return FittedBox(
-        child: Text(
-      "${currentDate.year}-${currentDate.month}-${currentDate.day}",
-      style: const TextStyle(
-          fontWeight: FontWeight.bold, color: Color.fromARGB(255, 24, 97, 156)),
-    ));
-  }
-}
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     var currentDate = ref.watch(dateProvider);
+//     return FittedBox(
+//         child: Text(
+//       "${currentDate.year}-${currentDate.month}-${currentDate.day}",
+//       style: const TextStyle(
+//           fontWeight: FontWeight.bold, color: Color.fromARGB(255, 24, 97, 156)),
+//     ));
+//   }
+// }

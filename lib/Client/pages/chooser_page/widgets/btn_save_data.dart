@@ -17,17 +17,16 @@ class BtnSaveUserData extends ConsumerWidget {
     String userLocation = ref
         .read(userAdditionStateProvider.notifier)
         .listOfUserInfo[MapForUserInfo.userLocation];
-    String userPhoneNumber = FirebaseAuth.instance.currentUser!.phoneNumber!;
+
+    String userPhoneNumber =
+        FirebaseAuth.instance.currentUser!.phoneNumber ?? "";
     String userProfilePic = ref
         .read(userAdditionStateProvider.notifier)
         .listOfUserInfo[MapForUserInfo.profilePicUrl];
 
     log("User profile Pic in On Save Btn ${userProfilePic}");
 
-    log("User Phone No ${FirebaseAuth.instance.currentUser!.phoneNumber}");
-    if (userLocation != "" &&
-        FirebaseAuth.instance.currentUser!.phoneNumber != "" &&
-        userProfilePic != "") {
+    if (userLocation != "" && userPhoneNumber != "" && userProfilePic != "") {
       ref.read(userAdditionStateProvider.notifier).addUser();
       ref.read(userAdditionStateProvider.notifier).isUserDataAdded = true;
       showDialog(

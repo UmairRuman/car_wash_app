@@ -1,23 +1,24 @@
-import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/Client/pages/indiviual_category_page/controller/favourite_icon_state_controller.dart';
 import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TopRowIndiviualCategoryPage extends ConsumerWidget {
   final String serviceName;
   final String serviceId;
-  bool isFavourite;
+
   final String serviceImageUrl;
 
-  TopRowIndiviualCategoryPage(
+  const TopRowIndiviualCategoryPage(
       {super.key,
       required this.serviceImageUrl,
       required this.serviceName,
-      required this.isFavourite,
       required this.serviceId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(favouriteIconStateProvider);
     return Row(
       children: [
         const Spacer(
@@ -53,17 +54,16 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
             child: StatefulBuilder(
               builder: (context, setState) => AnimatedCrossFade(
                 firstChild: InkWell(
-                  onTap: () {
-                    setState(() {
-                      isFavourite = true;
-                      ref
-                          .read(favouriteServiceProvider.notifier)
-                          .addToFavourite(
-                              serviceName, serviceImageUrl, serviceId);
-                      ref
-                          .read(allServiceDataStateProvider.notifier)
-                          .updateService(serviceId, serviceName, isFavourite);
-                    });
+                  onTap: () async {
+                    largeTextInformerDialog(context, "Adding to Favourite");
+                    await ref
+                        .read(favouriteServiceProvider.notifier)
+                        .addToFavourite(
+                            serviceName, serviceImageUrl, serviceId);
+                    await ref
+                        .read(favouriteIconStateProvider.notifier)
+                        .checkForFavouriteOrNot(serviceId);
+                    Navigator.pop(context);
                   },
                   child: const Icon(
                     size: 30,
@@ -72,16 +72,15 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                   ),
                 ),
                 secondChild: InkWell(
-                  onTap: () {
-                    setState(() {
-                      isFavourite = false;
-                      ref
-                          .read(favouriteServiceProvider.notifier)
-                          .deleteFavouriteService(serviceId.toString());
-                      ref
-                          .read(allServiceDataStateProvider.notifier)
-                          .updateService(serviceId, serviceName, isFavourite);
-                    });
+                  onTap: () async {
+                    largeTextInformerDialog(context, "UnFavouriting service");
+                    await ref
+                        .read(favouriteServiceProvider.notifier)
+                        .deleteFavouriteService(serviceId.toString());
+                    await ref
+                        .read(favouriteIconStateProvider.notifier)
+                        .checkForFavouriteOrNot(serviceId);
+                    Navigator.pop(context);
                   },
                   child: const Icon(
                     size: 30,
@@ -89,7 +88,7 @@ class TopRowIndiviualCategoryPage extends ConsumerWidget {
                     color: Colors.red,
                   ),
                 ),
-                crossFadeState: isFavourite
+                crossFadeState: state
                     ? CrossFadeState.showSecond
                     : CrossFadeState.showFirst,
                 duration: const Duration(milliseconds: 300),

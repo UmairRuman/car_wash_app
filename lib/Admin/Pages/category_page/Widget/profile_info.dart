@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,7 +22,13 @@ class AdminProfilePic extends ConsumerWidget {
     var state = ref.watch(profilePicProvider);
     return InkWell(
       onTap: () {
-        dialogForShowingProfileImage(context, userProfilePic);
+        log("State = $state");
+        if (state == "") {
+          log("Profile pic url $userProfilePic");
+          dialogForShowingProfileImage(context, userProfilePic, false);
+        } else {
+          dialogForShowingProfileImage(context, state, true);
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -34,7 +41,6 @@ class AdminProfilePic extends ConsumerWidget {
         child: state != ""
             ? Container(
                 decoration: BoxDecoration(
-                    border: Border.all(width: 3, color: Colors.white),
                     shape: BoxShape.circle,
                     image: DecorationImage(
                         image: FileImage(File(state)), fit: BoxFit.fill)),

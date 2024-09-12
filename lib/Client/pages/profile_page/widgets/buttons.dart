@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:car_wash_app/Client/pages/edit_profile_page/controller/edit_profile_state_controller.dart';
 import 'package:car_wash_app/Client/pages/edit_profile_page/view/edit_profile_page.dart';
-import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EditProfileButton extends ConsumerWidget {
@@ -63,87 +59,11 @@ class EditProfileButton extends ConsumerWidget {
   }
 }
 
-class LogOutProfileButton extends StatelessWidget {
+class LogOutProfileButton extends ConsumerWidget {
   const LogOutProfileButton({super.key});
 
-  void dialogForLogOut(BuildContext context) {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return Center(
-          child: Container(
-            height: 200,
-            width: 300,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(30)),
-            child: Column(
-              children: [
-                const Expanded(
-                    flex: 50,
-                    child: Text(
-                      "Are You really want to logout?",
-                      textAlign: TextAlign.center,
-                    )),
-                const Spacer(
-                  flex: 10,
-                ),
-                Expanded(
-                    flex: 30,
-                    child: Row(
-                      children: [
-                        const Spacer(
-                          flex: 15,
-                        ),
-                        Expanded(
-                            flex: 30,
-                            child: MaterialButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              color: Colors.blue,
-                              child: const Text("No",
-                                  style: TextStyle(color: Colors.white)),
-                            )),
-                        const Spacer(
-                          flex: 10,
-                        ),
-                        Expanded(
-                            flex: 30,
-                            child: MaterialButton(
-                              onPressed: () {
-                                FirebaseAuth.instance.signOut();
-                                SchedulerBinding.instance.addPostFrameCallback(
-                                  (timeStamp) {
-                                    Navigator.of(context).pushReplacementNamed(
-                                        FirstPage.pageName);
-                                  },
-                                );
-                              },
-                              color: Colors.blue,
-                              child: const Text(
-                                "Yes",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )),
-                        const Spacer(
-                          flex: 15,
-                        ),
-                      ],
-                    )),
-                const Spacer(
-                  flex: 10,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         const Spacer(
@@ -152,8 +72,20 @@ class LogOutProfileButton extends StatelessWidget {
         Expanded(
             flex: 60,
             child: MaterialButton(
-              onPressed: () {
-                dialogForLogOut(context);
+              onPressed: () async {
+                final connectivityResult =
+                    await Connectivity().checkConnectivity();
+                if (connectivityResult[0] == ConnectivityResult.none) {
+                  // No internet connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No internet connection'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  dialogForLogOut(context, ref);
+                }
               },
               color: Colors.blue,
               child: const Text(

@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
-import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/favourites_booking.dart';
 
 class FavouriteCollection {
@@ -41,7 +42,7 @@ class FavouriteCollection {
       UserCollection.userCollection
           .doc(userId)
           .collection(favouriteCollection)
-          .doc(favouriteServiceId.toString())
+          .doc(favouriteServiceId)
           .delete();
       return true;
     } catch (e) {
@@ -66,6 +67,43 @@ class FavouriteCollection {
     }
   }
 
+  Future<bool> updateFavouriteCategoryImage(
+    String userId,
+    String serviceId,
+    String imagePath,
+  ) async {
+    try {
+      await UserCollection.userCollection
+          .doc(userId)
+          .collection(favouriteCollection)
+          .doc(serviceId)
+          .update({"serviceImageUrl": imagePath});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> checkFavouriteCategoryImage(
+    String userId,
+    String serviceId,
+  ) async {
+    try {
+      var snapshot = await UserCollection.userCollection
+          .doc(userId)
+          .collection(favouriteCollection)
+          .doc(serviceId)
+          .get();
+      if (snapshot.exists) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<List<FavouriteServices>> fetchAllServices(String userId) async {
     try {
       var querrySnapshots = await UserCollection.userCollection
@@ -79,6 +117,7 @@ class FavouriteCollection {
           )
           .toList();
     } catch (e) {
+      log("Exception in getting favourite list ${e.toString()}");
       return [];
     }
   }

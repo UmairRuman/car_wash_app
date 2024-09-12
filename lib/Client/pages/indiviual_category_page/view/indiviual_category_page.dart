@@ -25,6 +25,7 @@ class IndiviualCategoryPage extends ConsumerWidget {
     String serviceId = data.serviceID;
     String imagePath = data.imagePath;
     String serviceName = data.categoryName;
+
     // ref
     //     .read(allServiceDataStateProvider.notifier)
     //     .getServiceName(serviceName, imagePath);
@@ -39,7 +40,7 @@ class IndiviualCategoryPage extends ConsumerWidget {
           var listOfDates = state.service.availableDates;
           var phoneNumber = state.service.adminPhoneNo;
           bool isAssetImage = state.service.isAssetImage;
-          bool isFavourite = state.service.isFavourite;
+
           List<Car> listOfCars = state.service.cars;
           return Column(
             children: [
@@ -51,7 +52,6 @@ class IndiviualCategoryPage extends ConsumerWidget {
                   child: TopRowIndiviualCategoryPage(
                     serviceImageUrl: serviceImage,
                     serviceId: serviceId,
-                    isFavourite: isFavourite,
                     serviceName: name,
                   )),
               const Spacer(

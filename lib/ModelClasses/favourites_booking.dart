@@ -11,6 +11,7 @@ class FavouriteServices {
   double serviceRating;
   String serviceImageUrl;
   double servicePrice;
+  bool isAssetImage;
   FavouriteServices({
     required this.favouriteServiceId,
     required this.serviceName,
@@ -19,6 +20,7 @@ class FavouriteServices {
     required this.serviceRating,
     required this.serviceImageUrl,
     required this.servicePrice,
+    required this.isAssetImage,
   });
 
   FavouriteServices copyWith({
@@ -29,6 +31,7 @@ class FavouriteServices {
     double? serviceRating,
     String? serviceImageUrl,
     double? servicePrice,
+    bool? isAssetImage,
   }) {
     return FavouriteServices(
       favouriteServiceId: favouriteServiceId ?? this.favouriteServiceId,
@@ -38,6 +41,7 @@ class FavouriteServices {
       serviceRating: serviceRating ?? this.serviceRating,
       serviceImageUrl: serviceImageUrl ?? this.serviceImageUrl,
       servicePrice: servicePrice ?? this.servicePrice,
+      isAssetImage: isAssetImage ?? this.isAssetImage,
     );
   }
 
@@ -50,6 +54,7 @@ class FavouriteServices {
       'serviceRating': serviceRating,
       'serviceImageUrl': serviceImageUrl,
       'servicePrice': servicePrice,
+      'isAssetImage': isAssetImage,
     };
   }
 
@@ -62,6 +67,7 @@ class FavouriteServices {
       serviceRating: map['serviceRating'] as double,
       serviceImageUrl: map['serviceImageUrl'] as String,
       servicePrice: map['servicePrice'] as double,
+      isAssetImage: map['isAssetImage'] as bool,
     );
   }
 
@@ -72,7 +78,7 @@ class FavouriteServices {
 
   @override
   String toString() {
-    return 'FavouriteServices(favouriteServiceId: $favouriteServiceId, serviceName: $serviceName, createdAt: $createdAt, userId: $userId, serviceRating: $serviceRating, serviceImageUrl: $serviceImageUrl, servicePrice: $servicePrice)';
+    return 'FavouriteServices(favouriteServiceId: $favouriteServiceId, serviceName: $serviceName, createdAt: $createdAt, userId: $userId, serviceRating: $serviceRating, serviceImageUrl: $serviceImageUrl, servicePrice: $servicePrice, isAssetImage: $isAssetImage)';
   }
 
   @override
@@ -85,7 +91,8 @@ class FavouriteServices {
         other.userId == userId &&
         other.serviceRating == serviceRating &&
         other.serviceImageUrl == serviceImageUrl &&
-        other.servicePrice == servicePrice;
+        other.servicePrice == servicePrice &&
+        other.isAssetImage == isAssetImage;
   }
 
   @override
@@ -96,6 +103,7 @@ class FavouriteServices {
         userId.hashCode ^
         serviceRating.hashCode ^
         serviceImageUrl.hashCode ^
-        servicePrice.hashCode;
+        servicePrice.hashCode ^
+        isAssetImage.hashCode;
   }
 }

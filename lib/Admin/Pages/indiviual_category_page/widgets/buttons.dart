@@ -90,7 +90,7 @@ class AdminSideLowerContainer extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 201, 217, 230),
+          color: Colors.white,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(40), topRight: Radius.circular(40))),
       child: Row(children: [

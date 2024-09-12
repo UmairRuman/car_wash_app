@@ -12,30 +12,54 @@ class AdminInfoCollection {
 
   Future<bool> insertAdminInfo(AdminInfo adminInfo) async {
     try {
-      await adminInfoCollection
-          .doc(adminInfo.adminNo.toString())
-          .set(adminInfo.toMap());
+      await adminInfoCollection.doc(adminInfo.adminId).set(adminInfo.toMap());
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  Future<AdminInfo> getAdminsInfoAtSpecificId(String id) async {
+  Future<bool> updateAdminDeviceToken(
+      String adminId, String adminDeviceToken) async {
     try {
-      var querrySnapShot = await adminInfoCollection.doc(id).get();
-      return AdminInfo.fromMap(querrySnapShot.data()!);
+      await adminInfoCollection
+          .doc(adminId)
+          .update({"adminDeviceToken": adminDeviceToken});
+      return true;
     } catch (e) {
-      return AdminInfo(
+      return false;
+    }
+  }
+
+  Future<AdminInfo> getAdminInfoByNumber(String adminNo) async {
+    try {
+      var querySnapshot =
+          await adminInfoCollection.where("adminNo", isEqualTo: adminNo).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return AdminInfo.fromMap(querySnapshot.docs.first.data());
+      } else {
+        // Return an empty AdminInfo object if no matching admin is found
+        return AdminInfo(
           adminDeviceToken: "",
           adminName: "",
           adminId: "",
           adminNo: "",
-          adminPhoneNo: "");
+          adminPhoneNo: "",
+        );
+      }
+    } catch (e) {
+      // Handle any errors that occur during the query
+      return AdminInfo(
+        adminDeviceToken: "",
+        adminName: "",
+        adminId: "",
+        adminNo: "",
+        adminPhoneNo: "",
+      );
     }
   }
 
-  Future<List<AdminInfo>> getAdminId() async {
+  Future<List<AdminInfo>> getAllAdminInfo() async {
     try {
       var querrySnapShot = await adminInfoCollection.get();
       return querrySnapShot.docs

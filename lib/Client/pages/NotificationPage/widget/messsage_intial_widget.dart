@@ -37,9 +37,12 @@ class MesssageIntialWidget extends StatelessWidget {
                     flex: 3,
                   ),
                   Expanded(
-                      flex: 15,
+                      flex: 23,
                       child: Row(
                         children: [
+                          const Spacer(
+                            flex: 5,
+                          ),
                           Expanded(
                             flex: 35,
                             child: FittedBox(
@@ -62,7 +65,7 @@ class MesssageIntialWidget extends StatelessWidget {
                             ),
                           ),
                           const Spacer(
-                            flex: 65,
+                            flex: 60,
                           ),
                         ],
                       )),
@@ -70,7 +73,7 @@ class MesssageIntialWidget extends StatelessWidget {
                     flex: 3,
                   ),
                   Expanded(
-                      flex: 38,
+                      flex: 30,
                       child: RichText(
                         text: TextSpan(
                             style: const TextStyle(
@@ -104,25 +107,22 @@ class MesssageIntialWidget extends StatelessWidget {
                                   style: const TextStyle(color: Colors.blue)),
                             ]),
                       )),
-                  const Spacer(
-                    flex: 3,
-                  ),
                   Expanded(
-                      flex: 10,
+                      flex: 16,
                       child: Row(
                         children: [
                           const Spacer(
-                            flex: 60,
+                            flex: 80,
                           ),
                           Expanded(
-                              flex: 40,
+                              flex: 20,
                               child: FittedBox(
-                                  child: Text(notificationDeleiveredData))),
+                                  child: Text(
+                                notificationDeleiveredData,
+                                style: const TextStyle(fontSize: 12),
+                              ))),
                         ],
                       )),
-                  const Spacer(
-                    flex: 3,
-                  )
                 ],
               ),
             ),

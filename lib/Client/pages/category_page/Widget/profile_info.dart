@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Widget/search_page.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/controller/profile_pic_controller.dart';
-import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/dialog_for_showing_profile_image.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
@@ -23,7 +22,13 @@ class ProfilePic extends ConsumerWidget {
 
     return InkWell(
       onTap: () {
-        dialogForShowingProfileImage(context, userProfilePic);
+        log("State = $state");
+        if (state == "") {
+          dialogForShowingProfileImage(context, userProfilePic, false);
+        } else {
+          log("State = $state");
+          dialogForShowingProfileImage(context, state, true);
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -36,7 +41,6 @@ class ProfilePic extends ConsumerWidget {
         child: state != ""
             ? Container(
                 decoration: BoxDecoration(
-                    border: Border.all(width: 3, color: Colors.white),
                     shape: BoxShape.circle,
                     image: DecorationImage(
                         image: FileImage(File(state)), fit: BoxFit.fill)),

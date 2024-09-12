@@ -82,10 +82,10 @@ class PreviousWorkImages extends ConsumerWidget {
                                   flex: 25,
                                   child: Row(children: [
                                     const Spacer(
-                                      flex: 5,
+                                      flex: 3,
                                     ),
                                     Expanded(
-                                        flex: 45,
+                                        flex: 44,
                                         child: AutoSizeText(
                                           state.list[index].serviceName,
                                           style: const TextStyle(fontSize: 16),
@@ -94,10 +94,10 @@ class PreviousWorkImages extends ConsumerWidget {
                                           overflow: TextOverflow.ellipsis,
                                         )),
                                     const Spacer(
-                                      flex: 10,
+                                      flex: 8,
                                     ),
                                     Expanded(
-                                        flex: 40,
+                                        flex: 42,
                                         child: FittedBox(
                                           child: Text(
                                             formattedDate,
@@ -107,7 +107,7 @@ class PreviousWorkImages extends ConsumerWidget {
                                           ),
                                         )),
                                     const Spacer(
-                                      flex: 5,
+                                      flex: 3,
                                     )
                                   ]),
                                 ),

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Admin/Pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
@@ -41,7 +42,7 @@ class AdminSideEditProfileStateController extends Notifier<String> {
     // dialogForUpdatingProfilePicProvider(context);
     await userCollection.updateUserProfilePic(userId, newImagePath);
     // ref.read(userAdditionStateProvider.notifier).getUser(userId);
-    // Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   onClickEditProfile(

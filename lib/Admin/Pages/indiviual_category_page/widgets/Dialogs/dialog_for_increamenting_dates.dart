@@ -9,8 +9,8 @@ class IncrementingDaysConstants {
   static const maxDays = 31;
 }
 
-void dialogForIncreametingDates(BuildContext context, String serviceId,
-    String serviceName, bool isFavourite) {
+void dialogForIncreametingDates(
+    BuildContext context, String serviceId, String serviceName) {
   showDialog(
       barrierDismissible: false,
       useSafeArea: true,
@@ -75,7 +75,7 @@ void dialogForIncreametingDates(BuildContext context, String serviceId,
                                                   increamentingDaysStateProvider
                                                       .notifier)
                                               .intialShowingDates = value;
-                                          intialShowingDates = value;
+                                          // intialShowingDates = value;
                                         }),
                                       ),
                                     ),
@@ -123,9 +123,7 @@ void dialogForIncreametingDates(BuildContext context, String serviceId,
                                         .read(increamentingDaysStateProvider
                                             .notifier)
                                         .onUpdateBtnClickToIncreamentDays(
-                                            serviceId,
-                                            serviceName,
-                                            isFavourite);
+                                            serviceId, serviceName);
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pop();
                                   },

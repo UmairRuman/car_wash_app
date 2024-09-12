@@ -60,11 +60,11 @@ class AdminSideEditProfileButton extends ConsumerWidget {
   }
 }
 
-class AdminSideLogOutProfileButton extends StatelessWidget {
+class AdminSideLogOutProfileButton extends ConsumerWidget {
   const AdminSideLogOutProfileButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         const Spacer(
@@ -74,7 +74,7 @@ class AdminSideLogOutProfileButton extends StatelessWidget {
             flex: 60,
             child: MaterialButton(
               onPressed: () {
-                dialogForLogOut(context);
+                dialogForLogOut(context, ref);
               },
               color: Colors.blue,
               child: const Text(

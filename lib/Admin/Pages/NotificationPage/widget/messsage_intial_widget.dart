@@ -137,26 +137,21 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                               color: Colors.blue)),
                                     ]),
                               )),
-                          const Spacer(
-                            flex: 3,
-                          ),
                           Expanded(
-                              flex: 14,
+                              flex: 18,
                               child: Row(
                                 children: [
                                   const Spacer(
-                                    flex: 50,
+                                    flex: 80,
                                   ),
                                   Expanded(
-                                      flex: 50,
-                                      child: FittedBox(
-                                          child: Text(
-                                              notificationDeleiveredData))),
+                                      flex: 20,
+                                      child: Text(
+                                        notificationDeleiveredData,
+                                        style: TextStyle(fontSize: 12),
+                                      )),
                                 ],
                               )),
-                          const Spacer(
-                            flex: 3,
-                          ),
                         ],
                       ),
                     ),

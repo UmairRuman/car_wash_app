@@ -14,6 +14,7 @@ final favouriteServiceProvider =
         FavouriteServiceStateController.new);
 
 class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
   ServiceCollection serviceCollection = ServiceCollection();
   List<FavouriteServices> listOfFavouriteServices = [];
@@ -28,10 +29,11 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
 
   Future<void> getAllIntialFavouriteServices() async {
     log("In all Intial Favoutire service list ");
-    final userId = FirebaseAuth.instance.currentUser!.uid;
+
     try {
       listOfFavouriteServices =
           await favouriteCollection.fetchAllServices(userId);
+      log("List Of favourite Services ${listOfFavouriteServices.toString()}");
     } catch (e) {
       log("Failed to get intial Services");
     }
@@ -62,6 +64,7 @@ class FavouriteServiceStateController extends Notifier<FavouriteServiceStates> {
     try {
       if (servicePrice != null && serviceRating != 0.0) {
         await favouriteCollection.addServiceToFavourite(FavouriteServices(
+            isAssetImage: false,
             createdAt: DateTime.now(),
             favouriteServiceId: serviceId,
             serviceName: serviceName,

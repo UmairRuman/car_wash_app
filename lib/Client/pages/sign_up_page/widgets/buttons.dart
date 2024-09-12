@@ -1,14 +1,14 @@
 import 'package:car_wash_app/Client/pages/email_verification_page/view/verification_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/sign_up_page_controller.dart';
-import 'package:car_wash_app/Client/pages/sign_up_page/model/model_for_sending_user_info.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:car_wash_app/utils/gradients.dart';
 import 'package:car_wash_app/utils/strings.dart';
+import 'package:car_wash_app/utils/validations/email_validation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class BtnCreateAccount extends ConsumerStatefulWidget {
   const BtnCreateAccount({super.key});
@@ -37,47 +37,31 @@ class _BtnCreateAccountState extends ConsumerState<BtnCreateAccount>
     await animationController.forward();
     await Future.delayed(const Duration(milliseconds: 100));
     await animationController.reverse();
+
     if (signUpPagePasswordKey.currentState!.validate() &&
         signUpPageEmailKey.currentState!.validate() &&
         signUpPageNameKey.currentState!.validate()) {
-      // Check if the email is already registered
+      String trimmedEmail = email.trimEmail()!;
       try {
-        List<String> signInMethods =
-            await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-
-        if (signInMethods.isEmpty) {
-          // Email not registered, proceed to create the user
-          Navigator.of(context).pushNamed(EmailVerificationPage.pageName,
-              arguments: ModelForUserInfo(
-                  userEmail: email,
-                  userName: userName,
-                  userPassword: userPassword));
-          Fluttertoast.showToast(
-              msg: "Account created successfully",
-              backgroundColor: Colors.green,
-              textColor: Colors.white);
-        } else {
-          // Email already registered, show an error message
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Email is already registered')));
+        informerDialog(context, "Creating Account");
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: trimmedEmail, password: userPassword);
+        if (FirebaseAuth.instance.currentUser != null) {
+          await FirebaseAuth.instance.currentUser!.updateDisplayName(userName);
         }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'network-request-failed') {
-          Fluttertoast.showToast(
-              msg: "Check your Internet Connection",
-              backgroundColor: Colors.green,
-              textColor: Colors.white);
-        } else {
-          Fluttertoast.showToast(
-              msg: "An error occurred: ${e.message}",
-              backgroundColor: Colors.red,
-              textColor: Colors.white);
-        }
-      } catch (e) {
-        Fluttertoast.showToast(
-            msg: "An unexpected error occurred: $e",
-            backgroundColor: Colors.red,
-            textColor: Colors.white);
+        Navigator.of(context).pop();
+        Navigator.of(context)
+            .pushReplacementNamed(EmailVerificationPage.pageName);
+      } catch (signUpError) {
+        // if (signUpError is PlatformException) {
+        //   if (signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+        //     /// `foo@bar.com` has alread been registered.
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "Email is already registered! ${signUpError.toString()}")));
+        // }
+        // }
       }
     }
   }

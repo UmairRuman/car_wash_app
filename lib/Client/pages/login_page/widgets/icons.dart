@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/utils/images_path.dart'; // Assuming you have this file for the icon paths.
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -79,12 +80,14 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
         showWebViewDialog(authUrl!);
       }
     } catch (e) {
-      Navigator.of(context).pop();
-      Fluttertoast.showToast(
-          msg: "Failed to authenticate!",
-          textColor: Colors.white,
-          backgroundColor: Colors.green);
-      log('Failed to authenticate: $e');
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "Failed to authenticate!",
+            textColor: Colors.white,
+            backgroundColor: Colors.green);
+        log('Failed to authenticate: $e');
+      }
     }
   }
 
@@ -93,6 +96,7 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          insetPadding: EdgeInsets.zero,
           child: Column(
             children: [
               Expanded(
@@ -137,6 +141,7 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
     final queryParams = uri.queryParameters;
     final oauthToken = queryParams['oauth_token'];
     final oauthVerifier = queryParams['oauth_verifier'];
+    largeTextInformerDialog(context, "Signing you In");
 
     if (oauthToken != null && oauthVerifier != null) {
       try {
@@ -168,13 +173,16 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
         User? user = userCredential.user;
         if (user != null) {
           log('User authenticated successfully with Twitter and Firebase: ${user.displayName}');
+          Navigator.pop(context);
         } else {
           log('Failed to authenticate with Firebase.');
+          Navigator.pop(context);
         }
 
         setState(() {});
       } catch (e) {
         log('Failed to obtain access token: $e');
+        Navigator.pop(context);
       }
     }
   }
@@ -187,38 +195,91 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
   Future<void> signInWithGoogle() async {
     try {
       informerDialog(context, "Signing In");
-      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+
+      // Create a GoogleSignIn instance
+      final GoogleSignIn googleSignIn = GoogleSignIn(
         scopes: [
           'email',
           'https://www.googleapis.com/auth/userinfo.email',
         ],
-      ).signIn();
+      );
+
+      // Check if user is already signed in with Google
+      if (await googleSignIn.isSignedIn()) {
+        // If user is signed in, get the current Google user
+        final GoogleSignInAccount? googleUser = googleSignIn.currentUser;
+
+        if (googleUser != null) {
+          // Authenticate with Firebase using the existing Google credentials
+          await _authenticateWithFirebase(googleUser);
+
+          // Check if the user's phone number is authenticated
+          _checkPhoneNumberVerification();
+          return;
+        }
+      }
+
+      // If the user is not signed in, prompt them to sign in
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-
-        final OAuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        log('User authenticated successfully with Google: ${googleUser.email}');
-        setState(() {});
-        Navigator.pop(context);
-        Fluttertoast.showToast(
-            msg: "Login Successfully",
-            textColor: Colors.white,
-            backgroundColor: Colors.green);
+        await _authenticateWithFirebase(googleUser);
+        _checkPhoneNumberVerification();
       }
     } catch (e) {
       Navigator.pop(context);
       Fluttertoast.showToast(
-          msg: "Failed Login",
-          textColor: Colors.white,
-          backgroundColor: Colors.red);
+        msg: "Failed Login",
+        textColor: Colors.white,
+        backgroundColor: Colors.red,
+      );
       log("Error in logging in with Google: ${e.toString()}");
+    }
+  }
+
+  Future<void> _authenticateWithFirebase(GoogleSignInAccount googleUser) async {
+    try {
+      // Authenticate with Google
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create credential for Firebase
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in with Firebase
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      log('User authenticated successfully with Google: ${googleUser.email}');
+      setState(() {});
+
+      Fluttertoast.showToast(
+        msg: "Login Successfully",
+        textColor: Colors.white,
+        backgroundColor: Colors.green,
+      );
+    } catch (e) {
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+        msg: "Failed Login",
+        textColor: Colors.white,
+        backgroundColor: Colors.red,
+      );
+      log("Error in authenticating with Firebase: ${e.toString()}");
+    }
+  }
+
+  void _checkPhoneNumberVerification() {
+    // Get the current Firebase user
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      Navigator.pushNamed(
+        context,
+        AuthHandler.pageName,
+      );
     }
   }
 

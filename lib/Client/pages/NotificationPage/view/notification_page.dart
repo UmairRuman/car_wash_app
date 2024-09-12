@@ -98,14 +98,14 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                             flex: 3,
                           ),
                           Expanded(
-                              flex: 15,
+                              flex: 23,
                               child: Row(
                                 children: [
                                   const Spacer(
-                                    flex: 2,
+                                    flex: 5,
                                   ),
                                   Expanded(
-                                    flex: 33,
+                                    flex: 35,
                                     child: FittedBox(
                                       child: RichText(
                                         text: TextSpan(
@@ -135,7 +135,7 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                             flex: 3,
                           ),
                           Expanded(
-                              flex: 38,
+                              flex: 30,
                               child: RichText(
                                 text: TextSpan(
                                     style: const TextStyle(
@@ -174,26 +174,22 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                                               color: Colors.blue)),
                                     ]),
                               )),
-                          const Spacer(
-                            flex: 3,
-                          ),
                           Expanded(
-                              flex: 10,
+                              flex: 16,
                               child: Row(
                                 children: [
                                   const Spacer(
-                                    flex: 60,
+                                    flex: 80,
                                   ),
                                   Expanded(
-                                      flex: 40,
+                                      flex: 20,
                                       child: FittedBox(
                                           child: Text(
-                                              notificationDeleiveredData))),
+                                        notificationDeleiveredData,
+                                        style: const TextStyle(fontSize: 12),
+                                      ))),
                                 ],
                               )),
-                          const Spacer(
-                            flex: 3,
-                          )
                         ],
                       ),
                     ),

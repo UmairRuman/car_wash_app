@@ -13,6 +13,7 @@ void dialogForRating(
     BuildContext context, WidgetRef ref, String serviceName, String serviceId) {
   var finalRating = ref.read(ratingStateProvider.notifier).finalRating;
   var isServiceRated = ref.read(ratingStateProvider.notifier).isServiceRated;
+  EditRatingVariables.currentRating = finalRating;
   showDialog(
       useSafeArea: true,
       context: context,
@@ -35,27 +36,29 @@ void dialogForRating(
                       ),
                       Expanded(
                         flex: 40,
-                        child: RatingBar.builder(
-                          initialRating: finalRating,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemPadding:
-                              const EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) {
-                            return const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            );
-                          },
-                          onRatingUpdate: (rating) {
-                            setState(() {
+                        child: Center(
+                          child: RatingBar.builder(
+                            initialRating: finalRating,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) {
+                              return const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              );
+                            },
+                            onRatingUpdate: (rating) {
                               setState(() {
-                                EditRatingVariables.currentRating = rating;
+                                setState(() {
+                                  EditRatingVariables.currentRating = rating;
+                                });
                               });
-                            });
-                          },
+                            },
+                          ),
                         ),
                       ),
                       Expanded(

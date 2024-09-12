@@ -14,6 +14,7 @@ class FirstPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.blue,
         body: Center(
           child: Stack(children: [

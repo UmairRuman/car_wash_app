@@ -7,6 +7,7 @@ import 'package:car_wash_app/Client/pages/chooser_page/controller/phone_authenti
 import 'package:car_wash_app/Client/pages/chooser_page/controller/save_data_notifier.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/controller/verification_state_notifier.dart';
 import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
+import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
@@ -27,6 +28,7 @@ class BtnContinueChooserPage extends ConsumerStatefulWidget {
 
 class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
     with SingleTickerProviderStateMixin {
+  AdminInfoCollection adminInfoCollection = AdminInfoCollection();
   late AnimationController animationController;
   late Animation<double> animationForSize;
   Tween<double> tween = Tween(begin: 1.0, end: 0.9);
@@ -77,13 +79,17 @@ class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
     await animationController.forward();
     await Future.delayed(const Duration(milliseconds: 100));
     await animationController.reverse();
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
     if (userSavedState) {
+      var adminInfo = await adminInfoCollection.getAdminInfoByNumber("01");
+      var adminIdForMatching = adminInfo.adminId;
       log("Is User Data Added Continue ${ref.read(userAdditionStateProvider.notifier).isUserDataAdded}");
       if (ref.read(userAdditionStateProvider.notifier).isUserDataAdded) {
-        //If Service provider is true then i take user to the admin home page
+        //Now we have to check if the user is service provider and first added admin if both User ids match then we have to add default  services .
         if (ref
-            .read(userAdditionStateProvider.notifier)
-            .listOfUserInfo[MapForUserInfo.isServiceProvider]) {
+                .read(userAdditionStateProvider.notifier)
+                .listOfUserInfo[MapForUserInfo.isServiceProvider] &&
+            adminIdForMatching == currentUserId) {
           log("Lets navigate to Admin home page ");
 
           log("Admin Key is null");
@@ -97,11 +103,26 @@ class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
               .addDefaultService();
           Navigator.of(context).pop();
 
-          Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AdminSideHomePage.pageName,
+            (route) => false,
+          );
+          //Otherwise if user id admin but not first one then we dont have to add default services we will show him first admin data and he is capable of updating and adding data in first admin side
+        } else if (ref
+                .read(userAdditionStateProvider.notifier)
+                .listOfUserInfo[MapForUserInfo.isServiceProvider] &&
+            adminIdForMatching != currentUserId) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AdminSideHomePage.pageName,
+            (route) => false,
+          );
         } else {
           log("Lets navigate to client home page ");
           //If Service provider is false then i take user to the  home page
-          Navigator.of(context).pushNamed(HomePage.pageName);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            HomePage.pageName,
+            (route) => false,
+          );
         }
       }
     } else {
@@ -174,14 +195,14 @@ class BtnVerifyChooserPage extends ConsumerWidget {
       verificationFailed: (error) {
         Navigator.pop(context);
         Fluttertoast.showToast(
-            msg: "Verfication Failed",
+            msg: "Verfication Failed ${error.toString()}",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-        log("Verification Failed");
+        log("Verification Failed ${error.toString()}");
         if (error.code == 'invalid-phone-number') {
           log('The provided phone number is not valid.');
           ScaffoldMessenger.of(context).showSnackBar(
@@ -205,6 +226,9 @@ class BtnVerifyChooserPage extends ConsumerWidget {
             .setVerificationId(verificationId);
       },
       codeAutoRetrievalTimeout: (verificationId) {
+        if (ref.read(verficationStateProvider)) {
+          ref.read(verficationStateProvider.notifier).onVerficationPassed();
+        }
         log("Code Auto Retrival called ");
       },
     );

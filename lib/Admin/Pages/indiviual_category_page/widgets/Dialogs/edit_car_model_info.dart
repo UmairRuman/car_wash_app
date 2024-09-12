@@ -18,8 +18,8 @@ class CarInfoVariables {
   static String downloadedImagePath = "";
 }
 
-void dialogForEditCarInfo(BuildContext context, String serviceName,
-    String serviceId, WidgetRef ref, bool isFavourite) {
+void dialogForEditCarInfo(
+    BuildContext context, String serviceName, String serviceId, WidgetRef ref) {
   String newImagePath = "";
   showDialog(
       barrierDismissible: false,
@@ -197,12 +197,18 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
                                 child: MaterialButton(
                                   onPressed: () async {
                                     // Show loading dialog
-                                    dialogForLoadingCarImage(context);
+                                    if (ref
+                                                .read(carInfoProvider.notifier)
+                                                .carNameTEC
+                                                .text !=
+                                            "" &&
+                                        CarInfoVariables.imageFilePath !=
+                                            null) {
+                                      dialogForLoadingCarImage(context);
 
-                                    try {
-                                      // Store car image in Firebase Storage
-                                      if (CarInfoVariables.imageFilePath !=
-                                          null) {
+                                      try {
+                                        // Store car image in Firebase Storage
+
                                         await storingServiceCarImagesAtFireStore(
                                             ref,
                                             CarInfoVariables.imageFilePath!,
@@ -213,33 +219,41 @@ void dialogForEditCarInfo(BuildContext context, String serviceName,
                                             .read(carInfoProvider.notifier)
                                             .onChangeCarPic(CarInfoVariables
                                                 .downloadedImagePath);
-                                      }
-                                      ref
-                                              .read(allServiceDataStateProvider
-                                                  .notifier)
-                                              .carImageUrl =
-                                          CarInfoVariables.downloadedImagePath;
-                                      // Reset variables
-                                      CarInfoVariables.isClickedOnCamera =
-                                          false;
-                                      CarInfoVariables.imageFilePath = null;
 
-                                      // Call save button logic
-                                      ref
-                                          .read(carInfoProvider.notifier)
-                                          .onSaveButtonClick();
-                                      await ref
-                                          .read(allServiceDataStateProvider
-                                              .notifier)
-                                          .addCars(serviceId, serviceName);
-                                    } finally {
-                                      // Ensure dialog is closed even if an error occurs
-                                      if (context.mounted) {
-                                        Navigator.of(context)
-                                            .pop(); // Close loading dialog
-                                        Navigator.of(context)
-                                            .pop(); // Close the edit dialog
+                                        ref
+                                                .read(
+                                                    allServiceDataStateProvider
+                                                        .notifier)
+                                                .carImageUrl =
+                                            CarInfoVariables
+                                                .downloadedImagePath;
+                                        // Reset variables
+                                        CarInfoVariables.isClickedOnCamera =
+                                            false;
+                                        CarInfoVariables.imageFilePath = null;
+
+                                        // Call save button logic
+                                        ref
+                                            .read(carInfoProvider.notifier)
+                                            .onSaveButtonClick();
+                                        await ref
+                                            .read(allServiceDataStateProvider
+                                                .notifier)
+                                            .addCars(serviceId, serviceName);
+                                      } finally {
+                                        // Ensure dialog is closed even if an error occurs
+                                        if (context.mounted) {
+                                          Navigator.of(context)
+                                              .pop(); // Close loading dialog
+                                          Navigator.of(context)
+                                              .pop(); // Close the edit dialog
+                                        }
                                       }
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "No Field can't be null!")));
                                     }
                                   },
                                   color: Colors.blue,

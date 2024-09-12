@@ -33,7 +33,7 @@ class StripeServices {
       DateTime carWashDate,
       BuildContext context) async {
     try {
-      informerDialog(context, "Opening Payment Sheet");
+      largeTextInformerDialog(context, "Opening Payment Sheet");
       String? paymentIntentClientSecret =
           await createPaymentIntent(amount, currency);
       if (paymentIntentClientSecret == null) return;

@@ -1,15 +1,13 @@
 import 'dart:developer';
 import 'dart:isolate';
 
-import 'package:car_wash_app/Client/pages/NotificationPage/Database/notification_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 
-// Singleton class to manage the isolate state
 class BookingCleanupIsolateManager {
   static BookingCleanupIsolateManager? _instance;
   Isolate? _cleanupIsolate;
+  ReceivePort? _receivePort;
 
   BookingCleanupIsolateManager._internal();
 
@@ -26,12 +24,20 @@ class BookingCleanupIsolateManager {
       return;
     }
 
+    _receivePort = ReceivePort();
+    _receivePort!.listen((message) {
+      // Perform Firebase cleanup in the main isolate
+      if (message == 'cleanup') {
+        deleteOldBookings(userId);
+      }
+    });
+
     final rootIsolateToken = RootIsolateToken.instance;
     if (rootIsolateToken != null) {
       log("Starting booking cleanup isolate...");
       _cleanupIsolate = await Isolate.spawn(
         bookingsBackgroundCleanup,
-        [userId, rootIsolateToken],
+        [_receivePort!.sendPort, rootIsolateToken],
       );
     } else {
       log("Failed to get RootIsolateToken.");
@@ -41,7 +47,15 @@ class BookingCleanupIsolateManager {
   void stopCleanupIsolate() {
     _cleanupIsolate?.kill(priority: Isolate.immediate);
     _cleanupIsolate = null;
+    _receivePort?.close();
     log("Booking cleanup isolate stopped.");
+  }
+
+  Future<void> deleteOldBookings(String userId) async {
+    log("Performing Firebase cleanup on the main isolate...");
+    BookingCollection bookingCollection = BookingCollection();
+    await bookingCollection.deleteOldBookings(userId);
+    log("Booking cleanup completed.");
   }
 }
 
@@ -52,17 +66,14 @@ void startBookingsBackgroundCleanup(String userId) {
 
 void bookingsBackgroundCleanup(List<Object> params) async {
   log("In background cleanup function");
-  final userId = params[0] as String;
+  final sendPort = params[0] as SendPort;
   final rootIsolateToken = params[1] as RootIsolateToken;
 
   // Initialize the background isolate with the root token
   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
 
-  // Initialize Firebase in the isolate
-  await Firebase.initializeApp();
+  // Perform non-Firebase heavy computation if needed
 
-  BookingCollection bookingCollection = BookingCollection();
-  await bookingCollection.deleteOldBookings(userId);
-
-  log("Booking cleanup completed.");
+  // Notify the main isolate to perform the cleanup
+  sendPort.send('cleanup');
 }

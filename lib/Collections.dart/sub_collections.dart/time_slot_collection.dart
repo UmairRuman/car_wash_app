@@ -10,6 +10,7 @@ class TimeSlotCollection {
     return instance;
   }
   static String timeSlotCollection = "Time Slots";
+
   Future<bool> addTimeSlots(
     TimeSlots timeslot,
     String userId,
@@ -23,6 +24,7 @@ class TimeSlotCollection {
       log("Time Slot added ${timeslot.currentDate.toIso8601String()}");
       return true;
     } catch (e) {
+      log("Error adding time slot: $e");
       return false;
     }
   }
@@ -36,6 +38,7 @@ class TimeSlotCollection {
           .update(timeslot.toMap());
       return true;
     } catch (e) {
+      log("Error updating time slot: $e");
       return false;
     }
   }
@@ -43,14 +46,14 @@ class TimeSlotCollection {
   Future<bool> deleteSpecificTimeSlot(
       String adminId, int index, DateTime date) async {
     try {
-      var querrySnapshots = await UserCollection.userCollection
+      var querySnapshots = await UserCollection.userCollection
           .doc(adminId)
-          .collection(TimeSlotCollection.timeSlotCollection)
+          .collection(timeSlotCollection)
           .doc(date.toIso8601String())
           .get();
-      var listOfTimeSlots = TimeSlots.fromMap(querrySnapshots.data()!);
+      var listOfTimeSlots = TimeSlots.fromMap(querySnapshots.data()!);
 
-      if (index < 0 && index >= listOfTimeSlots.timeslots.length) {
+      if (index < 0 || index >= listOfTimeSlots.timeslots.length) {
         return false;
       }
       listOfTimeSlots.timeslots.removeAt(index);
@@ -63,19 +66,28 @@ class TimeSlotCollection {
 
       return true;
     } catch (e) {
+      log("Error deleting specific time slot: $e");
       return false;
     }
   }
 
-  Future<bool> deleteAllTimeSlots(TimeSlots timeslot, String userId) async {
+  Future<bool> deleteAllTimeSlots(String userId) async {
     try {
-      await UserCollection.userCollection
+      // Fetch all the documents in the timeSlotCollection
+      var snapshots = await UserCollection.userCollection
           .doc(userId)
           .collection(timeSlotCollection)
-          .doc(timeslot.currentDate.toIso8601String())
-          .delete();
+          .get();
+
+      // Loop through each document and delete it
+      for (var doc in snapshots.docs) {
+        await doc.reference.delete();
+      }
+
+      log("All time slots deleted for user $userId");
       return true;
     } catch (e) {
+      log("Error deleting all time slots: $e");
       return false;
     }
   }
@@ -86,15 +98,15 @@ class TimeSlotCollection {
       String docId = dateTime.toIso8601String();
       log("Fetching time slots for doc ID: $docId");
 
-      var querrySnapshots = await UserCollection.userCollection
+      var querySnapshots = await UserCollection.userCollection
           .doc(adminId)
           .collection(timeSlotCollection)
           .doc(docId)
           .get();
       log("Path ${UserCollection.userCollection.doc(adminId).collection(timeSlotCollection).doc(docId).path}");
-      if (querrySnapshots.exists && querrySnapshots.data() != null) {
-        log("Document data: ${querrySnapshots.data()}");
-        return TimeSlots.fromMap(querrySnapshots.data()!).timeslots;
+      if (querySnapshots.exists && querySnapshots.data() != null) {
+        log("Document data: ${querySnapshots.data()}");
+        return TimeSlots.fromMap(querySnapshots.data()!).timeslots;
       } else {
         log("Document does not exist or has no data");
         return [];
@@ -107,17 +119,48 @@ class TimeSlotCollection {
 
   Future<List<TimeSlots>> getAllTimeSlots(String userId) async {
     try {
-      var querrySnapshots = await UserCollection.userCollection
+      var querySnapshots = await UserCollection.userCollection
           .doc(userId)
-          .collection(TimeSlotCollection.timeSlotCollection)
+          .collection(timeSlotCollection)
           .get();
-      return querrySnapshots.docs
+      return querySnapshots.docs
           .map(
             (doc) => TimeSlots.fromMap(doc.data()),
           )
           .toList();
     } catch (e) {
+      log("Error getting all time slots: $e");
       return [];
+    }
+  }
+
+  // New Function to Get All Existing Dates
+  Future<List<DateTime>> getExistingDays(String userId) async {
+    try {
+      var querySnapshots = await UserCollection.userCollection
+          .doc(userId)
+          .collection(timeSlotCollection)
+          .get();
+      return querySnapshots.docs.map((doc) => DateTime.parse(doc.id)).toList();
+    } catch (e) {
+      log("Error getting existing days: $e");
+      return [];
+    }
+  }
+
+  // New Function to Remove a Specific Date
+  Future<bool> removeDate(String userId, DateTime date) async {
+    try {
+      await UserCollection.userCollection
+          .doc(userId)
+          .collection(timeSlotCollection)
+          .doc(date.toIso8601String())
+          .delete();
+      log("Date removed: ${date.toIso8601String()}");
+      return true;
+    } catch (e) {
+      log("Error removing date: $e");
+      return false;
     }
   }
 }

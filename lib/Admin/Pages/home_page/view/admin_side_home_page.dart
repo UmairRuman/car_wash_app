@@ -3,10 +3,11 @@ import 'dart:developer';
 import 'package:car_wash_app/Admin/Pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/View/admin_side_categoryPage.dart';
+import 'package:car_wash_app/Admin/Pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/Widget/bottom_bar_widget.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/view/profile_page.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
-import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
+
 import 'package:car_wash_app/Client/pages/profile_page/controller/profile_state_controller.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
@@ -27,6 +28,7 @@ class _AdminSideHomePageState extends ConsumerState<AdminSideHomePage> {
   @override
   void initState() {
     super.initState();
+
     ref.read(profileDataStateProvider.notifier).getUserAllDData();
     ref
         .read(previousServiceStateProvider.notifier)
@@ -35,21 +37,6 @@ class _AdminSideHomePageState extends ConsumerState<AdminSideHomePage> {
     ref.read(favouriteServiceProvider.notifier).getAllIntialFavouriteServices();
     ref.read(messageStateProvider.notifier).intialMessages();
   }
-
-  // Future<void> loadInitialData() async {
-  //   // Add your initialization and data fetching logic here
-  //   await Future.wait([
-  //     ref.read(profileDataStateProvider.notifier).getUserAllDData(),
-  //     ref
-  //         .read(previousServiceStateProvider.notifier)
-  //         .getIntialListPreviousServices(),
-  //     ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices(),
-  //     ref
-  //         .read(favouriteServiceProvider.notifier)
-  //         .getAllIntialFavouriteServices(),
-  //     ref.read(messageStateProvider.notifier).intialMessages(),
-  //   ]);
-  // }
 
   @override
   Widget build(BuildContext context) {

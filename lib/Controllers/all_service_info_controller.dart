@@ -54,6 +54,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
   Future<void> getIntialListOfServices() async {
     try {
+      log("In get Intail List OF Services");
       intialListOfService =
           await serviceCollection.getAllServicesByAdmin(adminId!);
     } catch (e) {
@@ -111,8 +112,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
   //Update Service
 
-  Future<void> updateService(
-      String serviceId, String serviceName, bool isFavourite) async {
+  Future<void> updateService(String serviceId, String serviceName) async {
     var userId = FirebaseAuth.instance.currentUser!.uid;
     Services service = await serviceCollection.getSpecificService(
         adminId!, serviceName, serviceId);
@@ -126,8 +126,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime endDate = DateTime(now.year, now.month + 1, now.day);
 
-    var serviceDescription =
-        ref.read(serviceInfoProvider.notifier).intialServiceDescription;
+    var serviceDescription = service.description;
 
     String imageUrl = ref.read(serviceInfoProvider.notifier).imagePath;
 
@@ -163,7 +162,6 @@ class AllServiceInfoController extends Notifier<DataStates> {
           serviceName: serviceName,
           description: serviceDescription,
           iconUrl: iconUrl,
-          isFavourite: isFavourite,
           cars: listOfCars,
           imageUrl: imageUrl,
           availableDates: listOfDates,
@@ -171,11 +169,14 @@ class AllServiceInfoController extends Notifier<DataStates> {
       // favouriteServicesCounterCollection.addAdminBookingCount(
       //     FavouriteServiceCounter(count: favouriteServiceId, userId: userId));
     }
+
     await fetchServiceData(serviceName, serviceId);
   }
 
   Future<void> fetchServiceData(String serviceName, String serviceID) async {
-    var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+        ? FirebaseAuth.instance.currentUser!.uid
+        : prefs!.getString(SharedPreferncesConstants.adminkey);
     log("admin Id in fetch services $adminId");
     state = DataLoadingState();
     try {

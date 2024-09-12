@@ -193,11 +193,36 @@ class UserCollection {
     return list;
   }
 
+  Future<bool> checkUserIfExitOrNot(String userId) async {
+    var snapshots = await userCollection.doc(userId).get();
+
+    if (snapshots.exists) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<Users> getUser(String userId) async {
-    var snapshot = await userCollection.doc(userId).get();
+    try {
+      var snapshot = await userCollection.doc(userId).get();
 
-    var singleUserData = Users.fromMap(snapshot.data()!);
+      var singleUserData = Users.fromMap(snapshot.data()!);
 
-    return singleUserData;
+      return singleUserData;
+    } catch (e) {
+      return Users(
+          userId: userId,
+          name: "",
+          email: "",
+          profilePicUrl: "",
+          phoneNumber: "",
+          isServiceProvider: false,
+          bonusPoints: 0,
+          serviceConsumed: 0,
+          createdAt: DateTime(DateTime.now().year),
+          userLocation: "",
+          deviceToken: "");
+    }
   }
 }

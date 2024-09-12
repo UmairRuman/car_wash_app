@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
-import 'package:car_wash_app/ModelClasses/car_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
@@ -13,8 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ServiceAdditionController extends Notifier<ServiceDataStates> {
-  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) ??
-      FirebaseAuth.instance.currentUser!.uid;
+  String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+      ? FirebaseAuth.instance.currentUser!.uid
+      : prefs!.getString(SharedPreferncesConstants.adminkey);
   String iconUrl = "";
   ServiceCollection serviceCollection = ServiceCollection();
   FavouriteServicesCounterCollection favouriteServicesCounterCollection =
@@ -44,7 +44,9 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     //Getting all service count
 
-    String serviceId = await serviceCollection.getLastServiceId(adminId!);
+    String lastServiceId = await serviceCollection.getLastServiceId(adminId!);
+    String serviceId = lastServiceId == "" ? "0" : lastServiceId;
+
     log("Service Id $serviceId");
     if (int.parse(serviceId) < 9) {
       serviceId = "0${int.parse(serviceId) + 1}";
@@ -69,7 +71,10 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
       log("Icon URl in adding service : $iconUrl");
       log("Adding service");
       //Adding plus one in the counter collection
-
+      String adminPhoneNo =
+          prefs!.getString(SharedPreferncesConstants.phoneNo) == ""
+              ? "No Phone no"
+              : prefs!.getString(SharedPreferncesConstants.phoneNo)!;
       serviceCollection.addNewService(Services(
           rating: 5,
           isAssetImage: false,
@@ -79,11 +84,10 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
           serviceName: serviecNameTEC.text,
           description: "Click to add Description",
           iconUrl: iconUrl,
-          isFavourite: false,
           cars: listOfCars,
           imageUrl: "",
           availableDates: <DateTime>[],
-          adminPhoneNo: "No Phone Number"));
+          adminPhoneNo: adminPhoneNo));
 
       await fetchAllDataFromFireStore();
     }
@@ -102,6 +106,7 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
   }
 
   fetchAllDataFromFireStore() async {
+    log("Triggered");
     state = ServiceDataLoadingState();
     try {
       var listOfServices =

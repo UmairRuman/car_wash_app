@@ -20,7 +20,7 @@ class IncrementingDaysController extends Notifier<String> {
   }
 
   Future<void> onUpdateBtnClickToIncreamentDays(
-      String serviceId, String serviceName, bool isFavourite) async {
+      String serviceId, String serviceName) async {
     isDataChangedThroughIncreamentingDaysDialog = true;
     //Firstly we have to update no of days
     //Then we have to add slots in newly added days
@@ -30,7 +30,7 @@ class IncrementingDaysController extends Notifier<String> {
 
     ref
         .read(allServiceDataStateProvider.notifier)
-        .updateService(serviceId, serviceName, isFavourite);
+        .updateService(serviceId, serviceName);
     ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
           DateTime(
             DateTime.now().year,

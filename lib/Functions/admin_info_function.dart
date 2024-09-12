@@ -51,7 +51,7 @@ Future<void> getAdminIdFromFireStore(WidgetRef ref) async {
       AdminDeviceTokenCollection();
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
   var adminCount = await adminCountCollection.getAllAdminCount();
-  var adminInfo = await adminInfoCollection.getAdminsInfoAtSpecificId("01");
+  var adminInfo = await adminInfoCollection.getAdminInfoByNumber("01");
   var list = await adminDeviceTokenCollection.getAllAdminDeviceTokens();
 
   int? adminCountInSharedPrefrences =
@@ -59,17 +59,21 @@ Future<void> getAdminIdFromFireStore(WidgetRef ref) async {
   String? adminIdInSharedPrefrences =
       prefs.getString(SharedPreferncesConstants.adminkey);
   log("(Admin ID ) : ${adminInfo.adminId} ");
-
+  //Checking userShared prefrences every time if the user is authenticated
   if (FirebaseAuth.instance.currentUser != null) {
     var isUserServiceProvider = await userCollection
         .getUserInfo(FirebaseAuth.instance.currentUser!.uid);
+    log("Is user service Provider in get Admin From Firestore method = $isUserServiceProvider");
     prefs.setBool(
         SharedPreferncesConstants.isServiceProvider, isUserServiceProvider);
     if (adminIdInSharedPrefrences == null ||
         adminCountInSharedPrefrences == null ||
-        adminCountInSharedPrefrences != adminCount.length) {
+        adminCountInSharedPrefrences != adminCount.length ||
+        prefs.getString(SharedPreferncesConstants.phoneNo) == "") {
       log("In Admin Info function");
 
+      log("Admin Count in Shared Prefrences $adminCountInSharedPrefrences");
+      log("Admin Phone no before setting phone no ${prefs.getString(SharedPreferncesConstants.phoneNo)}");
       List<String> listOfTokens = [];
       for (int index = 0; index < list.length; index++) {
         listOfTokens.add(list[index].deviceToken);

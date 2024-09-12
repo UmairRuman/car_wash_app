@@ -36,7 +36,7 @@ class _AdminSideBookingPageState extends ConsumerState<AdminSideBookingPage> {
       body: Column(
         children: [
           Expanded(flex: 10, child: AdminSideBookingPageTitle()),
-          Expanded(flex: 90, child: AdminSideMainContainer())
+          Expanded(flex: 90, child: AdminSideMainContainer()),
         ],
       ),
     ));

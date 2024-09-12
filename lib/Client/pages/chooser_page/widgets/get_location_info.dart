@@ -25,7 +25,7 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
       while (retryCount < maxRetries && !success) {
         try {
           List<Placemark> placemarks = await placemarkFromCoordinates(
-              currentUserPostion!.latitude, currentUserPostion!.longitude);
+              currentUserPosition!.latitude, currentUserPosition!.longitude);
           var placemark = placemarks[0];
           ref.read(locationProvider.notifier).getCurrentLocation(placemark);
           ref

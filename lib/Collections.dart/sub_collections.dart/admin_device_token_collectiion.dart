@@ -23,11 +23,11 @@ class AdminDeviceTokenCollection {
     }
   }
 
-  Future<bool> updateAdminDeviceToken(AdminDeviceTokens deviceTokens) async {
+  Future<bool> updateAdminDeviceToken(String token, String adminId) async {
     try {
       await AdminDeviceTokenCollection.adminDeviceTokenCollection
-          .doc(deviceTokens.adminId)
-          .update(deviceTokens.toMap());
+          .doc(adminId)
+          .update({"deviceToken": token});
       return true;
     } catch (e) {
       return false;

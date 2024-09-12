@@ -35,7 +35,7 @@ class ChooserPageMainContainer extends ConsumerWidget {
           if (location.country != null && location.locality != null)
             const Expanded(flex: 5, child: CurrentLocationText()),
           const Expanded(flex: 8, child: BtnAddLocationChooserPage()),
-          const Expanded(flex: 10, child: ChooserPagePhoneNumber()),
+          const Expanded(flex: 13, child: ChooserPagePhoneNumber()),
           const Expanded(flex: 8, child: BtnVerifyChooserPage()),
           if (verificationState && !otpVerficationStatus)
             const Expanded(
@@ -67,7 +67,7 @@ class ChooserPageMainContainer extends ConsumerWidget {
                   ),
                 ],
               )),
-          const Expanded(flex: 11, child: BtnSaveUserData()),
+          const Expanded(flex: 8, child: BtnSaveUserData()),
           const Expanded(flex: 6, child: BtnContinueChooserPage()),
           const Spacer(
             flex: 2,

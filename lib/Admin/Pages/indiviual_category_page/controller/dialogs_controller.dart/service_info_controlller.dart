@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:flutter/material.dart';
@@ -35,13 +37,17 @@ class ServiceInfoControlller extends Notifier<String> {
       String adminId,
       String imagePath,
       BuildContext context) async {
-    await serviceCollection.updateServiceDescription(
-        serviceDescription, serviceName, serviceId, adminId);
-    await serviceCollection.updateServiceImagePath(
-        imagePath, serviceName, serviceId, adminId);
-    await ref
-        .read(allServiceDataStateProvider.notifier)
-        .fetchServiceData(serviceName, serviceId);
+    try {
+      await serviceCollection.updateServiceDescription(
+          serviceDescription, serviceName, serviceId, adminId);
+      await serviceCollection.updateServiceImagePath(
+          imagePath, serviceName, serviceId, adminId);
+      await ref
+          .read(allServiceDataStateProvider.notifier)
+          .fetchServiceData(serviceName, serviceId);
+    } catch (e) {
+      log("Error in Updating service Image and Description ");
+    }
   }
 
   onChangeText(String serviceDescription) {

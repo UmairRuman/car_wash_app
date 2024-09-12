@@ -7,8 +7,10 @@ import 'package:car_wash_app/Admin/Pages/category_page/Widget/category_list_widg
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Client/pages/category_page/Model/model_For_sending_data.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/state_widgets.dart';
+import 'package:car_wash_app/Client/pages/indiviual_category_page/controller/favourite_icon_state_controller.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/view/indiviual_category_page.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
 import 'package:car_wash_app/Controllers/rating_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,7 +62,11 @@ class CategoriesList extends ConsumerWidget {
                         verticalOffset: 50,
                         child: FadeInAnimation(
                           child: InkWell(
-                            onTap: () {
+                            onTap: () async {
+                              await ref
+                                  .read(favouriteIconStateProvider.notifier)
+                                  .checkForFavouriteOrNot(
+                                      state.services[index].serviceId);
                               ref
                                   .read(ratingStateProvider.notifier)
                                   .getSpecificUserRating(
@@ -82,12 +88,12 @@ class CategoriesList extends ConsumerWidget {
                               Navigator.of(context).pushNamed(
                                   IndiviualCategoryPage.pageName,
                                   arguments: ImageAndServiceNameSender(
-                                      serviceID:
-                                          state.services[index].serviceId,
-                                      categoryName:
-                                          state.services[index].serviceName,
-                                      imagePath:
-                                          state.services[index].iconUrl));
+                                    serviceID: state.services[index].serviceId,
+                                    categoryName:
+                                        state.services[index].serviceName,
+                                    imagePath: state.services[index].iconUrl,
+                                  ));
+
                               log("Clicked on $index");
                             },
                             child: Column(

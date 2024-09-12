@@ -6,10 +6,8 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollec
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/user_booking_count_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
-import 'package:car_wash_app/ModelClasses/admin_booking_counter.dart';
 import 'package:car_wash_app/ModelClasses/bookings.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
-import 'package:car_wash_app/ModelClasses/user_booking_counter.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +24,8 @@ class BookingController extends Notifier<BookingStates> {
   MessageDatabase messageDatabase = MessageDatabase();
   bool isGetBookingCalledAfterPaymment = false;
   String? carType;
-  DateTime? carWashDate;
+  DateTime carWashDate =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   String? carPrice;
   String? timeSlot;
   bool? isCarAssetImage;
@@ -49,18 +48,7 @@ class BookingController extends Notifier<BookingStates> {
     try {
       final userId = FirebaseAuth.instance.currentUser!.uid;
       final bookerName = await userCollection.getUserName(userId);
-      var adminBookingsTotalCount =
-          await adminBookingCollectionCount.getAllUserBookingsCount(adminId!);
-      var userBookingsTotalCount =
-          await userBookingCountCollection.getAllUserBookingsCount(userId);
-      String userBookingId = "${userBookingsTotalCount.length + 1}";
-      String adminBookingId = "${adminBookingsTotalCount.length + 1}";
-      if (userBookingsTotalCount.length < 9) {
-        userBookingId = "0${userBookingsTotalCount.length + 1}";
-      }
-      if (adminBookingsTotalCount.length < 9) {
-        adminBookingId = "0${adminBookingsTotalCount.length + 1}";
-      }
+      var userBookingId = await bookingCollection.getAllBookings(userId);
 
       if (carWashDate != null &&
           carType != null &&
@@ -71,12 +59,12 @@ class BookingController extends Notifier<BookingStates> {
         log("Adding Booking at User side");
         await bookingCollection.addBooking(Bookings(
             bookerPhoneNo: phoneNo,
-            bookerName: bookerName!,
-            userBookingId: userBookingId,
+            bookerName: bookerName,
+            userBookingId: "${userBookingId.length}",
             userId: userId,
             serviceId: serviceId,
             carType: carType!,
-            carWashdate: carWashDate!,
+            carWashdate: carWashDate,
             price: carPrice!,
             bookingStatus: BookingStatus.confirmed,
             bookingDate: DateTime.now(),
@@ -89,11 +77,11 @@ class BookingController extends Notifier<BookingStates> {
         await bookingCollection.addBooking(Bookings(
             bookerPhoneNo: phoneNo,
             bookerName: bookerName,
-            userBookingId: adminBookingId,
+            userBookingId: userId,
             userId: adminId!,
             serviceId: serviceId.toString(),
             carType: carType!,
-            carWashdate: carWashDate!,
+            carWashdate: carWashDate,
             price: carPrice!,
             bookingStatus: BookingStatus.confirmed,
             bookingDate: DateTime.now(),
@@ -114,26 +102,6 @@ class BookingController extends Notifier<BookingStates> {
         await ref.read(messageStateProvider.notifier).addNotificationAtUserSide(
             bookerName, serviceName, carWashDate!, timeSlot!);
 
-        //Booking counter at admin Collection
-        if (adminBookingsTotalCount.length < 9) {
-          adminBookingCollectionCount.addAdminBookingCount(
-              FavouriteServiceCounter(
-                  userId: adminId!,
-                  count: "0${adminBookingsTotalCount.length + 1}"));
-        } else {
-          adminBookingCollectionCount.addAdminBookingCount(
-              FavouriteServiceCounter(
-                  userId: adminId!,
-                  count: "${adminBookingsTotalCount.length + 1}"));
-        }
-        // Booking counter for client side
-        if (userBookingsTotalCount.length < 9) {
-          userBookingCountCollection.addUserBookingCount(UserBookingCounter(
-              userId: userId, count: "0${userBookingsTotalCount.length + 1}"));
-        } else {
-          userBookingCountCollection.addUserBookingCount(UserBookingCounter(
-              userId: userId, count: "${userBookingsTotalCount.length + 1}"));
-        }
         isGetBookingCalledAfterPaymment = true;
         await getBookings(userId);
         await ref

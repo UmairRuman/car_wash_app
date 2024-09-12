@@ -1,9 +1,13 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
+import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
+import 'package:car_wash_app/Client/pages/profile_page/controller/profile_state_controller.dart';
+import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
+import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +23,7 @@ Future<void> firebaseMessagingBackgroundHandler(
 
   await Firebase.initializeApp();
   ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings;
+
   log("Handling a background message: ${message.notification!.title}");
 }
 
@@ -138,18 +143,44 @@ class NotificationServices {
 
   Future<void> redirectWhenAppInBgOrTermianted(
       BuildContext context, WidgetRef ref) async {
-    //If the app is terminated
+    // If the app is terminated
     RemoteMessage? intialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
+
     if (intialMessage != null) {
-      rediectMessageWhenAppOpen(intialMessage, context, ref);
+      // Await all necessary data loading before navigation
+      // await initializeAppData(ref);
+      // await Future.delayed(const Duration(seconds: 5));
+      // rediectMessageWhenAppOpen(intialMessage, context, ref);
     }
 
-    //When the app is in background state
+    // When the app is in the background state
     FirebaseMessaging.onMessageOpenedApp.listen(
-      (event) {
-        rediectMessageWhenAppOpen(event, context, ref);
+      (event) async {
+        // await initializeAppData(ref);
+        // await Future.delayed(const Duration(seconds: 5));
+        // rediectMessageWhenAppOpen(event, context, ref);
       },
     );
+  }
+
+// New function to handle app data initialization
+  Future<void> initializeAppData(WidgetRef ref) async {
+    try {
+      await ref.read(profileDataStateProvider.notifier).getUserAllDData();
+      await ref
+          .read(previousServiceStateProvider.notifier)
+          .getIntialListPreviousServices();
+      await ref
+          .read(allServiceDataStateProvider.notifier)
+          .getIntialListOfServices();
+      await ref
+          .read(favouriteServiceProvider.notifier)
+          .getAllIntialFavouriteServices();
+      await ref.read(messageStateProvider.notifier).intialMessages();
+      log("All data initialized successfully.");
+    } catch (e) {
+      log("Error initializing app data: ${e.toString()}");
+    }
   }
 }

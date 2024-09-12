@@ -15,14 +15,14 @@ class AdminSideProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(userAdditionStateProvider);
+    var state = ref.watch(userAdditionStateProvider);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     var userData = ref.read(profileDataStateProvider.notifier).userData;
     var list = [
       userData!.email,
-      userData.phoneNumber,
-      userData.userLocation,
+      (state as AddittionLoadedState).user.phoneNumber,
+      state.user.userLocation,
       userData.serviceConsumed.toInt().toString()
     ];
     return SafeArea(
@@ -46,7 +46,7 @@ class AdminSideProfilePage extends ConsumerWidget {
                       top: constraints.maxHeight / 3 -
                           (constraints.maxHeight / 2.5) / 2,
                       child: UserNameText(
-                        userName: userData.name,
+                        userName: state.user.name,
                       )),
                   Positioned(
                       height: constraints.maxHeight / 1.5,
@@ -67,29 +67,26 @@ class AdminSideProfilePage extends ConsumerWidget {
                 ]),
               )),
           const Spacer(
-            flex: 5,
+            flex: 9,
           ),
           Expanded(
               flex: 45,
               child: AdminSideProfileInfoContainersList(
                 list: list,
               )),
-          const Spacer(
-            flex: 2,
-          ),
           Expanded(
               flex: 8,
               child: AdminSideEditProfileButton(
-                location: userData.userLocation,
-                name: userData.name,
-                phoneNo: userData.phoneNumber,
+                location: state.user.userLocation,
+                name: state.user.name,
+                phoneNo: state.user.phoneNumber,
               )),
           const Spacer(
             flex: 2,
           ),
           const Expanded(flex: 8, child: AdminSideLogOutProfileButton()),
           const Spacer(
-            flex: 5,
+            flex: 3,
           ),
         ],
       ),

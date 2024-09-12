@@ -209,26 +209,22 @@ class _AdminSideNotificationPageState
                                                       color: Colors.blue)),
                                             ]),
                                       )),
-                                  const Spacer(
-                                    flex: 2,
-                                  ),
                                   Expanded(
-                                      flex: 14,
+                                      flex: 18,
                                       child: Row(
                                         children: [
                                           const Spacer(
-                                            flex: 60,
+                                            flex: 80,
                                           ),
                                           Expanded(
-                                              flex: 40,
-                                              child: FittedBox(
-                                                  child: Text(
-                                                      notificationDeleiveredData))),
+                                              flex: 20,
+                                              child: Text(
+                                                notificationDeleiveredData,
+                                                style: const TextStyle(
+                                                    fontSize: 12),
+                                              )),
                                         ],
                                       )),
-                                  const Spacer(
-                                    flex: 2,
-                                  ),
                                 ],
                               ),
                             ),

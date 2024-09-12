@@ -66,6 +66,11 @@ class ServiceCollection {
           .collection(serviceCollection)
           .doc("$serviceId)$serviceName")
           .update({"imageUrl": imagePath});
+      await UserCollection.userCollection
+          .doc(adminId)
+          .collection(serviceCollection)
+          .doc("$serviceId)$serviceName")
+          .update({"isAssetImage": false});
       return true;
     } catch (e) {
       return false;
@@ -75,11 +80,16 @@ class ServiceCollection {
   Future<bool> updateServiceDescription(String serviceDescrptiion,
       String serviceName, String serviceId, String adminId) async {
     try {
+      log("Service Id in Update Servicce description $serviceId");
+      log("Service Name in Update Servicce description $serviceName");
+      log("Service Description in update Service description $serviceDescrptiion");
+      log("Path :: ${UserCollection.userCollection.doc(adminId).collection(serviceCollection).doc("$serviceId)$serviceName").path}");
       await UserCollection.userCollection
           .doc(adminId)
           .collection(serviceCollection)
           .doc("$serviceId)$serviceName")
           .update({"description": serviceDescrptiion});
+
       return true;
     } catch (e) {
       return false;
@@ -323,17 +333,37 @@ class ServiceCollection {
   }
 
   Future<List<Services>> getAllServicesByAdmin(String adminId) async {
-    try {
-      var querySnapshot = await UserCollection.userCollection
-          .doc(adminId)
-          .collection(serviceCollection)
-          .get();
-      return querySnapshot.docs
-          .map((doc) => Services.fromMap(doc.data()))
-          .toList();
-    } catch (e) {
-      log('Error fetching services: $e');
-      return [];
-    }
+    // log("Admin ID: $adminId");
+
+    // // Log the collection reference
+    // log("UserCollection path: ${UserCollection.userCollection.path}");
+    // log("Checking UserCollection is empty: ${UserCollection.userCollection == null}");
+    // log("servicce Collection path: $serviceCollection");
+    // // Log the document reference path
+    // log("Full Path Before doc(): ${UserCollection.userCollection.doc(adminId).collection(serviceCollection).path}");
+
+    // // Ensure adminId is not empty
+    // if (adminId.isEmpty) {
+    //   log("Admin ID is empty");
+    //   return [];
+    // }
+
+    // try {
+    var querySnapshot = await UserCollection.userCollection
+        .doc(adminId)
+        .collection(serviceCollection)
+        .get();
+
+    log('Query completed successfully');
+
+    return querySnapshot.docs
+        .map((doc) => Services.fromMap(doc.data()))
+        .toList();
   }
+  //   catch (e, stacktrace) {
+  //     log('Error fetching services: $e');
+  //     log('Stacktrace: $stacktrace');
+  //     return [];
+  //   }
+  // }
 }

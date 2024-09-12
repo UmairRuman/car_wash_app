@@ -10,6 +10,7 @@ import 'package:car_wash_app/Client/pages/sign_up_page/controller/auth_state_cha
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Functions/admin_info_function.dart';
+import 'package:car_wash_app/Functions/intenet_connectivity.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/firebase_notifications/notification_service.dart';
@@ -70,6 +71,7 @@ class AuthHandler extends ConsumerStatefulWidget {
 class AuthHandlerState extends ConsumerState<AuthHandler> {
   NotificationServices notificationServices = NotificationServices();
   UserCollection userCollection = UserCollection();
+  bool isUserPresent = false;
 
   @override
   void initState() {
@@ -79,6 +81,7 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
     notificationServices.getMessageOnAppOnOpen(context, ref);
     notificationServices.redirectWhenAppInBgOrTermianted(context, ref);
     checkAdminDataInSharedPrefrences();
+    checkAndUpdateToken();
     log("Is service Provider in condtion ${prefs!.getBool(SharedPreferncesConstants.isServiceProvider)}");
 
     // if (FirebaseAuth.instance.currentUser != null) {
@@ -100,8 +103,18 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
 
   void checkAdminDataInSharedPrefrences() async {
     log(" ${await notificationServices.getTokken()} ");
+    //In this function i ma actually checking the shared prefreces of user if there admin info is missing the  i am adding
     await getAdminIdFromFireStore(ref);
   }
+
+  // void checkForUserOccurunce() async {
+  //   if (mounted) {
+  //     isUserPresent = await ref
+  //         .read(userAdditionStateProvider.notifier)
+  //         .checkUserIfExitsOrNot();
+  //     log("Is user Present in checkAdminDataInSharedPrefrences $isUserPresent");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -109,39 +122,27 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
 
     final authState = ref.watch(authStateProvider);
     final currentUser = FirebaseAuth.instance.currentUser;
+    bool? isUserServiceProvider =
+        prefs!.getBool(SharedPreferncesConstants.isServiceProvider);
 
     return authState.when(
       data: (user) {
         if (user == null) {
           return const FirstPage();
-        } else if ((user.phoneNumber != null && user.phoneNumber != "") &&
-            prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
-                null &&
-            prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
-          //If the service provider is true then we will show him Admin Home Page
-          return const AdminSideHomePage();
-        } else if ((user.phoneNumber != null && user.phoneNumber != "") &&
-            prefs!.getBool(SharedPreferncesConstants.isServiceProvider) !=
-                null &&
-            !prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
-          //If the
-          return const HomePage();
-        } else if (prefs!
-                    .getString(SharedPreferncesConstants.twitterAccessToken) !=
-                null &&
-            (user.phoneNumber == "" || user.phoneNumber == null)) {
-          // If the user is logged in through Twitter and phone number is null
+        } else if (!(user.email == null || user.email == "") &&
+            !user.emailVerified) {
+          return const EmailVerificationPage();
+        } else if (user.emailVerified &&
+            (user.phoneNumber == "" ||
+                user.phoneNumber == null ||
+                isUserServiceProvider == null)) {
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
-              Navigator.pushReplacementNamed(context, ChooserPage.pageName);
-            },
-          );
-          log('User logged in via Twitter but phone number is null.');
-          return const SizedBox.shrink(); // Temporary widget until redirection
-        } else if (user.emailVerified) {
-          SchedulerBinding.instance.addPostFrameCallback(
-            (timeStamp) {
-              Navigator.pushNamed(context, ChooserPage.pageName);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                ChooserPage.pageName,
+                (route) => false,
+              );
             },
           );
 
@@ -154,8 +155,49 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
               .listOfUserInfo[MapForUserInfo.email] = user.email;
 
           return const ChooserPage();
-        } else if (!user.emailVerified) {
-          return const EmailVerificationPage();
+        } else if (prefs!
+                    .getString(SharedPreferncesConstants.twitterAccessToken) !=
+                null &&
+            (user.phoneNumber == "" ||
+                user.phoneNumber == null ||
+                isUserServiceProvider == null)) {
+          // If the user is logged in through Twitter and phone number is null
+          SchedulerBinding.instance.addPostFrameCallback(
+            (timeStamp) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                ChooserPage.pageName,
+                (route) => false,
+              );
+            },
+          );
+          log('User logged in via Twitter but phone number is null.');
+          return const SizedBox.shrink(); // Temporary widget until redirection
+        } else if (isUserServiceProvider!) {
+          SchedulerBinding.instance.addPostFrameCallback(
+            (timeStamp) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AdminSideHomePage.pageName,
+                (route) => false,
+              );
+            },
+          );
+          //If the service provider is true then we will show him Admin Home Page
+          return const AdminSideHomePage();
+        } else if (!isUserServiceProvider) {
+          log("Navigating towards the home page ");
+          SchedulerBinding.instance.addPostFrameCallback(
+            (timeStamp) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                HomePage.pageName,
+                (route) => false,
+              );
+            },
+          );
+          //If the
+          return const HomePage();
         } else {
           return Container(
             color: Colors.green,

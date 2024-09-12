@@ -161,9 +161,9 @@ class _IntialListPreviousWorkState
                                   flex: 25,
                                   child: Row(
                                     children: [
-                                      const Spacer(flex: 5),
+                                      const Spacer(flex: 3),
                                       Expanded(
-                                        flex: 40,
+                                        flex: 44,
                                         child: AutoSizeText(
                                           widget.intialList[index].serviceName,
                                           style: const TextStyle(fontSize: 16),
@@ -172,17 +172,19 @@ class _IntialListPreviousWorkState
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      const Spacer(flex: 10),
+                                      const Spacer(flex: 8),
                                       Expanded(
-                                        flex: 40,
+                                        flex: 42,
                                         child: AutoSizeText(
                                           formattedDate,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               color: Colors.blue, fontSize: 14),
                                         ),
                                       ),
                                       const Spacer(
-                                        flex: 5,
+                                        flex: 3,
                                       )
                                     ],
                                   ),

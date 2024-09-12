@@ -2,6 +2,7 @@ import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dial
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/time_slot_decider_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +13,8 @@ class TimeSlotVariables {
   static Time currentTime = Time(hour: 10, minute: 0);
 }
 
-void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
-    String serviceId, String serviceName) {
+void dialogForEditTimeSlot(
+    BuildContext context, String serviceId, String serviceName) {
   showDialog(
       barrierDismissible: false,
       useSafeArea: true,
@@ -220,7 +221,8 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                                 flex: 40,
                                 child: MaterialButton(
                                   onPressed: () async {
-                                    ref
+                                    informerDialog(context, "Adding Timeslots");
+                                    await ref
                                         .read(timeSlotsStateProvider.notifier)
                                         .addTimeSlots(ref
                                             .read(increamentingDaysStateProvider
@@ -230,8 +232,7 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                                     await ref
                                         .read(allServiceDataStateProvider
                                             .notifier)
-                                        .updateService(serviceId, serviceName,
-                                            isFavourite);
+                                        .updateService(serviceId, serviceName);
                                     await ref
                                         .read(timeSlotsStateProvider.notifier)
                                         .getTimeSlots(
@@ -241,6 +242,7 @@ void dialogForEditTimeSlot(BuildContext context, bool isFavourite,
                                             DateTime.now().day,
                                           ),
                                         );
+                                    Navigator.of(context).pop();
                                     Navigator.of(context).pop();
                                     ref
                                         .read(timeSlotTimingStateProvider

@@ -8,10 +8,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final bookingsIntialStateProvider =
-    NotifierProvider<IntialBookingController, DateTime>(
+    NotifierProvider<IntialBookingController, InitialBookingStates>(
         IntialBookingController.new);
 
-class IntialBookingController extends Notifier<DateTime> {
+class IntialBookingController extends Notifier<InitialBookingStates> {
   final adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
       ? FirebaseAuth.instance.currentUser!.uid
       : prefs!.getString(SharedPreferncesConstants.adminkey);
@@ -24,14 +24,14 @@ class IntialBookingController extends Notifier<DateTime> {
 
   BookingCollection bookingCollection = BookingCollection();
   @override
-  DateTime build() {
-    return DateTime.now();
+  InitialBookingStates build() {
+    return InitialBookingsInitiaState();
   }
-
-  Future<void> getIntialNotifications() async {}
 
   Future<void> getAllInitialBookings() async {
     try {
+      await Future.delayed(const Duration(seconds: 3));
+      state = InitialBookingsLoadingState();
       final userId = FirebaseAuth.instance.currentUser!.uid;
       intialListOfBookingsForClient =
           await bookingCollection.getAllBookings(userId);
@@ -52,17 +52,24 @@ class IntialBookingController extends Notifier<DateTime> {
 
               finalListForAdmin.add(intialListOfBookingsForAdmin[index]);
               // log("Final initial List: ${finalListForAdmin.toString()}");
-              state = filterDate;
+              state =
+                  InitialBookingsLoadedState(listOfbookings: finalListForAdmin);
             } else {
-              state = filterDate;
+              state =
+                  InitialBookingsLoadedState(listOfbookings: finalListForAdmin);
             }
           } catch (e) {
             log("Error in loop at index $index: $e");
+            state = InitialBookingsErrorState(error: e.toString());
           }
         }
+      } else {
+        state = InitialBookingsLoadedState(
+            listOfbookings: intialListOfBookingsForAdmin);
       }
     } catch (e) {
       log("Error in getAllInitialBookings: $e");
+      state = InitialBookingsErrorState(error: e.toString());
     }
   }
 

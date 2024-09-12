@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/controller_for_updating_car_info.dart';
-import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/dialogs_controller.dart/car_info_controller.dart';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/dialog_for_updating_car_info.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
@@ -155,18 +154,23 @@ class _AdminSideCarModelContainerState
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
-                                  flex: 55,
-                                  child: (widget.listOfCars[index].isAsset
-                                      ? Image.asset(
-                                          widget.listOfCars[index].url)
-                                      : CachedNetworkImage(
-                                          imageUrl:
-                                              widget.listOfCars[index].url,
-                                          placeholder: (context, url) =>
-                                              const CupertinoActivityIndicator(),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                        ))),
+                                flex: 55,
+                                child: widget.listOfCars[index].isAsset
+                                    ? Image.asset(
+                                        widget.listOfCars[index].url,
+                                        fit: BoxFit
+                                            .cover, // Add this line if you want the image to cover the whole widget
+                                      )
+                                    : CachedNetworkImage(
+                                        imageUrl: widget.listOfCars[index].url,
+                                        placeholder: (context, url) =>
+                                            const CupertinoActivityIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                        fit: BoxFit
+                                            .cover, // Add this line to match the asset image behavior
+                                      ),
+                              ),
                               Expanded(
                                   flex: 25,
                                   child: Text(

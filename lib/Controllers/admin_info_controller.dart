@@ -53,7 +53,7 @@ class AdminInfoController extends Notifier<AdminInfo> {
   }
 
   Future<String> getAdminsInfo() async {
-    var adminInfoList = await adminInfoCollection.getAdminId();
+    var adminInfoList = await adminInfoCollection.getAllAdminInfo();
     if (adminInfoList.isNotEmpty) {
       state = adminInfoList[0];
       return jsonEncode(state.toMap());

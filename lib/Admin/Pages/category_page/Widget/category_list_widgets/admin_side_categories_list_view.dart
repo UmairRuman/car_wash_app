@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/service_addition_controller.dart';
@@ -24,7 +26,8 @@ class AdminSideCategoriesList extends ConsumerWidget {
     var list = await timeSlotCollection
         .getAllTimeSlots(prefs!.getString(SharedPreferncesConstants.adminkey)!);
     ref.read(increamentingDaysStateProvider.notifier).intialShowingDates =
-        list.length;
+        list.isEmpty ? 7 : list.length;
+    log("Intial Showing Dates after clicking on servicce ${ref.read(increamentingDaysStateProvider.notifier).intialShowingDates}");
   }
 
   void onServiceClick(WidgetRef ref, BuildContext context, String serviceName,

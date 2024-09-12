@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final bottomStateProvider =
@@ -11,5 +13,6 @@ class BottomBarController extends Notifier<int> {
 
   void currentNavigationState(int index) {
     state = index;
+    log("Current Index of Bottom bar  = $index");
   }
 }

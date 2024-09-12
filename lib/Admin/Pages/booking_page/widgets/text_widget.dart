@@ -146,7 +146,9 @@ class AdminSideBookerName extends StatelessWidget {
           ),
         ),
         Expanded(
-            flex: 45, child: AdminSideActualBookerName(bookerName: bookerName)),
+            flex: 45,
+            child: FittedBox(
+                child: AdminSideActualBookerName(bookerName: bookerName))),
       ],
     );
   }
@@ -168,7 +170,9 @@ class AdminSideCarName extends StatelessWidget {
             style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
           ),
         ),
-        Expanded(flex: 45, child: AdminSideActualCarName(carName: carName)),
+        Expanded(
+            flex: 45,
+            child: FittedBox(child: AdminSideActualCarName(carName: carName))),
       ],
     );
   }

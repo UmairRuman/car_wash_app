@@ -86,6 +86,8 @@ dependencies:
   image_cropper: ^4.0.1
   connectivity_plus: ^6.0.5
   date_picker_timeline: ^1.2.6
+  flutter_background_service: ^5.0.10
+  permission_handler: ^11.3.1
   
   
   

@@ -69,6 +69,7 @@ class RatingStateController extends Notifier<RatingsFetchingStates> {
       Ratings ratings = await ratingCollection.fetchUserRating(
           adminId!, serviceId, serviceName, userId);
       finalRating = ratings.rating;
+      log("Final Rating $finalRating");
       isServiceRated = ratings.isServiceRated;
     } catch (e) {
       log("Failed to fetching specific user id ");

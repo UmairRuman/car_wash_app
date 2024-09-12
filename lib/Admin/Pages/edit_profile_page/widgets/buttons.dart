@@ -1,4 +1,5 @@
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/controller/edit_profile_state_controller.dart';
+import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,8 +20,8 @@ class AdminButtonUpdateUserInfo extends ConsumerWidget {
                 height: constraints.maxHeight,
                 width: constraints.maxWidth,
                 child: MaterialButton(
-                  onPressed: () {
-                    ref
+                  onPressed: () async {
+                    await ref
                         .read(adminSideEditProfileInfoProvider.notifier)
                         .onClickOnUpdateButton(context);
                   },

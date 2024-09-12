@@ -64,18 +64,21 @@ void showDialogForEnteringOwnerKey(BuildContext context, WidgetRef ref,
                       const Spacer(flex: 10),
                       Expanded(
                         flex: 30,
-                        child: FloatingActionButton(
+                        child: MaterialButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          backgroundColor: Colors.amber,
-                          child: const Text("Cancel"),
+                          color: Colors.blue,
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                       const Spacer(flex: 20),
                       Expanded(
                         flex: 30,
-                        child: FloatingActionButton(
+                        child: MaterialButton(
                           onPressed: () async {
                             setState(() {});
                             var adminKey =
@@ -102,8 +105,9 @@ void showDialogForEnteringOwnerKey(BuildContext context, WidgetRef ref,
                               });
                             }
                           },
-                          backgroundColor: Colors.amber,
-                          child: const Text("Enter"),
+                          color: Colors.blue,
+                          child: const Text("Enter",
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ),
                       const Spacer(flex: 10),

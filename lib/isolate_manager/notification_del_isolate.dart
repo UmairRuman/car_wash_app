@@ -1,16 +1,13 @@
-import 'dart:isolate';
 import 'dart:developer';
-import 'dart:ui';
+import 'dart:isolate';
+
 import 'package:car_wash_app/Client/pages/NotificationPage/Database/notification_collection.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-// Singleton class to manage the isolate state for notifications
 class NotificationCleanupIsolateManager {
   static NotificationCleanupIsolateManager? _instance;
   Isolate? _cleanupIsolate;
+  ReceivePort? _receivePort;
 
   NotificationCleanupIsolateManager._internal();
 
@@ -27,12 +24,20 @@ class NotificationCleanupIsolateManager {
       return;
     }
 
+    _receivePort = ReceivePort();
+    _receivePort!.listen((message) {
+      // Perform Firebase cleanup in the main isolate
+      if (message == 'cleanup') {
+        deleteOldNotifications(userId);
+      }
+    });
+
     final rootIsolateToken = RootIsolateToken.instance;
     if (rootIsolateToken != null) {
       log("Starting notification cleanup isolate...");
       _cleanupIsolate = await Isolate.spawn(
         notificationsBackgroundCleanup,
-        [userId, rootIsolateToken],
+        [_receivePort!.sendPort, rootIsolateToken],
       );
     } else {
       log("Failed to get RootIsolateToken.");
@@ -42,7 +47,15 @@ class NotificationCleanupIsolateManager {
   void stopCleanupIsolate() {
     _cleanupIsolate?.kill(priority: Isolate.immediate);
     _cleanupIsolate = null;
+    _receivePort?.close();
     log("Notification cleanup isolate stopped.");
+  }
+
+  Future<void> deleteOldNotifications(String userId) async {
+    log("Performing Firebase cleanup on the main isolate...");
+    NotificationCollection notificationCollection = NotificationCollection();
+    await notificationCollection.deleteOldNotifications(userId);
+    log("Notification cleanup completed.");
   }
 }
 
@@ -53,17 +66,14 @@ void startNotificationBackgroundCleanup(String userId) {
 
 void notificationsBackgroundCleanup(List<Object> params) async {
   log("In background cleanup function for notifications");
-  final userId = params[0] as String;
+  final sendPort = params[0] as SendPort;
   final rootIsolateToken = params[1] as RootIsolateToken;
 
   // Initialize the background isolate with the root token
   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
 
-  // Initialize Firebase in the isolate
-  await Firebase.initializeApp();
+  // Perform non-Firebase heavy computation if needed
 
-  NotificationCollection notificationCollection = NotificationCollection();
-  await notificationCollection.deleteOldNotifications(userId);
-
-  log("Notification cleanup completed.");
+  // Notify the main isolate to perform the cleanup
+  sendPort.send('cleanup');
 }

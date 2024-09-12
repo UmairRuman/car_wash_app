@@ -43,7 +43,7 @@ class AdminSideCategoryPage extends ConsumerWidget {
                           Positioned(
                               height: constraints.maxHeight * 0.1,
                               width: constraints.maxWidth * 0.3,
-                              left: constraints.maxWidth / 6,
+                              left: constraints.maxWidth / 5.3,
                               top: constraints.maxHeight / 4,
                               child: AdminUserNameText(
                                 userName: userName,
@@ -51,7 +51,7 @@ class AdminSideCategoryPage extends ConsumerWidget {
                           Positioned(
                               height: constraints.maxHeight * 0.1,
                               width: constraints.maxWidth * 0.4,
-                              left: constraints.maxWidth / 2.5 -
+                              left: constraints.maxWidth / 2.6 -
                                   (constraints.maxWidth * 0.4) / 2,
                               top: constraints.maxHeight / 2.5,
                               child: AdminHomePageUserLocation(

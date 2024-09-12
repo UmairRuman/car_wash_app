@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AdminSideTextChooseYourCarModel extends ConsumerWidget {
   final String serviceName;
   final String serviceId;
-  final bool isFavourite;
-  const AdminSideTextChooseYourCarModel(
-      {super.key,
-      required this.serviceId,
-      required this.serviceName,
-      required this.isFavourite});
+
+  const AdminSideTextChooseYourCarModel({
+    super.key,
+    required this.serviceId,
+    required this.serviceName,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,8 +39,7 @@ class AdminSideTextChooseYourCarModel extends ConsumerWidget {
             padding: const EdgeInsets.only(left: 6, right: 6, top: 6),
             child: InkWell(
               onTap: () {
-                dialogForEditCarInfo(
-                    context, serviceName, serviceId, ref, isFavourite);
+                dialogForEditCarInfo(context, serviceName, serviceId, ref);
               },
               child: Container(
                   decoration: const BoxDecoration(

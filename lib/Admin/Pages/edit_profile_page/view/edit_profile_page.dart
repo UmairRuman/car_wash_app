@@ -1,13 +1,15 @@
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/widgets/buttons.dart';
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/widgets/text_editting_controllers.dart';
+import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AdminSideEditProfilePage extends StatelessWidget {
+class AdminSideEditProfilePage extends ConsumerWidget {
   static const String pageName = "/adminSideEditProfilePage";
   const AdminSideEditProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
@@ -18,6 +20,7 @@ class AdminSideEditProfilePage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 89, 171, 239),
         leading: InkWell(
             onTap: () {
+              ref.read(bottomStateProvider.notifier).currentNavigationState(2);
               Navigator.of(context).pop();
             },
             child: const Icon(

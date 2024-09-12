@@ -4,7 +4,6 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_col
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
-import 'package:car_wash_app/ModelClasses/car_service_counter.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
@@ -32,7 +31,10 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
   Future<void> addDefaultService() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     log("Current user id $userId");
-    String? adminPhoneNumber = FirebaseAuth.instance.currentUser!.phoneNumber;
+    String adminPhoneNumber =
+        FirebaseAuth.instance.currentUser!.phoneNumber == ""
+            ? "No Phone no"
+            : FirebaseAuth.instance.currentUser!.phoneNumber!;
 
     for (int index = 0; index < listOfCategoryIcons.length; index++) {
       List<Car> listOfCars = [];
@@ -63,11 +65,10 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
           serviceName: listOfCategoryName[index],
           description: "Click on Edit to add description",
           iconUrl: listOfCategoryIcons[index],
-          isFavourite: false,
           cars: listOfCars,
           imageUrl: listOfPreviousWorkImages[index],
           availableDates: <DateTime>[],
-          adminPhoneNo: adminPhoneNumber!,
+          adminPhoneNo: adminPhoneNumber,
           isAssetIcon: true));
       await fetchingAllServicesFirstTime();
       // serviceCounterCollection.addCount(
@@ -77,7 +78,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
 
   fetchingAllServicesFirstTime() async {
     var adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
-
+    await Future.delayed(const Duration(seconds: 3));
     state = DefaultServicesLoadingState();
     try {
       var listOfServices =

@@ -77,10 +77,11 @@ class AdminBookedInfoContainer extends StatelessWidget {
                             Expanded(
                                 flex: 45,
                                 child: FittedBox(
-                                    child: Text(
-                                  bookerPhoneNo,
-                                  style: const TextStyle(color: Colors.blue),
-                                ))),
+                                  child: Text(
+                                    bookerPhoneNo,
+                                    style: const TextStyle(color: Colors.blue),
+                                  ),
+                                )),
                           ],
                         )),
                     Expanded(

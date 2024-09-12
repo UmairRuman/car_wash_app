@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:car_wash_app/Client/pages/chooser_page/view/chooser_page.dart';
 import 'package:car_wash_app/Client/pages/email_verification_page/widgets/buttons.dart';
 import 'package:car_wash_app/Client/pages/email_verification_page/widgets/icons.dart';
 import 'package:car_wash_app/Client/pages/email_verification_page/widgets/texts.dart';
-import 'package:car_wash_app/main.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ class VerificationPageMainContainer extends StatefulWidget {
   final String email;
   final String password;
   final String name;
+
   const VerificationPageMainContainer(
       {super.key,
       required this.email,
@@ -23,72 +26,99 @@ class VerificationPageMainContainer extends StatefulWidget {
 }
 
 class _VerificationPageMainContainerState
-    extends State<VerificationPageMainContainer> {
-  late Timer timer;
+    extends State<VerificationPageMainContainer> with WidgetsBindingObserver {
+  late Timer _timer;
+  bool _isVerificationDialogVisible = false;
 
   @override
   void initState() {
     super.initState();
-    timer = Timer(
-      const Duration(seconds: 10),
-      () {},
-    );
+    WidgetsBinding.instance.addObserver(this);
     createUserAndSendVerification();
-  }
-
-  void createUserAndSendVerification() async {
-    try {
-      if (FirebaseAuth.instance.currentUser == null) {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: widget.email, password: widget.password);
-        await FirebaseAuth.instance.currentUser!.updateDisplayName(widget.name);
-      } else {
-        await FirebaseAuth.instance.currentUser!.sendEmailVerification();
-      }
-
-      // Start the timer to check for email verification
-      timer = Timer.periodic(
-        const Duration(seconds: 5),
-        (timer) async {
-          await FirebaseAuth.instance.currentUser!.reload();
-          if (FirebaseAuth.instance.currentUser!.emailVerified) {
-            timer.cancel();
-            Navigator.pushReplacementNamed(context, AuthHandler.pageName);
-          }
-        },
-      );
-    } catch (e) {
-      // Handle error (e.g., email already in use)
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
-      Navigator.pop(context); // Go back to the sign-up page
-    }
+    _startVerificationCheckTimer();
   }
 
   @override
   void dispose() {
-    timer.cancel();
+    log("dispose called");
+    _timer.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _startVerificationCheckTimer() {
+    _timer = Timer.periodic(
+      const Duration(seconds: 5),
+      (timer) async {
+        await _checkEmailVerified();
+      },
+    );
+  }
+
+  Future<void> _checkEmailVerified() async {
+    try {
+      await FirebaseAuth.instance.currentUser?.reload();
+      if (FirebaseAuth.instance.currentUser?.emailVerified ?? false) {
+        _timer.cancel();
+
+        if (!_isVerificationDialogVisible) {
+          setState(() {
+            _isVerificationDialogVisible = true;
+          });
+
+          // Show a dialog that informs the user of successful verification
+          informerDialog(context, "Logging in");
+
+          await Future.delayed(const Duration(seconds: 3));
+
+          if (mounted) {
+            Navigator.pop(context); // Close the dialog
+
+            // Delay a little to allow the dialog to be fully dismissed
+            await Future.delayed(const Duration(milliseconds: 300));
+
+            Navigator.pushReplacementNamed(
+              context,
+              ChooserPage.pageName,
+            );
+          }
+        }
+      }
+    } catch (e) {
+      log("Error during email verification check: $e");
+    }
+  }
+
+  Future<void> createUserAndSendVerification() async {
+    try {
+      if (FirebaseAuth.instance.currentUser != null) {
+        await FirebaseAuth.instance.currentUser!.sendEmailVerification();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // When the app is resumed, check if the email has been verified
+      _checkEmailVerified();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Spacer(
-          flex: 20,
-        ),
+        const Spacer(flex: 20),
         const Expanded(flex: 10, child: EmailIcon()),
-        const Spacer(
-          flex: 5,
-        ),
+        const Spacer(flex: 5),
         const Expanded(flex: 10, child: TextVerifyYourEmail()),
         Expanded(flex: 20, child: TextCheckYourEmail(email: widget.email)),
         const Expanded(flex: 10, child: BtnResendEmail()),
-        const Spacer(
-          flex: 20,
-        ),
+        const Spacer(flex: 20),
       ],
     );
   }

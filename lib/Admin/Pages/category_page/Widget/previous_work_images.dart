@@ -174,31 +174,35 @@ class _AdminPreviousWorkImagesState
                                       flex: 25,
                                       child: Row(children: [
                                         const Spacer(
-                                          flex: 5,
+                                          flex: 3,
                                         ),
                                         Expanded(
-                                          flex: 40,
-                                          child: AutoSizeText(
-                                            state.list[index].serviceName,
-                                            style:
-                                                const TextStyle(fontSize: 16),
-                                            maxLines: 1,
-                                            minFontSize: 12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
+                                            flex: 44,
+                                            child: AutoSizeText(
+                                              state.list[index].serviceName,
+                                              style:
+                                                  const TextStyle(fontSize: 16),
+                                              maxLines: 1,
+                                              minFontSize: 12,
+                                              overflow: TextOverflow.ellipsis,
+                                            )),
                                         const Spacer(
-                                          flex: 10,
+                                          flex: 8,
                                         ),
                                         Expanded(
-                                          flex: 45,
+                                          flex: 42,
                                           child: AutoSizeText(
                                             formattedDate,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.blue),
                                           ),
-                                        )
+                                        ),
+                                        const Spacer(
+                                          flex: 3,
+                                        ),
                                       ]),
                                     ),
                                   ],

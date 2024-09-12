@@ -62,47 +62,47 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
   }
 
   Future<void> addDefaultPreviousWorkCategories() async {
-    try {
-      for (int index = 0; index < listOfPreviousWorkImages.length; index++) {
-        var serviceId =
-            await previousWorkCollection.getLastPreviousWorkId(adminId!);
-        String countId;
-
-        if (int.parse(serviceId) < 9) {
-          countId = "0${int.parse(serviceId) + 1}";
-        } else if (serviceId == "") {
-          countId = "01";
-        } else {
-          countId = "${int.parse(serviceId) + 1}";
-        }
-
-        await previousWorkCollection.addPreviousData(
-            adminId!,
-            PreviousWorkModel(
-                isAssetImage: true,
-                previousWorkImage: listOfPreviousWorkImages[index],
-                serviceName: listOfCategoryName[index],
-                serviceRating: 5.0,
-                serviceProvideTime: DateTime.now(),
-                id: countId));
-        // previousServiceCounterCollection.addCount(
-        //     PreviousServiceCounter(count: countId), adminId!);
+    // try {
+    for (int index = 0; index < listOfPreviousWorkImages.length; index++) {
+      var listOfServices = await previousWorkCollection
+          .getAllPreviousWork(FirebaseAuth.instance.currentUser!.uid);
+      int listLength = listOfServices.isEmpty ? 0 : listOfServices.length;
+      int count = listLength + 1;
+      String countId;
+      if (count < 9) {
+        countId = "0$count";
+      } else {
+        countId = "$count";
       }
-    } catch (e) {
-      log("Error in adding Default Previous Work Images");
+      log("Count id in add default previus work categories $countId");
+
+      await previousWorkCollection.addPreviousData(
+          FirebaseAuth.instance.currentUser!.uid,
+          PreviousWorkModel(
+              isAssetImage: true,
+              previousWorkImage: listOfPreviousWorkImages[index],
+              serviceName: listOfCategoryName[index],
+              serviceRating: 5.0,
+              serviceProvideTime: DateTime.now(),
+              id: countId));
     }
+    // } catch (e) {
+    //   log("Error in adding Default Previous Work Images ${e.toString()}");
+    // }
   }
 
   Future<void> insertPreviousData() async {
     if (isNewPathSet) {
       var previousServiceCount =
           await previousWorkCollection.getLastPreviousWorkId(adminId!);
-      log("List Of previous service list : ${int.parse(previousServiceCount)}  ");
+      // log("List Of previous service list : ${int.parse(previousServiceCount)}  ");
+      var lastServiceId =
+          previousServiceCount == "" ? "0" : previousServiceCount;
       String countId;
-      if (int.parse(previousServiceCount) < 9) {
-        countId = "0${int.parse(previousServiceCount) + 1}";
+      if (int.parse(lastServiceId) < 9) {
+        countId = "0${int.parse(lastServiceId) + 1}";
       } else {
-        countId = "${int.parse(previousServiceCount) + 1}";
+        countId = "${int.parse(lastServiceId) + 1}";
       }
       log("Count id $countId");
       try {
@@ -116,8 +116,6 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
                 serviceProvideTime: DateTime.now(),
                 id: countId));
 
-        // previousServiceCounterCollection.addCount(
-        //     PreviousServiceCounter(count: countId), adminId!);
         await getAllPreviousData();
       } catch (e) {
         log("Error in adding previous Work data");

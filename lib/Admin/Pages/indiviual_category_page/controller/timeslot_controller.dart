@@ -6,10 +6,13 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_col
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/ModelClasses/time_slot.dart';
 import 'package:car_wash_app/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TimeslotController extends Notifier<TimeSlotStates> {
-  String adminId = prefs!.getString(SharedPreferncesConstants.adminkey)!;
+  String adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+      ? FirebaseAuth.instance.currentUser!.uid
+      : prefs!.getString(SharedPreferncesConstants.adminkey)!;
   TimeSlotCollection timeSlotCollection = TimeSlotCollection();
   List<DateTime> listOfDates = [];
   List<String> listOfTimeSlots = [];
@@ -58,16 +61,7 @@ class TimeslotController extends Notifier<TimeSlotStates> {
 
         endIndex++;
       }
-      // int startIndex = appendingEndTime.length - 3;
-      // while (appendingEndTime[startIndex] != "-") {
-      //   log("Start index $startIndex");
-      //   // appendingEndTime = listOfTimeSlots[0]
-      //   //     .substring(startIndex, listOfTimeSlots.length - 2);
-      //   endTime = int.parse(appendingEndTime.substring(
-      //       startIndex, appendingEndTime.length - 2));
 
-      //   startIndex--;
-      // }
       endTime = startTime + listOfTimeSlots.length;
       log("Start Time = $startTime");
       log("End Time = $endTime ");
@@ -79,7 +73,7 @@ class TimeslotController extends Notifier<TimeSlotStates> {
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime endDate =
         DateTime(now.year, now.month, now.day + intialShowingDates);
-
+    await timeSlotCollection.deleteAllTimeSlots(adminId);
     for (DateTime date = now;
         date.isBefore(endDate);
         date = date.add(const Duration(days: 1))) {
@@ -105,7 +99,10 @@ class TimeslotController extends Notifier<TimeSlotStates> {
   }
 
   Future<void> getTimeSlots(DateTime dateTime) async {
-    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey);
+    String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
+        ? FirebaseAuth.instance.currentUser!.uid
+        : prefs!.getString(SharedPreferncesConstants.adminkey);
+    log("Admin Id in get Time slot method $adminId");
     state = TimeSlotLoadingState();
     log("Loading state");
     try {
@@ -114,14 +111,8 @@ class TimeslotController extends Notifier<TimeSlotStates> {
 
       listOfTimeSlots = timeSlots;
       log(listOfTimeSlots.toString());
-      if (timeSlots.isNotEmpty) {
-        state = TimeSlotLoadedState(list: timeSlots);
-        log("Loaded state with ${timeSlots.length} slots");
-      } else {
-        state = TimeSlotErrorState(
-            error: "No time slots found for the selected date");
-        log("No time slots found");
-      }
+
+      state = TimeSlotLoadedState(list: timeSlots);
     } catch (e) {
       state = TimeSlotErrorState(error: e.toString());
       log("Error state: $e");

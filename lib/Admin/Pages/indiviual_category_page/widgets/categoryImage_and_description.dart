@@ -12,10 +12,9 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
   final String serviceName;
   final String serviceId;
   final bool isAssetImage;
-  final bool isFavourite;
+
   const AdminSideIndiviualCategoryImageAndDescription(
       {super.key,
-      required this.isFavourite,
       required this.isAssetImage,
       required this.imagePath,
       required this.description,
@@ -112,7 +111,6 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                                   serviceId,
                                   imagePath,
                                   ref,
-                                  isFavourite,
                                   description,
                                   ref
                                       .read(serviceInfoProvider.notifier)

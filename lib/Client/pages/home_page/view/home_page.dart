@@ -1,10 +1,10 @@
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
+import 'package:car_wash_app/Admin/Pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Client/pages/booking_page/controller/intial_booking_controller.dart';
 import 'package:car_wash_app/Client/pages/booking_page/view/booking_page.dart';
 import 'package:car_wash_app/Client/pages/category_page/View/categoryPage.dart';
 import 'package:car_wash_app/Client/pages/favourite_page/view/favourite_page.dart';
-import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Client/pages/home_page/Widget/bottom_bar_widget.dart';
 import 'package:car_wash_app/Client/pages/profile_page/controller/profile_state_controller.dart';
 import 'package:car_wash_app/Client/pages/profile_page/view/profile_page.dart';
@@ -27,13 +27,14 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings();
-    ref.read(favouriteServiceProvider.notifier).getAllIntialFavouriteServices();
-    ref.read(profileDataStateProvider.notifier).getUserAllDData();
     ref
         .read(previousServiceStateProvider.notifier)
         .getIntialListPreviousServices();
     ref.read(allServiceDataStateProvider.notifier).getIntialListOfServices();
+    ref.read(profileDataStateProvider.notifier).getUserAllDData();
+    ref.read(bookingsIntialStateProvider.notifier).getAllInitialBookings();
+    ref.read(favouriteServiceProvider.notifier).getAllIntialFavouriteServices();
+
     ref.read(messageStateProvider.notifier).intialMessages();
   }
 

@@ -24,7 +24,6 @@ void dialogForEdditingServiceImageAndDescription(
     String serviceId,
     String imagePath,
     WidgetRef ref,
-    bool isFavourite,
     String serviceDescription,
     TextEditingController descriptionTEC) {
   showDialog(
@@ -151,16 +150,27 @@ void dialogForEdditingServiceImageAndDescription(
                               flex: 40,
                               child: FloatingActionButton(
                                 onPressed: () async {
+                                  String adminId = prefs!.getString(
+                                              SharedPreferncesConstants
+                                                  .adminkey)! ==
+                                          ""
+                                      ? FirebaseAuth.instance.currentUser!.uid
+                                      : prefs!.getString(
+                                          SharedPreferncesConstants.adminkey)!;
                                   informerDialog(context, "Updating Service");
                                   serviceDescription = ref
                                       .read(serviceInfoProvider.notifier)
                                       .serviceDescriptionTEC
                                       .text;
 
-                                  await addServiceImageToFirebaseStorageBox(
-                                      serviceName,
-                                      ServiceClassVariables.imageFilePath!,
-                                      context);
+                                  if (ServiceClassVariables.isImageModified &&
+                                      ServiceClassVariables.imageFilePath !=
+                                          null) {
+                                    await addServiceImageToFirebaseStorageBox(
+                                        serviceName,
+                                        ServiceClassVariables.imageFilePath!,
+                                        context);
+                                  }
 
                                   // Update the service info.
                                   await ref
@@ -169,11 +179,13 @@ void dialogForEdditingServiceImageAndDescription(
                                           serviceName,
                                           serviceDescription,
                                           serviceId,
-                                          prefs!.getString(
-                                              SharedPreferncesConstants
-                                                  .adminkey)!,
+                                          adminId,
                                           ServiceClassVariables
-                                              .downladedImagePath,
+                                                      .downladedImagePath ==
+                                                  ""
+                                              ? imagePath
+                                              : ServiceClassVariables
+                                                  .downladedImagePath,
                                           context);
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pop();
@@ -220,7 +232,7 @@ Future<void> addServiceImageToFirebaseStorageBox(
   var newImagePath = await snapshot.ref.getDownloadURL();
 
   // Only interact with ref if the widget is still mounted.
-  if (context.mounted) {
-    ServiceClassVariables.downladedImagePath = newImagePath;
-  }
+  // if (context.mounted) {
+  ServiceClassVariables.downladedImagePath = newImagePath;
+  // }
 }

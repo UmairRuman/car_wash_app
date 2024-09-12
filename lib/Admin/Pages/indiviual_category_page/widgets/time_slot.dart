@@ -168,12 +168,11 @@ class _AdminSideTimeSlotState extends ConsumerState<AdminSideTimeSlot> {
 class AdminSideTextChooseTimeSlot extends StatelessWidget {
   final String serviceName;
   final String serviceId;
-  final bool isFavourite;
+
   const AdminSideTextChooseTimeSlot({
     super.key,
     required this.serviceId,
     required this.serviceName,
-    required this.isFavourite,
   });
 
   @override
@@ -198,8 +197,7 @@ class AdminSideTextChooseTimeSlot extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                dialogForEditTimeSlot(
-                    context, isFavourite, serviceId, serviceName);
+                dialogForEditTimeSlot(context, serviceId, serviceName);
               },
               child: Container(
                 decoration: const BoxDecoration(

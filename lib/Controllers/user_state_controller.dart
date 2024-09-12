@@ -6,7 +6,6 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/Users.dart';
-import 'package:car_wash_app/ModelClasses/admin_count.dart';
 import 'package:car_wash_app/ModelClasses/admin_device_token.dart';
 import 'package:car_wash_app/ModelClasses/admin_info.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
@@ -87,8 +86,7 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     var realToken = await notificationServices.getTokken();
     log("Device Token $realToken");
     //Getting admin info to add in user shared prefrences to avoid from firebase cost
-    var realAdminInfo =
-        await adminInfoCollection.getAdminsInfoAtSpecificId("01");
+    var realAdminInfo = await adminInfoCollection.getAdminInfoByNumber("01");
     //We have to get all admin device tokens
     var allAdminsDeviceTokenlist =
         await adminDeviceTokenCollection.getAllAdminDeviceTokens();
@@ -104,27 +102,23 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
         : listOfUserInfo[MapForUserInfo.phoneNumber];
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     //If the user is admin then we will fetch the list of admin to check their number and add admin info
-    var listOFAdminCount = await adminCountCollection.getAllAdminCount();
-    String adminNo = "${listOFAdminCount.length + 1}";
-    if (listOFAdminCount.length < 9) {
-      adminNo = "0${listOFAdminCount.length + 1}";
-    }
+
+    var adminInfo = await adminInfoCollection.getAllAdminInfo();
+    var adminNo = adminInfo.length + 1;
     //If the user is admin, then we add user data in collection.
     if (listOfUserInfo[MapForUserInfo.isServiceProvider]) {
       adminInfoCollection.insertAdminInfo(AdminInfo(
           adminDeviceToken: realToken,
           adminName: userName,
           adminId: userId,
-          adminNo: adminNo,
+          adminNo: "0$adminNo",
           adminPhoneNo: userPhoneNo));
       //Adding device Token in Admin Device Token Collection
       await adminDeviceTokenCollection.addAdminDeviceToken(AdminDeviceTokens(
           deviceToken: realToken,
-          adminNo: adminNo,
+          adminNo: "0$adminNo",
           adminId: FirebaseAuth.instance.currentUser!.uid));
       //Now we will also increment one in that Admin Count Collection
-      await adminCountCollection
-          .increamentAdminAdd(AdminCounter(count: adminNo));
     }
     //We also set is service provider in shared prefrences to avoid from the cost got every time for getting data from firestore
     sharedPreferences.setBool(SharedPreferncesConstants.isServiceProvider,
@@ -145,7 +139,7 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
       sharedPreferences.setString(
           SharedPreferncesConstants.adminkey, realAdminInfo.adminId);
       sharedPreferences.setInt(
-          SharedPreferncesConstants.adminCount, int.parse(adminNo));
+          SharedPreferncesConstants.adminCount, int.parse("0$adminNo"));
     }
 
     log("User Shared Prefrences");
@@ -158,10 +152,11 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     bool isUserAdd = await userCollection.addUser(Users(
         deviceToken: realToken,
         userId: userId,
-        name: userName,
-        email: listOfUserInfo[MapForUserInfo.email] ?? "",
+        name: userName ?? "No name",
+        email: FirebaseAuth.instance.currentUser!.email ?? "",
         profilePicUrl: listOfUserInfo[MapForUserInfo.profilePicUrl],
-        phoneNumber: userPhoneNo,
+        phoneNumber:
+            FirebaseAuth.instance.currentUser!.phoneNumber ?? userPhoneNo,
         isServiceProvider: listOfUserInfo[MapForUserInfo.isServiceProvider],
         bonusPoints: listOfUserInfo[MapForUserInfo.bonusPoints],
         serviceConsumed: listOfUserInfo[MapForUserInfo.serviceConsumed],
@@ -180,6 +175,20 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     } catch (e) {
       state = AdditionErrorState(error: e.toString());
     }
+  }
+
+  Future<bool> checkUserIfExitsOrNot() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      try {
+        var isUserAdded = await userCollection
+            .checkUserIfExitOrNot(FirebaseAuth.instance.currentUser!.uid);
+        return isUserAdded;
+      } catch (e) {
+        log("Error in Checking User occurence");
+        return false;
+      }
+    }
+    return false;
   }
 }
 

@@ -17,12 +17,12 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    ref.watch(userAdditionStateProvider);
+    var state = ref.watch(userAdditionStateProvider);
     var userData = ref.read(profileDataStateProvider.notifier).userData;
     var list = [
       userData!.email,
-      userData.phoneNumber,
-      userData.userLocation,
+      (state as AddittionLoadedState).user.phoneNumber,
+      state.user.userLocation,
       userData.bonusPoints.toInt().toString(),
       userData.serviceConsumed.toInt().toString()
     ];
@@ -46,7 +46,7 @@ class ProfilePage extends ConsumerWidget {
                       top: constraints.maxHeight / 3 -
                           (constraints.maxHeight / 2.5) / 2,
                       child: UserNameText(
-                        userName: userData.name,
+                        userName: (state as AddittionLoadedState).user.name,
                       )),
                   Positioned(
                       height: constraints.maxHeight / 1.5,

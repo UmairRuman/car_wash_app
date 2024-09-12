@@ -23,6 +23,7 @@ class FavouriteServiceList extends ConsumerWidget {
             var serviceName = listOfFavouriteServices[index].serviceName;
             var serviceRating = listOfFavouriteServices[index].serviceRating;
             var servicePrice = listOfFavouriteServices[index].servicePrice;
+            var isAssetImage = listOfFavouriteServices[index].isAssetImage;
             return Padding(
               padding: const EdgeInsets.only(
                   left: 20, right: 20, bottom: 10, top: 10),
@@ -35,9 +36,10 @@ class FavouriteServiceList extends ConsumerWidget {
                     Expanded(
                         flex: 40,
                         child: FavouriteCategoryPic(
-                            favouriteCategoryimagePath:
-                                listOfFavouriteServices[index]
-                                    .serviceImageUrl)),
+                          favouriteCategoryimagePath:
+                              listOfFavouriteServices[index].serviceImageUrl,
+                          isAssetImage: isAssetImage,
+                        )),
                     Expanded(
                         flex: 30,
                         child: FavouriteCategoryContainerInfo(
@@ -108,8 +110,9 @@ class FavouriteServiceList extends ConsumerWidget {
                         flex: 40,
                         child: FavouriteCategoryPic(
                             favouriteCategoryimagePath: state
-                                .listOfFavouriteServices[index]
-                                .serviceImageUrl)),
+                                .listOfFavouriteServices[index].serviceImageUrl,
+                            isAssetImage: state
+                                .listOfFavouriteServices[index].isAssetImage)),
                     Expanded(
                         flex: 30,
                         child: FavouriteCategoryContainerInfo(

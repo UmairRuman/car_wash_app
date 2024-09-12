@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
 
@@ -67,17 +68,44 @@ class FavouritePageUserInfo extends StatelessWidget {
 
 class FavouriteCategoryPic extends StatelessWidget {
   final String favouriteCategoryimagePath;
+  final bool isAssetImage;
   const FavouriteCategoryPic(
-      {super.key, required this.favouriteCategoryimagePath});
+      {super.key,
+      required this.favouriteCategoryimagePath,
+      required this.isAssetImage});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage(favouriteCategoryimagePath), fit: BoxFit.cover),
+              image: favouriteCategoryimagePath == ""
+                  ? AssetImage(emptyImage)
+                  : favouriteCategoryimagePath[0] == "a"
+                      ? AssetImage(favouriteCategoryimagePath) as ImageProvider
+                      : CachedNetworkImageProvider(favouriteCategoryimagePath),
+              fit: BoxFit.cover),
           color: const Color.fromARGB(255, 239, 233, 233),
           borderRadius: const BorderRadius.all(Radius.circular(20))),
+      child: favouriteCategoryimagePath == ""
+          ? Image.asset(emptyImage)
+          : favouriteCategoryimagePath[0] == "a"
+              ? null // The image is already being han  dled by DecorationImage
+              : CachedNetworkImage(
+                  imageUrl: favouriteCategoryimagePath,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
     );
   }
 }

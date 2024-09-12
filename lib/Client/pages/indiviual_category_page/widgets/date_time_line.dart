@@ -23,6 +23,7 @@ class DateTimePicker extends ConsumerWidget {
       daysCount: 7,
       DateTime(selectedYear, DateTime.now().month, DateTime.now().day),
       selectionColor: Colors.blue,
+      initialSelectedDate: focusDate,
       selectedTextColor: Colors.white,
       onDateChange: (selectedDate) {
         log("Selected Date : ${DateTime(selectedDate.year, selectedDate.month, selectedDate.day)}");

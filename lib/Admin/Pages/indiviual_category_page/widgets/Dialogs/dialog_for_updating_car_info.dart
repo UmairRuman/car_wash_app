@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/controller_for_updating_car_info.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -65,9 +68,8 @@ void dialogForUpdatingCarInfo(
                                   ? FileImage(
                                       File(CarInfoUpdatingModel.imagePath))
                                   : (isCarAssetImage
-                                          ? AssetImage(carImagePath)
-                                          : NetworkImage(carImagePath))
-                                      as ImageProvider,
+                                      ? AssetImage(carImagePath)
+                                      : NetworkImage(carImagePath)),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -170,7 +172,8 @@ void dialogForUpdatingCarInfo(
                           child: FloatingActionButton(
                             onPressed: () {
                               Navigator.of(context).pop();
-                              carNameTEC.text = "";
+                              CarInfoUpdatingModel.imagePath = "";
+                              CarInfoUpdatingModel.isNewImagePicked = false;
                             },
                             backgroundColor: const Color(0xFF1BC0C5),
                             child: const Text(
@@ -184,12 +187,18 @@ void dialogForUpdatingCarInfo(
                           flex: 40,
                           child: FloatingActionButton(
                             onPressed: () async {
-                              final adminId =
-                                  FirebaseAuth.instance.currentUser!.uid;
+                              largeTextInformerDialog(
+                                  context, "Updating Car Info");
+                              final adminId = prefs!.getString(
+                                          SharedPreferncesConstants.adminkey) ==
+                                      ""
+                                  ? FirebaseAuth.instance.currentUser!.uid
+                                  : prefs!.getString(
+                                      SharedPreferncesConstants.adminkey);
                               await uploadCarImageOnFirebaseStorageBox(
                                   serviceName);
                               await serviceCollection.updateCarInfo(
-                                  adminId,
+                                  adminId!,
                                   serviceId,
                                   CarInfoUpdatingModel.carOldName,
                                   serviceName,
@@ -203,6 +212,9 @@ void dialogForUpdatingCarInfo(
                                   .fetchServiceData(serviceName, serviceId);
 
                               Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              CarInfoUpdatingModel.imagePath = "";
+                              CarInfoUpdatingModel.isNewImagePicked = false;
                             },
                             backgroundColor: const Color(0xFF1BC0C5),
                             child: const Text(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,9 +12,14 @@ class FilterSearchController extends Notifier<List<Services>> {
   List<Services> intialList = [];
   @override
   List<Services> build() {
+    findIntialServiceList();
+    return intialList;
+  }
+
+  void findIntialServiceList() async {
     intialList =
         ref.read(allServiceDataStateProvider.notifier).intialListOfService;
-    return intialList;
+    log("Intial list in Filter search controller $intialList");
   }
 
   void searchService(String query) {

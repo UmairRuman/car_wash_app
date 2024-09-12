@@ -2,23 +2,22 @@ import 'dart:developer';
 
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/main_container.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/user_info.dart';
-import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChooserPage extends StatefulWidget {
+class ChooserPage extends ConsumerStatefulWidget {
   static const pageName = "/chooserPage";
   const ChooserPage({super.key});
 
   @override
-  State<ChooserPage> createState() => _ChooserPageState();
+  ConsumerState<ChooserPage> createState() => _ChooserPageState();
 }
 
-class _ChooserPageState extends State<ChooserPage> {
+class _ChooserPageState extends ConsumerState<ChooserPage> {
   UserCollection userCollection = UserCollection();
   @override
   void initState() {
@@ -31,14 +30,16 @@ class _ChooserPageState extends State<ChooserPage> {
       String userLocation = await userCollection
           .getUserLocation(FirebaseAuth.instance.currentUser!.uid);
       if (userLocation == "") {
-        var position = await determinePosition(context);
-        currentUserPostion = position;
-        log("User Position in IF $currentUserPostion");
+        if (mounted) {
+          var position = await determinePosition(context);
+          currentUserPosition = position;
+        }
+        log("User Position in IF $currentUserPosition");
       }
     } else {
       var position = await determinePosition(context);
-      currentUserPostion = position;
-      log("User Position $currentUserPostion");
+      currentUserPosition = position;
+      log("User Position $currentUserPosition");
     }
   }
 
@@ -53,9 +54,7 @@ class _ChooserPageState extends State<ChooserPage> {
         leading: InkWell(
             onTap: () async {
               log("Tapped on icon");
-              dialogForLogOut(context);
-              // If there's no route below the current one, navigate to a new page.
-              Fluttertoast.showToast(msg: "Clicked");
+              dialogForLogOut(context, ref);
             },
             child: const Icon(Icons.arrow_back)),
       ),

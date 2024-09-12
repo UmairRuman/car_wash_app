@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/controller/edit_profile_state_controller.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/controller/profile_pic_controller.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -44,6 +45,7 @@ class _AdminProfilePageEditIconState
 
         if (croppedFile != null && context.mounted) {
           // Updating the profile picture locally for instant display
+          largeTextInformerDialog(context, "Updating profile pic");
           ref
               .read(profilePicProvider.notifier)
               .onChangeProfilePic(croppedFile.path);

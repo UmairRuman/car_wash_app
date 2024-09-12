@@ -12,7 +12,7 @@ class Services {
   String description;
   String iconUrl;
   double rating;
-  bool isFavourite;
+
   List<Car> cars;
   String imageUrl;
   List<DateTime> availableDates;
@@ -27,7 +27,6 @@ class Services {
     required this.description,
     required this.iconUrl,
     required this.rating,
-    required this.isFavourite,
     required this.cars,
     required this.imageUrl,
     required this.availableDates,
@@ -43,7 +42,6 @@ class Services {
     String? description,
     String? iconUrl,
     double? rating,
-    bool? isFavourite,
     List<Car>? cars,
     String? imageUrl,
     List<DateTime>? availableDates,
@@ -58,7 +56,6 @@ class Services {
       description: description ?? this.description,
       iconUrl: iconUrl ?? this.iconUrl,
       rating: rating ?? this.rating,
-      isFavourite: isFavourite ?? this.isFavourite,
       cars: cars ?? this.cars,
       imageUrl: imageUrl ?? this.imageUrl,
       availableDates: availableDates ?? this.availableDates,
@@ -76,7 +73,6 @@ class Services {
       'description': description,
       'iconUrl': iconUrl,
       'rating': rating,
-      'isFavourite': isFavourite,
       'cars': cars.map((x) => x.toMap()).toList(),
       'imageUrl': imageUrl,
       'availableDates':
@@ -95,7 +91,6 @@ class Services {
       description: map['description'] as String,
       iconUrl: map['iconUrl'] as String,
       rating: map['rating'] as double,
-      isFavourite: map['isFavourite'] as bool,
       cars: List<Car>.from(
         (map['cars']).map<Car>(
           (x) => Car.fromMap(x as Map<String, dynamic>),
@@ -120,7 +115,7 @@ class Services {
 
   @override
   String toString() {
-    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, rating: $rating, isFavourite: $isFavourite, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo, isAssetIcon: $isAssetIcon, isAssetImage: $isAssetImage)';
+    return 'Services(serviceId: $serviceId, adminId: $adminId, serviceName: $serviceName, description: $description, iconUrl: $iconUrl, rating: $rating, cars: $cars, imageUrl: $imageUrl, availableDates: $availableDates, adminPhoneNo: $adminPhoneNo, isAssetIcon: $isAssetIcon, isAssetImage: $isAssetImage)';
   }
 
   @override
@@ -133,7 +128,6 @@ class Services {
         other.description == description &&
         other.iconUrl == iconUrl &&
         other.rating == rating &&
-        other.isFavourite == isFavourite &&
         listEquals(other.cars, cars) &&
         other.imageUrl == imageUrl &&
         listEquals(other.availableDates, availableDates) &&
@@ -150,7 +144,6 @@ class Services {
         description.hashCode ^
         iconUrl.hashCode ^
         rating.hashCode ^
-        isFavourite.hashCode ^
         cars.hashCode ^
         imageUrl.hashCode ^
         availableDates.hashCode ^
