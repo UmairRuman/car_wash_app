@@ -20,7 +20,13 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
       const int maxRetries = 3;
       int retryCount = 0;
       bool success = false;
-      informerDialog(context, "Getting location");
+
+      if (currentUserPosition == null) {
+        var position = await determinePosition(context);
+        currentUserPosition = position;
+      } else {
+        informerDialog(context, "Getting location");
+      }
 
       while (retryCount < maxRetries && !success) {
         try {
@@ -45,7 +51,7 @@ class BtnAddLocationChooserPage extends ConsumerWidget {
           if (retryCount >= maxRetries) {
             log("Max retries reached. Could not fetch location.");
             Fluttertoast.showToast(
-                msg: "Failed in Getting Location",
+                msg: "Please open GPS and try again",
                 textColor: Colors.white,
                 backgroundColor: Colors.red);
             Navigator.pop(context);

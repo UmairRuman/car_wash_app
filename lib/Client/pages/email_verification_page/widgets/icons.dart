@@ -8,7 +8,7 @@ class EmailIcon extends StatelessWidget {
     return const Icon(
       Icons.email_outlined,
       color: Colors.blue,
-      size: 80,
+      size: 100,
     );
   }
 }

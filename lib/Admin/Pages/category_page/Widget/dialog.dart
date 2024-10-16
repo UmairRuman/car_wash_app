@@ -142,27 +142,56 @@ void dialogForAddingPreviousData(BuildContext context, WidgetRef ref) {
                             flex: 35,
                             child: MaterialButton(
                               onPressed: () async {
-                                dialogForAddingPreviousService(context);
-                                var serviceName = ref
-                                    .read(previousServiceStateProvider.notifier)
-                                    .previousServiceNameTEC
-                                    .text;
-                                //We have also add previous images in firebase Storage box
                                 if (AddingPreviousDataVariables.imageFilePath !=
-                                    null) {
-                                  await addPreviousImagesToFirebaseFirestore(
-                                      serviceName,
-                                      AddingPreviousDataVariables
-                                          .imageFilePath!,
-                                      ref);
+                                        null &&
+                                    ref
+                                            .read(previousServiceStateProvider
+                                                .notifier)
+                                            .previousServiceNameTEC
+                                            .text !=
+                                        "") {
+                                  dialogForAddingPreviousService(context);
+                                  var serviceName = ref
+                                      .read(
+                                          previousServiceStateProvider.notifier)
+                                      .previousServiceNameTEC
+                                      .text;
+                                  //We have also add previous images in firebase Storage box
+                                  if (AddingPreviousDataVariables
+                                          .imageFilePath !=
+                                      null) {
+                                    await addPreviousImagesToFirebaseFirestore(
+                                        serviceName,
+                                        AddingPreviousDataVariables
+                                            .imageFilePath!,
+                                        ref);
+                                  }
+                                  ref
+                                      .read(
+                                          previousServiceStateProvider.notifier)
+                                      .insertPreviousData();
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                  AddingPreviousDataVariables
+                                      .isClickedOnCamera = false;
+                                } else if (ref
+                                        .read(previousServiceStateProvider
+                                            .notifier)
+                                        .previousServiceNameTEC
+                                        .text ==
+                                    "") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Please add service name"),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Please add image"),
+                                    ),
+                                  );
                                 }
-                                ref
-                                    .read(previousServiceStateProvider.notifier)
-                                    .insertPreviousData();
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                                AddingPreviousDataVariables.isClickedOnCamera =
-                                    false;
                               },
                               color: Colors.blue,
                               child: const Text(

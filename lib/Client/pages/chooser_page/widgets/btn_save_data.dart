@@ -18,16 +18,14 @@ class BtnSaveUserData extends ConsumerWidget {
         .read(userAdditionStateProvider.notifier)
         .listOfUserInfo[MapForUserInfo.userLocation];
 
-    String userPhoneNumber =
-        FirebaseAuth.instance.currentUser!.phoneNumber ?? "";
     String userProfilePic = ref
         .read(userAdditionStateProvider.notifier)
         .listOfUserInfo[MapForUserInfo.profilePicUrl];
 
     log("User profile Pic in On Save Btn ${userProfilePic}");
 
-    if (userLocation != "" && userPhoneNumber != "" && userProfilePic != "") {
-      ref.read(userAdditionStateProvider.notifier).addUser();
+    if (userLocation != "" && userProfilePic != "") {
+      ref.read(userAdditionStateProvider.notifier).updateUser();
       ref.read(userAdditionStateProvider.notifier).isUserDataAdded = true;
       showDialog(
         context: context,
@@ -75,13 +73,6 @@ class BtnSaveUserData extends ConsumerWidget {
     } else if (userLocation == "") {
       Fluttertoast.showToast(
           msg: "Kindly Add your location!",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          textColor: Colors.white,
-          backgroundColor: Colors.red);
-    } else if (userPhoneNumber == "") {
-      Fluttertoast.showToast(
-          msg: "Kindly authenticate your phone number!",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           textColor: Colors.white,

@@ -57,10 +57,24 @@ class ChooserPagePhoneNumber extends ConsumerWidget {
     final PhoneNumber intialPhoneNumber = PhoneNumber(isoCode: "PK");
     return Row(
       children: [
-        const Spacer(flex: 5),
+        const Spacer(
+          flex: 5,
+        ),
         Expanded(
-            flex: 90,
+            flex: 80,
             child: InternationalPhoneNumberInput(
+              inputDecoration: const InputDecoration(
+                fillColor: Colors.white,
+                labelText: "Phone Number ",
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ),
+              ),
               initialValue: intialPhoneNumber,
               autoValidateMode: AutovalidateMode.onUserInteraction,
               hintText: "Phone No",
@@ -75,7 +89,9 @@ class ChooserPagePhoneNumber extends ConsumerWidget {
                     .onChangePhoneNo(value.phoneNumber!);
               },
             )),
-        const Spacer(flex: 5),
+        const Spacer(
+          flex: 10,
+        ),
       ],
     );
   }

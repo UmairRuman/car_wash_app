@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:car_wash_app/Client/pages/chooser_page/controller/image_controller.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -63,45 +64,52 @@ class ChooserPageUserPic extends ConsumerWidget {
 class EditIcon extends ConsumerWidget {
   const EditIcon({super.key});
   //Function
-  Future<void> onClickEditIcon(WidgetRef ref) async {
-    var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future<void> onClickEditIcon(WidgetRef ref, BuildContext context) async {
+    try {
+      var pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      var croppedFile = await ImageCropper().cropImage(
-          sourcePath: pickedFile.path,
-          aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 0.5),
-          uiSettings: [
-            AndroidUiSettings(
-              toolbarTitle: 'Crop Image',
-              toolbarColor: Colors.deepOrange,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              hideBottomControls: true,
-              lockAspectRatio: false,
-            ),
-          ]);
+      if (pickedFile != null) {
+        var croppedFile = await ImageCropper().cropImage(
+            sourcePath: pickedFile.path,
+            aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 0.5),
+            uiSettings: [
+              AndroidUiSettings(
+                toolbarTitle: 'Crop Image',
+                toolbarColor: Colors.deepOrange,
+                toolbarWidgetColor: Colors.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                hideBottomControls: true,
+                lockAspectRatio: false,
+              ),
+            ]);
 
-      if (croppedFile != null) {
-        ref
-            .read(profilePageImageStateProvider.notifier)
-            .onReciveImagePathFromCloud(croppedFile.path);
-        FirebaseStorage.instance
-            .ref()
-            .child("Images")
-            .child(FirebaseAuth.instance.currentUser!.uid)
-            .child("userImage")
-            .putFile(File(croppedFile.path))
-            .then(
-          (snapshot) async {
-            var imagePath = await snapshot.ref.getDownloadURL();
-            log("Image Path $imagePath");
+        if (croppedFile != null) {
+          ref
+              .read(profilePageImageStateProvider.notifier)
+              .onReciveImagePathFromCloud(croppedFile.path);
+          largeTextInformerDialog(context, "Adding Image");
+          var snapshot = await FirebaseStorage.instance
+              .ref()
+              .child("Images")
+              .child(FirebaseAuth.instance.currentUser!.uid)
+              .child("userImage")
+              .putFile(File(croppedFile.path));
 
-            ref
-                .read(userAdditionStateProvider.notifier)
-                .listOfUserInfo[MapForUserInfo.profilePicUrl] = imagePath;
-          },
-        );
+          var imagePath = await snapshot.ref.getDownloadURL();
+          log("Image Path $imagePath");
+
+          ref
+              .read(userAdditionStateProvider.notifier)
+              .listOfUserInfo[MapForUserInfo.profilePicUrl] = imagePath;
+
+          log("Image path in edit ${ref.read(userAdditionStateProvider.notifier).listOfUserInfo[MapForUserInfo.profilePicUrl]}");
+
+          Navigator.pop(context);
+        }
       }
+    } catch (e) {
+      log("Fail data from Edit icon in chooser page ${e.toString()}");
     }
   }
 
@@ -121,7 +129,7 @@ class EditIcon extends ConsumerWidget {
             ),
           );
         } else {
-          await onClickEditIcon(ref);
+          await onClickEditIcon(ref, context);
         }
       },
       child: Container(

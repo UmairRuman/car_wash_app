@@ -24,7 +24,7 @@ void dialogForShowingProfileImage(
             child: userProfilePic.isEmpty
                 ? Image.asset(emptyImage, fit: BoxFit.cover)
                 : isFileImage
-                    ? Image.file(File(userProfilePic))
+                    ? Container( decoration: BoxDecoration(shape: BoxShape.circle, image: DecorationImage( image: FileImage(File(userProfilePic)), fit: BoxFit.cover)),)
                     : CachedNetworkImage(
                         imageUrl: userProfilePic,
                         fit: BoxFit.cover,

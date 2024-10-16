@@ -7,6 +7,7 @@ class Users {
   String userId;
   String name;
   String email;
+  bool isUserInfo;
   String profilePicUrl;
   String phoneNumber;
   bool isServiceProvider;
@@ -19,6 +20,7 @@ class Users {
     required this.userId,
     required this.name,
     required this.email,
+    required this.isUserInfo,
     required this.profilePicUrl,
     required this.phoneNumber,
     required this.isServiceProvider,
@@ -33,6 +35,7 @@ class Users {
     String? userId,
     String? name,
     String? email,
+    bool? isUserInfo,
     String? profilePicUrl,
     String? phoneNumber,
     bool? isServiceProvider,
@@ -46,6 +49,7 @@ class Users {
       userId: userId ?? this.userId,
       name: name ?? this.name,
       email: email ?? this.email,
+      isUserInfo: isUserInfo ?? this.isUserInfo,
       profilePicUrl: profilePicUrl ?? this.profilePicUrl,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       isServiceProvider: isServiceProvider ?? this.isServiceProvider,
@@ -62,6 +66,7 @@ class Users {
       'userId': userId,
       'name': name,
       'email': email,
+      'isUserInfo': isUserInfo,
       'profilePicUrl': profilePicUrl,
       'phoneNumber': phoneNumber,
       'isServiceProvider': isServiceProvider,
@@ -78,6 +83,7 @@ class Users {
       userId: map['userId'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
+      isUserInfo: map['isUserInfo'] as bool,
       profilePicUrl: map['profilePicUrl'] as String,
       phoneNumber: map['phoneNumber'] as String,
       isServiceProvider: map['isServiceProvider'] as bool,
@@ -96,7 +102,7 @@ class Users {
 
   @override
   String toString() {
-    return 'Users(userId: $userId, name: $name, email: $email, profilePicUrl: $profilePicUrl, phoneNumber: $phoneNumber, isServiceProvider: $isServiceProvider, bonusPoints: $bonusPoints, serviceConsumed: $serviceConsumed, createdAt: $createdAt, userLocation: $userLocation, deviceToken: $deviceToken)';
+    return 'Users(userId: $userId, name: $name, email: $email, isUserInfo: $isUserInfo, profilePicUrl: $profilePicUrl, phoneNumber: $phoneNumber, isServiceProvider: $isServiceProvider, bonusPoints: $bonusPoints, serviceConsumed: $serviceConsumed, createdAt: $createdAt, userLocation: $userLocation, deviceToken: $deviceToken)';
   }
 
   @override
@@ -106,6 +112,7 @@ class Users {
     return other.userId == userId &&
         other.name == name &&
         other.email == email &&
+        other.isUserInfo == isUserInfo &&
         other.profilePicUrl == profilePicUrl &&
         other.phoneNumber == phoneNumber &&
         other.isServiceProvider == isServiceProvider &&
@@ -121,6 +128,7 @@ class Users {
     return userId.hashCode ^
         name.hashCode ^
         email.hashCode ^
+        isUserInfo.hashCode ^
         profilePicUrl.hashCode ^
         phoneNumber.hashCode ^
         isServiceProvider.hashCode ^

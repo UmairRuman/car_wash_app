@@ -44,8 +44,11 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
         centerTitle: true,
         title: Row(
           children: [
+            const Spacer(
+              flex: 5,
+            ),
             const Expanded(
-              flex: 80,
+              flex: 70,
               child: FittedBox(
                 child: Text(
                   "Notification Page",
@@ -54,7 +57,10 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                 ),
               ),
             ),
-            Expanded(flex: 20, child: Image.asset(notificationPageImage))
+            Expanded(flex: 15, child: Image.asset(notificationPageImage)),
+            const Spacer(
+              flex: 10,
+            )
           ],
         ),
       ),

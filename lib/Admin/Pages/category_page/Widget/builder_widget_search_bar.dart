@@ -7,9 +7,9 @@ import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BuilderWidgetSearchBar extends ConsumerWidget {
+class AdminSideBuilderWidgetSearchBar extends ConsumerWidget {
   final Services service;
-  const BuilderWidgetSearchBar({super.key, required this.service});
+  const AdminSideBuilderWidgetSearchBar({super.key, required this.service});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

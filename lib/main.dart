@@ -72,21 +72,25 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
   NotificationServices notificationServices = NotificationServices();
   UserCollection userCollection = UserCollection();
   bool isUserPresent = false;
-
+  bool isUserInfoAdded = false;
   @override
   void initState() {
     super.initState();
     // log("Current User id ${FirebaseAuth.instance.currentUser!.uid}");
+    // prefs!.setBool(SharedPreferncesConstants.isServiceProvider, true);
+    // prefs!.setBool(SharedPreferncesConstants.isUserInfoProvided, true);
     notificationServices.requestPermission();
     notificationServices.getMessageOnAppOnOpen(context, ref);
     notificationServices.redirectWhenAppInBgOrTermianted(context, ref);
     checkAdminDataInSharedPrefrences();
     checkAndUpdateToken();
+
     log("Is service Provider in condtion ${prefs!.getBool(SharedPreferncesConstants.isServiceProvider)}");
 
-    // if (FirebaseAuth.instance.currentUser != null) {
-    //   startBackgroundCleanup(FirebaseAuth.instance.currentUser!.uid);
-    // }
+    if (FirebaseAuth.instance.currentUser != null) {
+      isUserInfoAdded =
+          prefs!.getBool(SharedPreferncesConstants.isUserInfoProvided)!;
+    }
 
     notificationServices.messaging.onTokenRefresh.listen(
       (token) async {
@@ -132,17 +136,13 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
         } else if (!(user.email == null || user.email == "") &&
             !user.emailVerified) {
           return const EmailVerificationPage();
-        } else if (user.emailVerified &&
-            (user.phoneNumber == "" ||
-                user.phoneNumber == null ||
-                isUserServiceProvider == null)) {
+        } else if (user.emailVerified && !isUserInfoAdded) {
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                ChooserPage.pageName,
-                (route) => false,
-              );
+              // Navigator.pushNamed(
+              //   context,
+              //   ChooserPage.pageName,
+              // );
             },
           );
 
@@ -158,42 +158,37 @@ class AuthHandlerState extends ConsumerState<AuthHandler> {
         } else if (prefs!
                     .getString(SharedPreferncesConstants.twitterAccessToken) !=
                 null &&
-            (user.phoneNumber == "" ||
-                user.phoneNumber == null ||
-                isUserServiceProvider == null)) {
+            !isUserInfoAdded) {
           // If the user is logged in through Twitter and phone number is null
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                ChooserPage.pageName,
-                (route) => false,
-              );
+              // Navigator.pushNamed(
+              //   context,
+              //   ChooserPage.pageName,
+              // );
             },
           );
           log('User logged in via Twitter but phone number is null.');
-          return const SizedBox.shrink(); // Temporary widget until redirection
+          return const ChooserPage(); // Temporary widget until redirection
         } else if (isUserServiceProvider!) {
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AdminSideHomePage.pageName,
-                (route) => false,
-              );
+              // Navigator.pushNamed(
+              //   context,
+              //   AdminSideHomePage.pageName,
+              // );
             },
           );
           //If the service provider is true then we will show him Admin Home Page
           return const AdminSideHomePage();
-        } else if (!isUserServiceProvider) {
+        } else if (!isUserServiceProvider!) {
           log("Navigating towards the home page ");
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                HomePage.pageName,
-                (route) => false,
-              );
+              // Navigator.pushNamed(
+              //   context,
+              //   HomePage.pageName,
+              // );
             },
           );
           //If the

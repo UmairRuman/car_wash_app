@@ -68,25 +68,25 @@ class BookingCollection {
       log("Is service provider in delete old bookings $isServiceProvider");
 
       // If the user is a client
-      if (currentUserId != adminId &&
-          isServiceProvider != null &&
-          !isServiceProvider) {
-        var allBookings = await getAllBookings(currentUserId);
+      // if (currentUserId != adminId &&
+      //     isServiceProvider != null &&
+      //     !isServiceProvider) {
+      //   var allBookings = await getAllBookings(currentUserId);
 
-        // Ensure there are bookings to process
-        if (allBookings.isNotEmpty) {
-          final clientCutoff =
-              allBookings.last.carWashdate.add(const Duration(hours: 24));
+      //   // Ensure there are bookings to process
+      //   if (allBookings.isNotEmpty) {
+      //     final clientCutoff =
+      //         allBookings.last.carWashdate.add(const Duration(hours: 24));
 
-          // Ensure the cutoff is not in the future to avoid negative hours
-          if (clientCutoff.isBefore(DateTime.now())) {
-            hours = DateTime.now().difference(clientCutoff).inHours;
-          } else {
-            // If cutoff is in the future, set hours to 0 to avoid deletion
-            hours = 0;
-          }
-        }
-      }
+      //     // Ensure the cutoff is not in the future to avoid negative hours
+      //     if (clientCutoff.isBefore(DateTime.now())) {
+      //       hours = DateTime.now().difference(clientCutoff).inHours;
+      //     } else {
+      //       // If cutoff is in the future, set hours to 0 to avoid deletion
+      //       hours = 0;
+      //     }
+      //   }
+      // }
 
       log("In delete Old Bookings");
       log("Hours $hours");

@@ -167,7 +167,7 @@ class NotificationServices {
 // New function to handle app data initialization
   Future<void> initializeAppData(WidgetRef ref) async {
     try {
-      await ref.read(profileDataStateProvider.notifier).getUserAllDData();
+      ref.read(profileDataStateProvider.notifier).getUserAllDData();
       await ref
           .read(previousServiceStateProvider.notifier)
           .getIntialListPreviousServices();

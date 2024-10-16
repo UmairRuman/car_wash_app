@@ -1,3 +1,4 @@
+import 'package:car_wash_app/utils/validations/email_validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,6 +18,6 @@ class EmailTextController extends Notifier<String> {
   }
 
   onChangeEmailText() {
-    state = emailTEc.text;
+    state = emailTEc.text.trimEmail() ?? "";
   }
 }

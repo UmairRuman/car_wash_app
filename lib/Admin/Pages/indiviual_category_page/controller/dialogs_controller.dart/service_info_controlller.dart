@@ -36,12 +36,15 @@ class ServiceInfoControlller extends Notifier<String> {
       String serviceId,
       String adminId,
       String imagePath,
+      bool isImageModified,
       BuildContext context) async {
     try {
       await serviceCollection.updateServiceDescription(
           serviceDescription, serviceName, serviceId, adminId);
-      await serviceCollection.updateServiceImagePath(
-          imagePath, serviceName, serviceId, adminId);
+      if (isImageModified) {
+        await serviceCollection.updateServiceImagePath(
+            imagePath, serviceName, serviceId, adminId);
+      }
       await ref
           .read(allServiceDataStateProvider.notifier)
           .fetchServiceData(serviceName, serviceId);

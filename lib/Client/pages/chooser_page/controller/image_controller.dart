@@ -9,6 +9,10 @@ class ImageStateNotifier extends Notifier<String> {
   onReciveImagePathFromCloud(String imagePath) {
     state = imagePath;
   }
+
+  void resetStata() {
+    state = "";
+  }
 }
 
 final profilePageImageStateProvider =

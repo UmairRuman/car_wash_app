@@ -47,8 +47,11 @@ class _AdminSideNotificationPageState
         centerTitle: true,
         title: Row(
           children: [
+            const Spacer(
+              flex: 5,
+            ),
             const Expanded(
-              flex: 80,
+              flex: 70,
               child: FittedBox(
                 child: Text(
                   "Notification Page",
@@ -57,7 +60,10 @@ class _AdminSideNotificationPageState
                 ),
               ),
             ),
-            Expanded(flex: 20, child: Image.asset(notificationPageImage)),
+            Expanded(flex: 15, child: Image.asset(notificationPageImage)),
+            const Spacer(
+              flex: 10,
+            ),
           ],
         ),
       ),
@@ -218,10 +224,12 @@ class _AdminSideNotificationPageState
                                           ),
                                           Expanded(
                                               flex: 20,
-                                              child: Text(
-                                                notificationDeleiveredData,
-                                                style: const TextStyle(
-                                                    fontSize: 12),
+                                              child: FittedBox(
+                                                child: Text(
+                                                  notificationDeleiveredData,
+                                                  style: const TextStyle(
+                                                      fontSize: 12),
+                                                ),
                                               )),
                                         ],
                                       )),

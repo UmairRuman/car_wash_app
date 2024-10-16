@@ -28,39 +28,47 @@ class FavouriteCategoryBookButton extends ConsumerWidget {
           flex: 5,
         ),
         Expanded(
-            flex: 20,
+            flex: 25,
             child: StatefulBuilder(
-              builder: (context, setState) => AnimatedCrossFade(
-                firstChild: InkWell(
-                  onTap: () {},
-                  child: const Icon(
-                    Icons.favorite_border,
-                    color: Colors.red,
+              builder: (context, setState) => Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: AnimatedCrossFade(
+                    firstChild: InkWell(
+                      onTap: () {},
+                      child: const Icon(
+                        size: 30,
+                        Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                    ),
+                    secondChild: InkWell(
+                      onTap: () async {
+                        setState(() {
+                          isFavourite = false;
+                        });
+                        await Future.delayed(const Duration(seconds: 1));
+                        ref
+                            .read(favouriteServiceProvider.notifier)
+                            .deleteFavouriteService(serviceId.toString());
+                      },
+                      child: const Icon(
+                        size: 30,
+                        Icons.favorite,
+                        color: Colors.red,
+                      ),
+                    ),
+                    crossFadeState: isFavourite
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 300),
                   ),
                 ),
-                secondChild: InkWell(
-                  onTap: () async {
-                    setState(() {
-                      isFavourite = false;
-                    });
-                    await Future.delayed(const Duration(seconds: 1));
-                    ref
-                        .read(favouriteServiceProvider.notifier)
-                        .deleteFavouriteService(serviceId.toString());
-                  },
-                  child: const Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
-                ),
-                crossFadeState: isFavourite
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 300),
               ),
             )),
         const Spacer(
-          flex: 50,
+          flex: 45,
         ),
         Expanded(
           flex: 25,

@@ -51,75 +51,78 @@ class CarModelContainer extends ConsumerWidget {
                           ref.read(bookingStateProvider.notifier).carImagePath =
                               listOfCars[selectedIndex].url;
                         },
-                        child: Container(
-                          height: constraints.maxHeight,
-                          width: constraints.maxWidth / 3,
-                          decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 249, 248, 248),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
-                              ),
-                              border: isSelected && selectedIndex == index
-                                  ? Border.all(color: Colors.blue, width: 3)
-                                  : const Border(),
-                              boxShadow: const [
-                                BoxShadow(
-                                    color: Color.fromARGB(255, 143, 193, 234),
-                                    offset: Offset(3, 3),
-                                    blurRadius: 3)
-                              ]),
-                          child: Stack(clipBehavior: Clip.none, children: [
-                            Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                      flex: 52,
-                                      child: (listOfCars[index].isAsset
-                                          ? Image.asset(listOfCars[index].url)
-                                          : CachedNetworkImage(
-                                              imageUrl: listOfCars[index].url,
-                                              placeholder: (context, url) =>
-                                                  const CupertinoActivityIndicator(),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                            ))),
-                                  Expanded(
-                                      flex: 25,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Container(
+                            height: constraints.maxHeight,
+                            width: constraints.maxWidth / 3,
+                            decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 249, 248, 248),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                                border: isSelected && selectedIndex == index
+                                    ? Border.all(color: Colors.blue, width: 3)
+                                    : const Border(),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 143, 193, 234),
+                                      offset: Offset(3, 3),
+                                      blurRadius: 3)
+                                ]),
+                            child: Stack(clipBehavior: Clip.none, children: [
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                        flex: 52,
+                                        child: (listOfCars[index].isAsset
+                                            ? Image.asset(listOfCars[index].url)
+                                            : CachedNetworkImage(
+                                                imageUrl: listOfCars[index].url,
+                                                placeholder: (context, url) =>
+                                                    const CupertinoActivityIndicator(),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                              ))),
+                                    Expanded(
+                                        flex: 25,
+                                        child: Text(
+                                          listOfCars[index].carName,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                    Expanded(
+                                      flex: 18,
                                       child: Text(
-                                        listOfCars[index].carName,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                  Expanded(
-                                    flex: 18,
-                                    child: Text(
-                                      listOfCars[index].price,
-                                      style:
-                                          const TextStyle(color: Colors.blue),
+                                        listOfCars[index].price,
+                                        style:
+                                            const TextStyle(color: Colors.blue),
+                                      ),
                                     ),
-                                  ),
-                                  const Spacer(
-                                    flex: 5,
-                                  )
-                                ],
-                              ),
-                            ),
-                            if (isSelected && selectedIndex == index)
-                              Positioned(
-                                top: -5,
-                                right: -5,
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.blue,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(Icons.check,
-                                      color: Colors.white, size: 20.0),
+                                    const Spacer(
+                                      flex: 5,
+                                    )
+                                  ],
                                 ),
                               ),
-                          ]),
+                              if (isSelected && selectedIndex == index)
+                                Positioned(
+                                  top: -5,
+                                  right: -5,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.blue,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.check,
+                                        color: Colors.white, size: 20.0),
+                                  ),
+                                ),
+                            ]),
+                          ),
                         ),
                       ),
                     ),

@@ -9,22 +9,20 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/rating_collec
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
-import 'package:car_wash_app/Controllers/user_state_controller.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final initializationProvider = FutureProvider<void>((ref) async {
-  final sharedPreferences = await SharedPreferences.getInstance();
-
-  final userKey = FirebaseAuth.instance.currentUser!.uid;
-  ref.read(userAdditionStateProvider.notifier).getUser(userKey);
+  //final userKey = FirebaseAuth.instance.currentUser!.uid;
+  //ref.read(userAdditionStateProvider.notifier).getUser();
 });
 
 class AllServiceInfoController extends Notifier<DataStates> {
+  UserCollection userCollection = UserCollection();
   RatingCollection ratingCollection = RatingCollection();
   var adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
       ? FirebaseAuth.instance.currentUser!.uid
@@ -53,6 +51,7 @@ class AllServiceInfoController extends Notifier<DataStates> {
   }
 
   Future<void> getIntialListOfServices() async {
+    log("Admin Id In get Intail List OF Services $adminId");
     try {
       log("In get Intail List OF Services");
       intialListOfService =
@@ -151,7 +150,10 @@ class AllServiceInfoController extends Notifier<DataStates> {
 
     if (adminId != "") {
       //Getting current user data
-      String? phoneNo = prefs!.getString(SharedPreferncesConstants.phoneNo);
+      String? phoneNo =
+          prefs!.getString(SharedPreferncesConstants.phoneNo) == ""
+              ? await userCollection.getUserPhoneNumber(userId)
+              : prefs!.getString(SharedPreferncesConstants.phoneNo)!;
 
       serviceCollection.updateNewService(Services(
           rating: 5,

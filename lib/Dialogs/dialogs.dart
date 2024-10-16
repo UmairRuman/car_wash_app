@@ -1,9 +1,17 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Admin/Pages/home_page/Controller/bottom_bar_controller.dart';
+import 'package:car_wash_app/Client/pages/chooser_page/widgets/skip_dialog.dart';
 import 'package:car_wash_app/Client/pages/first_page/view/first_page.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/Controllers/dialog_info_controller.dart';
+import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 void informerDialog(BuildContext context, String text) {
   showDialog(
@@ -133,6 +141,11 @@ void dialogForLogOut(BuildContext context, WidgetRef ref) {
                           flex: 30,
                           child: MaterialButton(
                             onPressed: () async {
+                              // ref
+                              //     .read(userAdditionStateProvider.notifier)
+                              //     .reInitializeState();
+                              await removeAdminStatusFromPrefs();
+
                               ref
                                   .read(bottomStateProvider.notifier)
                                   .currentNavigationState(0);
@@ -163,6 +176,170 @@ void dialogForLogOut(BuildContext context, WidgetRef ref) {
                 flex: 10,
               ),
             ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void dialogForPhoneNo(BuildContext context, WidgetRef ref) {
+  UserCollection userCollection = UserCollection();
+  final PhoneNumber intialPhoneNumber = PhoneNumber(isoCode: "PK");
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Material(
+          child: Container(
+            height: 250,
+            width: 300,
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(30)),
+            child: Column(
+              children: [
+                const Spacer(
+                  flex: 5,
+                ),
+                const Expanded(
+                    flex: 15,
+                    child: Text(
+                      "Before continuing, enter you phone number!",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    )),
+                const Spacer(
+                  flex: 5,
+                ),
+                Expanded(
+                    flex: 40,
+                    child: Row(
+                      children: [
+                        const Spacer(
+                          flex: 5,
+                        ),
+                        Expanded(
+                          flex: 90,
+                          child: InternationalPhoneNumberInput(
+                            selectorConfig: const SelectorConfig(
+                              selectorType: PhoneInputSelectorType.DIALOG,
+                            ),
+                            inputDecoration: const InputDecoration(
+                              fillColor: Colors.white,
+                              labelText: "Phone Number ",
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 1.5),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 1.5),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                              ),
+                            ),
+                            initialValue: intialPhoneNumber,
+                            autoValidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            hintText: "Phone No",
+                            textFieldController: ref
+                                .read(dialogPhoneInfoProvider.notifier)
+                                .phoneNoTEC,
+                            onInputValidated: (value) {
+                              if (value) {
+                                ref
+                                    .read(dialogPhoneInfoProvider.notifier)
+                                    .isPhoneNoValidated = value;
+                                log("Is phone Number validated $value");
+                              }
+                            },
+                            onInputChanged: (phoneNumber) {
+                              final combinedPhoneNumber =
+                                  '${phoneNumber.phoneNumber}';
+                              ref
+                                  .read(dialogPhoneInfoProvider.notifier)
+                                  .combinePhoneNo = combinedPhoneNumber;
+                            },
+                          ),
+                        ),
+                        const Spacer(
+                          flex: 5,
+                        ),
+                      ],
+                    )),
+                const Spacer(
+                  flex: 5,
+                ),
+                Expanded(
+                    flex: 20,
+                    child: Row(
+                      children: [
+                        const Spacer(
+                          flex: 15,
+                        ),
+                        Expanded(
+                            flex: 30,
+                            child: MaterialButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              color: Colors.blue,
+                              child: const Text("No",
+                                  style: TextStyle(color: Colors.white)),
+                            )),
+                        const Spacer(
+                          flex: 10,
+                        ),
+                        Expanded(
+                            flex: 30,
+                            child: MaterialButton(
+                              onPressed: () async {
+                                largeTextInformerDialog(context, "Updating");
+                                final String userId =
+                                    FirebaseAuth.instance.currentUser!.uid;
+                                if (ref
+                                    .read(dialogPhoneInfoProvider.notifier)
+                                    .isPhoneNoValidated) {
+                                  await userCollection.updateUserPhoneNo(
+                                      userId,
+                                      ref
+                                          .read(
+                                              dialogPhoneInfoProvider.notifier)
+                                          .combinePhoneNo);
+                                }
+
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                dialogForSkipProfile(context, ref);
+                                Fluttertoast.showToast(
+                                    msg:
+                                        "Now you can continue with your account!",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    textColor: Colors.white,
+                                    backgroundColor: Colors.green);
+                              },
+                              color: Colors.blue,
+                              child: const Text(
+                                "Save",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )),
+                        const Spacer(
+                          flex: 15,
+                        ),
+                      ],
+                    )),
+                const Spacer(
+                  flex: 10,
+                ),
+              ],
+            ),
           ),
         ),
       );

@@ -1,4 +1,4 @@
-import 'package:car_wash_app/Admin/Pages/category_page/Widget/profile_info.dart';
+import 'package:car_wash_app/Client/pages/Search_bar/view/client_search_bar.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/categories_list_view.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/home_page_texts.dart';
 import 'package:car_wash_app/Client/pages/category_page/Widget/previous_work_images.dart';
@@ -72,7 +72,7 @@ class CategoryPage extends ConsumerWidget {
                               (constraints.maxWidth * 0.8) / 2,
                           bottom: constraints.maxHeight / 7 -
                               (constraints.maxHeight * 0.2) / 2,
-                          child: const AdminHomePageSearchBar()),
+                          child: const ClientHomePageSearchBar()),
                     ]);
                   })),
               const Spacer(

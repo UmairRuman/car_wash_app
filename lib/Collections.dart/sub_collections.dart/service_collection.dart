@@ -201,7 +201,7 @@ class ServiceCollection {
       String carImagePath,
       bool isAssetImage) async {
     try {
-      final docRef = await UserCollection.userCollection
+      final docRef = UserCollection.userCollection
           .doc(adminId)
           .collection(serviceCollection)
           .doc("$serviceId)$serviceName");
@@ -219,14 +219,24 @@ class ServiceCollection {
         if (index != -1) {
           // Remove the old map
           cars.removeAt(index);
-
+          var updatedCar = {};
+          if (isAssetImage) {
+            updatedCar = {
+              'carName': carName,
+              'price': carPrice,
+              'url': carImagePath,
+              'isAsset': isAssetImage,
+            };
+          } else {
+            updatedCar = {
+              'carName': carName,
+              'price': carPrice,
+              'url': carImagePath,
+              'isAsset': isAssetImage,
+            };
+          }
           // Create the updated map
-          final updatedCar = {
-            'carName': carName,
-            'price': carPrice,
-            'url': carImagePath,
-            'isAsset': isAssetImage,
-          };
+
           log("Updated Car ${updatedCar.toString()}");
 
           // Add the updated map

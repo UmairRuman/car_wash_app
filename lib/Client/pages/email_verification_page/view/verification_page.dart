@@ -1,3 +1,4 @@
+import 'package:car_wash_app/Client/pages/chooser_page/widgets/after_verify_btn_click.dart';
 import 'package:car_wash_app/Client/pages/email_verification_page/widgets/main_container.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/model/model_for_sending_user_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,22 +10,28 @@ class EmailVerificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String email;
-    String password = "";
-    String userName = "";
-    if (ModalRoute.of(context)!.settings.arguments != null) {
-      var userInfo =
-          ModalRoute.of(context)!.settings.arguments as ModelForUserInfo;
-      email = userInfo.userEmail;
-      password = userInfo.userPassword;
-      userName = userInfo.userName;
-    } else {
-      email = FirebaseAuth.instance.currentUser!.email ?? "";
-    }
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
         child: Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Email Verification",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        leading: InkWell(
+            onTap: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+              {}
+            },
+            child: const Icon(
+              Icons.arrow_back,
+            )),
+      ),
       backgroundColor: Colors.blue,
       body: Center(
           child: Container(
@@ -35,11 +42,7 @@ class EmailVerificationPage extends StatelessWidget {
                     color: Color.fromARGB(255, 25, 94, 151),
                     offset: Offset(8, 8)),
               ], color: Colors.white, borderRadius: BorderRadius.circular(30)),
-              child: VerificationPageMainContainer(
-                email: email,
-                password: password,
-                name: userName,
-              ))),
+              child: const VerificationPageMainContainer())),
     ));
   }
 }

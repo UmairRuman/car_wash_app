@@ -78,41 +78,45 @@ class _AdminSideCarModelContainerState
                         onLongPress: () {
                           _controller[index].toggleCard();
                         },
-                        child: Container(
-                          height: constraints.maxHeight,
-                          width: constraints.maxWidth / 3,
-                          decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Container(
+                            height: constraints.maxHeight,
+                            width: constraints.maxWidth / 3,
+                            decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 143, 193, 234),
+                                      offset: Offset(3, 3),
+                                      blurRadius: 3)
+                                ]),
+                            child: InkWell(
+                              onTap: () async {
+                                ref
+                                    .read(allServiceDataStateProvider.notifier)
+                                    .deleteCar(index, widget.serviceId,
+                                        widget.serviceName);
+                                await FirebaseStorage.instance
+                                    .ref()
+                                    .child("Images")
+                                    .child(
+                                        FirebaseAuth.instance.currentUser!.uid)
+                                    .child("ServiceAssets")
+                                    .child(widget.serviceName)
+                                    .child("carImages")
+                                    .child(widget.listOfCars[index].carName)
+                                    .delete();
+                                log("deleted ");
+                              },
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                size: 40,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color.fromARGB(255, 143, 193, 234),
-                                    offset: Offset(3, 3),
-                                    blurRadius: 3)
-                              ]),
-                          child: InkWell(
-                            onTap: () async {
-                              ref
-                                  .read(allServiceDataStateProvider.notifier)
-                                  .deleteCar(index, widget.serviceId,
-                                      widget.serviceName);
-                              await FirebaseStorage.instance
-                                  .ref()
-                                  .child("Images")
-                                  .child(FirebaseAuth.instance.currentUser!.uid)
-                                  .child("ServiceAssets")
-                                  .child(widget.serviceName)
-                                  .child("carImages")
-                                  .child(widget.listOfCars[index].carName)
-                                  .delete();
-                              log("deleted ");
-                            },
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                              size: 40,
                             ),
                           ),
                         ),

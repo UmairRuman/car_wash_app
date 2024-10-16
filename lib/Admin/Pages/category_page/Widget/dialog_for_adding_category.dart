@@ -157,28 +157,53 @@ void dialogForAddingServiceCategory(BuildContext context, WidgetRef ref) {
                             flex: 35,
                             child: MaterialButton(
                               onPressed: () async {
-                                dialogForAddingService(context);
-                                //On save button click we have to upload image to the firebaseStorage box
-                                log("File path ${ServiceIconCategoryVariables.imageFilePath}");
                                 if (ServiceIconCategoryVariables
-                                        .imageFilePath !=
-                                    null) {
-                                  await storingServiceIconAtFireStore(
-                                      ref,
-                                      ServiceIconCategoryVariables
-                                          .imageFilePath!);
+                                        .isIconModified &&
+                                    ref
+                                            .read(serviceAddtionStateProvider
+                                                .notifier)
+                                            .serviecNameTEC
+                                            .text !=
+                                        "") {
+                                  log('service name :  ${ref.read(serviceAddtionStateProvider.notifier).serviecNameTEC.text} ');
+                                  dialogForAddingService(context);
+                                  //On save button click we have to upload image to the firebaseStorage box
+                                  log("File path ${ServiceIconCategoryVariables.imageFilePath}");
+                                  if (ServiceIconCategoryVariables
+                                          .imageFilePath !=
+                                      null) {
+                                    await storingServiceIconAtFireStore(
+                                        ref,
+                                        ServiceIconCategoryVariables
+                                            .imageFilePath!);
 
-                                  ServiceIconCategoryVariables.imageFilePath =
-                                      null;
-                                  ServiceIconCategoryVariables
-                                      .isClickedOnCamera = false;
+                                    ServiceIconCategoryVariables.imageFilePath =
+                                        null;
+                                    ServiceIconCategoryVariables
+                                        .isClickedOnCamera = false;
 
-                                  await ref
-                                      .read(
-                                          serviceAddtionStateProvider.notifier)
-                                      .onSaveBtnClick();
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pop();
+                                    await ref
+                                        .read(serviceAddtionStateProvider
+                                            .notifier)
+                                        .onSaveBtnClick();
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  }
+                                } else if (ref
+                                        .read(serviceAddtionStateProvider
+                                            .notifier)
+                                        .serviecNameTEC
+                                        .text ==
+                                    "") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("Kindly add service name")));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("Kindly add service icon")));
                                 }
                               },
                               color: Colors.blue,

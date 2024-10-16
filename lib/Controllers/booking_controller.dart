@@ -54,7 +54,7 @@ class BookingController extends Notifier<BookingStates> {
           carType != null &&
           carPrice != null &&
           timeSlot != null) {
-        String phoneNo = FirebaseAuth.instance.currentUser!.phoneNumber ?? "";
+        String phoneNo = await userCollection.getUserPhoneNumber(userId);
         //Adding Booking in client Collection
         log("Adding Booking at User side");
         await bookingCollection.addBooking(Bookings(

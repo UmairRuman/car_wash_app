@@ -6,7 +6,18 @@ class SignInController extends Notifier<String> {
   TextEditingController passwordSignInTEC = TextEditingController();
   @override
   String build() {
+    ref.onDispose(
+      () {
+        emailSignInTEC.dispose();
+        passwordSignInTEC.dispose();
+      },
+    );
     return "";
+  }
+
+  void clearSignInFields() {
+    emailSignInTEC.clear();
+    passwordSignInTEC.clear();
   }
 }
 

@@ -9,4 +9,5 @@ class MapForUserInfo {
   static const String serviceConsumed = "serviceConsumed";
   static const String createdAt = "createdAt";
   static const String userLocation = "userLocation";
+  static const String userPassword = "userPasword";
 }

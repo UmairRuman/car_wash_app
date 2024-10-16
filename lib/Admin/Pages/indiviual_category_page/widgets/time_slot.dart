@@ -79,33 +79,36 @@ class _AdminSideTimeSlotState extends ConsumerState<AdminSideTimeSlot> {
                           onLongPress: () {
                             _controller[index].toggleCard();
                           },
-                          child: Container(
-                            height: constraints.maxHeight / 2,
-                            width: constraints.maxWidth / 4,
-                            decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 143, 193, 234),
-                                  offset: Offset(3, 3),
-                                  blurRadius: 3,
-                                )
-                              ],
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                ref
-                                    .read(timeSlotsStateProvider.notifier)
-                                    .deleteTimeSlotAtSpecificDate(
-                                        index, selectedDate);
-                                log("deleted ");
-                              },
-                              child: const Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                                size: 40,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Container(
+                              height: constraints.maxHeight / 2,
+                              width: constraints.maxWidth / 4,
+                              decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color.fromARGB(255, 143, 193, 234),
+                                    offset: Offset(3, 3),
+                                    blurRadius: 3,
+                                  )
+                                ],
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  ref
+                                      .read(timeSlotsStateProvider.notifier)
+                                      .deleteTimeSlotAtSpecificDate(
+                                          index, selectedDate);
+                                  log("deleted ");
+                                },
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 40,
+                                ),
                               ),
                             ),
                           ),

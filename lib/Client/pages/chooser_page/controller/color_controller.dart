@@ -24,6 +24,13 @@ class SquareColorController extends Notifier<Color> {
     attendentBoxColor = const Color.fromARGB(255, 241, 240, 240);
     attendentTextColor = Colors.black;
   }
+
+  void resetColorState() {
+    customerBoxColor = Colors.blue;
+    customerTextColor = Colors.white;
+    attendentBoxColor = const Color.fromARGB(255, 241, 240, 240);
+    attendentTextColor = Colors.black;
+  }
 }
 
 final colorNotifierProvider =

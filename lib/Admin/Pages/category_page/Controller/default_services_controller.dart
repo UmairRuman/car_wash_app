@@ -4,6 +4,7 @@ import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_col
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DefaultServicesController extends Notifier<DefaultServicesStates> {
+  UserCollection userCollection = UserCollection();
   FavouriteCollection favouriteCollection = FavouriteCollection();
   String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
       ? FirebaseAuth.instance.currentUser!.uid
@@ -31,10 +33,7 @@ class DefaultServicesController extends Notifier<DefaultServicesStates> {
   Future<void> addDefaultService() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     log("Current user id $userId");
-    String adminPhoneNumber =
-        FirebaseAuth.instance.currentUser!.phoneNumber == ""
-            ? "No Phone no"
-            : FirebaseAuth.instance.currentUser!.phoneNumber!;
+    String adminPhoneNumber = await userCollection.getUserPhoneNumber(userId);
 
     for (int index = 0; index < listOfCategoryIcons.length; index++) {
       List<Car> listOfCars = [];

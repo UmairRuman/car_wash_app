@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/favourite_service_counter_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/service_counter_collection.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/car_wash_services.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ServiceAdditionController extends Notifier<ServiceDataStates> {
+  UserCollection userCollection = UserCollection();
   String? adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
       ? FirebaseAuth.instance.currentUser!.uid
       : prefs!.getString(SharedPreferncesConstants.adminkey);
@@ -73,8 +75,10 @@ class ServiceAdditionController extends Notifier<ServiceDataStates> {
       //Adding plus one in the counter collection
       String adminPhoneNo =
           prefs!.getString(SharedPreferncesConstants.phoneNo) == ""
-              ? "No Phone no"
+              ? await userCollection.getUserPhoneNumber(userId)
               : prefs!.getString(SharedPreferncesConstants.phoneNo)!;
+
+              
       serviceCollection.addNewService(Services(
           rating: 5,
           isAssetImage: false,

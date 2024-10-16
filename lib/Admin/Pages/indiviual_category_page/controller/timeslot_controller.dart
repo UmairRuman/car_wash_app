@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TimeslotController extends Notifier<TimeSlotStates> {
+  int indexOfTimeSlot = 0;
   String adminId = prefs!.getString(SharedPreferncesConstants.adminkey) == ""
       ? FirebaseAuth.instance.currentUser!.uid
       : prefs!.getString(SharedPreferncesConstants.adminkey)!;

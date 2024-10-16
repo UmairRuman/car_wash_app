@@ -17,7 +17,7 @@ class ProfileStateController extends Notifier<String> {
     return "";
   }
 
-  Future<void> getUserAllDData() async {
+  void getUserAllDData() async {
     log("Get User all data Function");
 
     try {

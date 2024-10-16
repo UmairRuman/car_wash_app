@@ -37,6 +37,12 @@ Future<void> removeAdminIdFromPrefs() async {
   await prefs.remove(SharedPreferncesConstants.adminTokenKey);
 }
 
+Future<void> removeAdminStatusFromPrefs() async {
+  await prefs!.remove(SharedPreferncesConstants.isServiceProvider);
+  await prefs!.remove(SharedPreferncesConstants.isUserInfoProvided);
+  log("Deleted Admin Status from Shared Preferences ${prefs!.getBool(SharedPreferncesConstants.isServiceProvider)}");
+}
+
 void storeServiceProviderTokens(List<String> tokens) {
   log(tokens.toString());
   String tokensJson = jsonEncode(tokens);
@@ -63,9 +69,13 @@ Future<void> getAdminIdFromFireStore(WidgetRef ref) async {
   if (FirebaseAuth.instance.currentUser != null) {
     var isUserServiceProvider = await userCollection
         .getUserInfo(FirebaseAuth.instance.currentUser!.uid);
+    var isUserInfoProvided = await userCollection
+        .getServiceProviderInfo(FirebaseAuth.instance.currentUser!.uid);
     log("Is user service Provider in get Admin From Firestore method = $isUserServiceProvider");
     prefs.setBool(
         SharedPreferncesConstants.isServiceProvider, isUserServiceProvider);
+    prefs.setBool(
+        SharedPreferncesConstants.isUserInfoProvided, isUserInfoProvided);
     if (adminIdInSharedPrefrences == null ||
         adminCountInSharedPrefrences == null ||
         adminCountInSharedPrefrences != adminCount.length ||

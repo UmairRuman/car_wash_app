@@ -7,7 +7,9 @@ import 'package:car_wash_app/Client/pages/login_page/controller/sign_in_controll
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/Controllers/app_opening_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
+import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/firebase_notifications/notification_service.dart';
 import 'package:car_wash_app/main.dart';
@@ -70,54 +72,84 @@ class _BtnLoginState extends ConsumerState<BtnLogin>
                 email: trimmedEmail!, password: password);
         User? user = userSignInCredentials.user;
 
-        String userPhoneNumber =
-            FirebaseAuth.instance.currentUser!.phoneNumber ?? "";
+        if (user != null) {
+          bool isServiceProvider = await userCollection.getUserInfo(user.uid);
+          bool isUserInfoProvier =
+              await userCollection.getServiceProviderInfo(user.uid);
+          await prefs?.setBool(
+              SharedPreferncesConstants.isUserInfoProvided, isUserInfoProvier);
 
-        if (user != null && userPhoneNumber == "") {
-          log("In chooser page Condition");
+          await prefs?.setBool(
+              SharedPreferncesConstants.isServiceProvider, isServiceProvider);
 
-          Fluttertoast.showToast(
-              msg: "Login Successfully",
-              textColor: Colors.white,
-              backgroundColor: Colors.green);
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            ChooserPage.pageName,
-            (route) => false,
-          );
-        } else if (user != null &&
-            userPhoneNumber != "" &&
-            !prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
-          Fluttertoast.showToast(
-              msg: "Login Successfully",
-              textColor: Colors.white,
-              backgroundColor: Colors.green);
+          bool isServiceInfoAdded =
+              await userCollection.getServiceProviderInfo(user.uid);
+          await getAdminIdFromFireStore(ref);
+          ref.read(appOpeningStateProvider.notifier).isUserLogin = true;
+          log('user is not equal to null');
 
-          Navigator.of(context).pushNamed(
-            HomePage.pageName,
-          );
-        } else if (user != null &&
-            userPhoneNumber != "" &&
-            prefs!.getBool(SharedPreferncesConstants.isServiceProvider)!) {
-          if (mounted) {
-            Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
+          if (!isServiceInfoAdded) {
+            Fluttertoast.showToast(
+                msg: "???????????????????",
+                textColor: Colors.white,
+                backgroundColor: Colors.green);
+            if (!mounted) return;
+            Navigator.pop(context);
+            Navigator.of(context).pushNamed(
+              ChooserPage.pageName,
+            );
+            log('navigate to the chooser page');
+          } else {
+            if (isServiceInfoAdded && !isServiceProvider) {
+              log("Not a service Provider");
+              Fluttertoast.showToast(
+                  msg: "Login Successfully",
+                  textColor: Colors.white,
+                  backgroundColor: Colors.green);
+              if (mounted) {
+                // await Future.delayed(
+                //   const Duration(seconds: 3),
+                // );
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(
+                  HomePage.pageName,
+                );
+                log('navigate to the home page');
+              }
+            } else if (isServiceInfoAdded && isServiceProvider) {
+              log('navigate to the admin side home page');
+              //log("User is a service provider");
+              if (mounted) {
+                // await Future.delayed(
+                //   const Duration(seconds: 3),
+                // );
+                String deviceToken = await notificationServices.getTokken();
+                await adminDeviceTokenCollection.updateSpecificField(
+                    FirebaseAuth.instance.currentUser!.uid, deviceToken);
+                await userCollection.updateUserDeviceToken(
+                    FirebaseAuth.instance.currentUser!.uid, deviceToken);
+                await adminInfoCollection.updateAdminDeviceToken(
+                    FirebaseAuth.instance.currentUser!.uid, deviceToken);
+                log("Admin Device Token : $deviceToken");
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(AdminSideHomePage.pageName);
+              }
+              //When the user is admin and login again may be his token changed so we have to add Token in admin id and also admin device token collection
+
+              Fluttertoast.showToast(
+                  msg: "Login Successfully",
+                  textColor: Colors.white,
+                  backgroundColor: Colors.green);
+            }
           }
-          //When the user is admin and login again may be his token changed so we have to add Token in admin id and also admin device token collection
-          String deviceToken = await notificationServices.getTokken();
-          adminDeviceTokenCollection.updateSpecificField(
-              FirebaseAuth.instance.currentUser!.uid, deviceToken);
-          userCollection.updateUserDeviceToken(
-              FirebaseAuth.instance.currentUser!.uid, deviceToken);
-          adminInfoCollection.updateAdminDeviceToken(
-              FirebaseAuth.instance.currentUser!.uid, deviceToken);
-          log("Admin Device Token : $deviceToken");
-
-          Fluttertoast.showToast(
-              msg: "Login Successfully",
-              textColor: Colors.white,
-              backgroundColor: Colors.green);
+          ref.read(signInInfoProvider.notifier).clearSignInFields();
         }
       } catch (e) {
+        // if (mounted) {
+        //   Navigator.pop(context);
+        // }
         Navigator.pop(context);
+
         Fluttertoast.showToast(
             msg: "Wrong password or email !",
             toastLength: Toast.LENGTH_LONG,

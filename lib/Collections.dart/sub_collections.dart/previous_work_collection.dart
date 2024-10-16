@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/ModelClasses/Users.dart';
 import 'package:car_wash_app/ModelClasses/previous_work_model.dart';
@@ -80,6 +82,7 @@ class PreviousWorkCollection {
           .doc(userId)
           .collection(previousWorkCollectionName)
           .get();
+      log("Snapshot of previous work data : ${snapshot.docs.toString()}");
       return snapshot.docs
           .map((e) => PreviousWorkModel.fromMap(e.data()))
           .toList();

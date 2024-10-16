@@ -12,4 +12,8 @@ class SaveDataNotifier extends Notifier<bool> {
   void onSavedUserState() {
     state = true;
   }
+
+  void resetSaveBtnState() {
+    state = false;
+  }
 }

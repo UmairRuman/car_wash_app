@@ -4,10 +4,12 @@ import 'package:car_wash_app/Admin/Pages/category_page/Controller/default_servic
 import 'package:car_wash_app/Admin/Pages/category_page/Controller/previous_service_addition_controller.dart';
 import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/controller/phone_authenticatio_notifier.dart';
+import 'package:car_wash_app/Client/pages/chooser_page/controller/reseting_all_controllers.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/controller/save_data_notifier.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/controller/verification_state_notifier.dart';
 import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
 import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
@@ -28,6 +30,7 @@ class BtnContinueChooserPage extends ConsumerStatefulWidget {
 
 class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
     with SingleTickerProviderStateMixin {
+  UserCollection userCollection = UserCollection();
   AdminInfoCollection adminInfoCollection = AdminInfoCollection();
   late AnimationController animationController;
   late Animation<double> animationForSize;
@@ -80,50 +83,51 @@ class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
     await Future.delayed(const Duration(milliseconds: 100));
     await animationController.reverse();
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    if (userSavedState) {
-      var adminInfo = await adminInfoCollection.getAdminInfoByNumber("01");
-      var adminIdForMatching = adminInfo.adminId;
-      log("Is User Data Added Continue ${ref.read(userAdditionStateProvider.notifier).isUserDataAdded}");
-      if (ref.read(userAdditionStateProvider.notifier).isUserDataAdded) {
-        //Now we have to check if the user is service provider and first added admin if both User ids match then we have to add default  services .
-        if (ref
-                .read(userAdditionStateProvider.notifier)
-                .listOfUserInfo[MapForUserInfo.isServiceProvider] &&
-            adminIdForMatching == currentUserId) {
-          log("Lets navigate to Admin home page ");
 
-          log("Admin Key is null");
-          myDialog(context);
+    var adminInfo = await adminInfoCollection.getAdminInfoByNumber("01");
+    var adminIdForMatching = adminInfo.adminId;
+    log("Is User Data Added Continue ${ref.read(userAdditionStateProvider.notifier).isUserDataAdded}");
+    if (ref.read(userAdditionStateProvider.notifier).isUserDataAdded) {
+      //Now we have to check if the user is service provider and first added admin if both User ids match then we have to add default  services .
+      if (ref
+              .read(userAdditionStateProvider.notifier)
+              .listOfUserInfo[MapForUserInfo.isServiceProvider] &&
+          adminIdForMatching == currentUserId) {
+        log("Lets navigate to Admin home page ");
 
-          await ref
-              .read(previousServiceStateProvider.notifier)
-              .addDefaultPreviousWorkCategories();
-          await ref
-              .read(defaultServicesStateProvider.notifier)
-              .addDefaultService();
-          Navigator.of(context).pop();
+        log("Admin Key is null");
+        myDialog(context);
 
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            AdminSideHomePage.pageName,
-            (route) => false,
-          );
-          //Otherwise if user id admin but not first one then we dont have to add default services we will show him first admin data and he is capable of updating and adding data in first admin side
-        } else if (ref
-                .read(userAdditionStateProvider.notifier)
-                .listOfUserInfo[MapForUserInfo.isServiceProvider] &&
-            adminIdForMatching != currentUserId) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            AdminSideHomePage.pageName,
-            (route) => false,
-          );
-        } else {
-          log("Lets navigate to client home page ");
-          //If Service provider is false then i take user to the  home page
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            HomePage.pageName,
-            (route) => false,
-          );
-        }
+        await ref
+            .read(previousServiceStateProvider.notifier)
+            .addDefaultPreviousWorkCategories();
+        await ref
+            .read(defaultServicesStateProvider.notifier)
+            .addDefaultService();
+        Navigator.of(context).pop();
+
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          AdminSideHomePage.pageName,
+          (route) => false,
+        );
+        ref.read(resetingAllControllers.notifier).resetControllers();
+        //Otherwise if user id admin but not first one then we dont have to add default services we will show him first admin data and he is capable of updating and adding data in first admin side
+      } else if (ref
+              .read(userAdditionStateProvider.notifier)
+              .listOfUserInfo[MapForUserInfo.isServiceProvider] &&
+          adminIdForMatching != currentUserId) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          AdminSideHomePage.pageName,
+          (route) => false,
+        );
+        ref.read(resetingAllControllers.notifier).resetControllers();
+      } else {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          HomePage.pageName,
+          (route) => false,
+        );
+        ref.read(resetingAllControllers.notifier).resetControllers();
       }
     } else {
       Fluttertoast.showToast(
@@ -161,7 +165,28 @@ class _BtnContinueChooserPageState extends ConsumerState<BtnContinueChooserPage>
                       ),
                     );
                   } else {
-                    onClickContinueButton(userSaveState);
+                    if (userSaveState) {
+                      largeTextInformerDialog(context, "Checking phone no");
+                      String userPhoneNo =
+                          await userCollection.getUserPhoneNumber(
+                              FirebaseAuth.instance.currentUser!.uid);
+                      if (userPhoneNo == "") {
+                        Navigator.of(context).pop();
+                        dialogForPhoneNo(context, ref);
+                      } else {
+                        Navigator.of(context).pop();
+
+                        onClickContinueButton(userSaveState);
+                      }
+                    } else {
+                      Fluttertoast.showToast(
+                          msg:
+                              "Click on save button to save you configurations!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          textColor: Colors.white,
+                          backgroundColor: Colors.red);
+                    }
                   }
                 },
                 backgroundColor: const Color.fromARGB(255, 14, 63, 103),

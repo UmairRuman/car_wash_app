@@ -10,14 +10,37 @@ import 'package:car_wash_app/Client/pages/category_page/Widget/state_widgets.dar
 import 'package:car_wash_app/Client/pages/indiviual_category_page/controller/favourite_icon_state_controller.dart';
 import 'package:car_wash_app/Client/pages/indiviual_category_page/view/indiviual_category_page.dart';
 import 'package:car_wash_app/Controllers/all_service_info_controller.dart';
-import 'package:car_wash_app/Controllers/favourite_service__state_controller.dart';
 import 'package:car_wash_app/Controllers/rating_controller.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class CategoriesList extends ConsumerWidget {
   const CategoriesList({super.key});
+
+  onClickService(WidgetRef ref, BuildContext context, int index,
+      ServiceDataLoadedState state) async {
+    await ref
+        .read(favouriteIconStateProvider.notifier)
+        .checkForFavouriteOrNot(state.services[index].serviceId);
+    ref.read(ratingStateProvider.notifier).getSpecificUserRating(
+        state.services[index].serviceId, state.services[index].serviceName);
+    ref.read(allServiceDataStateProvider.notifier).fetchServiceData(
+        state.services[index].serviceName, state.services[index].serviceId);
+    ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
+          DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day),
+        );
+    Navigator.of(context).pushNamed(IndiviualCategoryPage.pageName,
+        arguments: ImageAndServiceNameSender(
+          serviceID: state.services[index].serviceId,
+          categoryName: state.services[index].serviceName,
+          imagePath: state.services[index].iconUrl,
+        ));
+
+    log("Clicked on $index");
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,38 +86,20 @@ class CategoriesList extends ConsumerWidget {
                         child: FadeInAnimation(
                           child: InkWell(
                             onTap: () async {
-                              await ref
-                                  .read(favouriteIconStateProvider.notifier)
-                                  .checkForFavouriteOrNot(
-                                      state.services[index].serviceId);
-                              ref
-                                  .read(ratingStateProvider.notifier)
-                                  .getSpecificUserRating(
-                                      state.services[index].serviceId,
-                                      state.services[index].serviceName);
-                              ref
-                                  .read(allServiceDataStateProvider.notifier)
-                                  .fetchServiceData(
-                                      state.services[index].serviceName,
-                                      state.services[index].serviceId);
-                              ref
-                                  .read(timeSlotsStateProvider.notifier)
-                                  .getTimeSlots(
-                                    DateTime(
-                                        DateTime.now().year,
-                                        DateTime.now().month,
-                                        DateTime.now().day),
-                                  );
-                              Navigator.of(context).pushNamed(
-                                  IndiviualCategoryPage.pageName,
-                                  arguments: ImageAndServiceNameSender(
-                                    serviceID: state.services[index].serviceId,
-                                    categoryName:
-                                        state.services[index].serviceName,
-                                    imagePath: state.services[index].iconUrl,
-                                  ));
-
-                              log("Clicked on $index");
+                              final connectivityResult =
+                                  await Connectivity().checkConnectivity();
+                              if (connectivityResult[0] ==
+                                  ConnectivityResult.none) {
+                                // No internet connection
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('No internet connection'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } else {
+                                onClickService(ref, context, index, state);
+                              }
                             },
                             child: Column(
                               children: [

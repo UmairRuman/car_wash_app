@@ -136,6 +136,8 @@ void dialogForEdditingServiceImageAndDescription(
                                     ServiceClassVariables.imageFilePath = null;
                                     ServiceClassVariables.isClickedOnCamera =
                                         false;
+                                    ServiceClassVariables.isImageModified =
+                                        false;
                                   });
                                 },
                                 backgroundColor: Colors.blue,
@@ -176,17 +178,19 @@ void dialogForEdditingServiceImageAndDescription(
                                   await ref
                                       .read(serviceInfoProvider.notifier)
                                       .updateServiceImageAndDescription(
-                                          serviceName,
-                                          serviceDescription,
-                                          serviceId,
-                                          adminId,
-                                          ServiceClassVariables
-                                                      .downladedImagePath ==
-                                                  ""
-                                              ? imagePath
-                                              : ServiceClassVariables
-                                                  .downladedImagePath,
-                                          context);
+                                        serviceName,
+                                        serviceDescription,
+                                        serviceId,
+                                        adminId,
+                                        ServiceClassVariables
+                                                    .downladedImagePath ==
+                                                ""
+                                            ? imagePath
+                                            : ServiceClassVariables
+                                                .downladedImagePath,
+                                        ServiceClassVariables.isImageModified,
+                                        context,
+                                      );
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pop();
                                   setState(() {

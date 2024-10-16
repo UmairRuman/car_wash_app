@@ -48,7 +48,10 @@ class BookingDateText extends StatelessWidget {
         Expanded(
             flex: 30,
             child: Text(
-                "${bookingDate.year}-${bookingDate.month}-${bookingDate.day}")),
+                "${bookingDate.year}-${bookingDate.month}-${bookingDate.day}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ))),
         const Spacer(
           flex: 15,
         ),
@@ -72,7 +75,11 @@ class BookingSlotText extends StatelessWidget {
         const Spacer(
           flex: 20,
         ),
-        Expanded(flex: 30, child: Text(bookingSlot)),
+        Expanded(
+          flex: 30,
+          child: Text(bookingSlot,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
         const Spacer(
           flex: 15,
         ),

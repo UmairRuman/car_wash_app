@@ -1,5 +1,4 @@
 import 'package:car_wash_app/Client/pages/sign_up_page/widgets/buttons.dart';
-import 'package:car_wash_app/Client/pages/sign_up_page/widgets/checkBox.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/widgets/lower_container.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/widgets/text.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/widgets/text_fields.dart';
@@ -20,13 +19,13 @@ class SignUpPage extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                flex: 25,
+                flex: 20,
                 child: CustomPaint(
                   painter: TopContainerPainter(),
                   child: Container(
                     alignment: Alignment.center + (Alignment.center / 2),
                     child: const Padding(
-                      padding: EdgeInsets.only(top: 130),
+                      padding: EdgeInsets.only(top: 100),
                       child: Text(
                         "Sign Up",
                         style: TextStyle(
@@ -43,6 +42,7 @@ class SignUpPage extends StatelessWidget {
                   child: TextFieldName(
                     formKey: signUpPageNameKey,
                   )),
+              const Expanded(flex: 13, child: TextFieldPhoneNo()),
               Expanded(
                   flex: 12,
                   child: TextFieldEmail(
@@ -53,10 +53,10 @@ class SignUpPage extends StatelessWidget {
                   child: TextFieldPassword(
                     formKey: signUpPagePasswordKey,
                   )),
-              const Expanded(flex: 10, child: BtnCreateAccount()),
-              const Expanded(flex: 9, child: TextWidgetAlreadyHaveAnAccount()),
+              const Expanded(flex: 7, child: BtnCreateAccount()),
+              const Expanded(flex: 7, child: TextWidgetAlreadyHaveAnAccount()),
               Expanded(
-                flex: 20,
+                flex: 17,
                 child: ClipPath(
                     clipper: LowerContainerPainter(),
                     child: Container(

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:car_wash_app/Admin/Pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
 import 'package:car_wash_app/Controllers/user_state_controller.dart';
@@ -61,7 +60,9 @@ class AdminSideEditProfileStateController extends Notifier<String> {
       await userCollection.updateUserLocation(userId, editLocationTEC.text);
       await adminKeyCollection
           .updateAdminKey(AdminKey(pin: editPasswordTEC.text));
-      await ref.read(userAdditionStateProvider.notifier).getUser(userId);
+      await ref.read(userAdditionStateProvider.notifier).getUser();
+
+      Navigator.of(context).pop();
       Navigator.of(context).pop();
     } catch (e) {
       log("Error in updating all info");

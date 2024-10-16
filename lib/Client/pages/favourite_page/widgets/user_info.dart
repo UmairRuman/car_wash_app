@@ -1,15 +1,19 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/utils/images_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FavouritePageUserLocation extends StatelessWidget {
-  const FavouritePageUserLocation({super.key});
+  final String location;
+  const FavouritePageUserLocation({super.key, required this.location});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Expanded(
+        const Expanded(
             flex: 15,
             child: Icon(
               Icons.location_on_sharp,
@@ -17,12 +21,11 @@ class FavouritePageUserLocation extends StatelessWidget {
             )),
         Expanded(
             flex: 85,
-            child: FittedBox(
-              child: Text(
-                "Bahwalpur,Pakistan",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
-              ),
+            child: AutoSizeText(
+              location,
+              textAlign: TextAlign.start,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+              overflow: TextOverflow.ellipsis,
             ))
       ],
     );
@@ -30,7 +33,8 @@ class FavouritePageUserLocation extends StatelessWidget {
 }
 
 class FavouritePageProfilePic extends StatelessWidget {
-  const FavouritePageProfilePic({super.key});
+  final String profilePic;
+  const FavouritePageProfilePic({super.key, required this.profilePic});
 
   @override
   Widget build(BuildContext context) {
@@ -38,27 +42,39 @@ class FavouritePageProfilePic extends StatelessWidget {
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           image: DecorationImage(
-              image: AssetImage(profilePic), fit: BoxFit.cover)),
+              image: profilePic == ""
+                  ? AssetImage(emptyImage)
+                  : NetworkImage(profilePic),
+              fit: BoxFit.cover)),
     );
   }
 }
 
-class FavouritePageUserInfo extends StatelessWidget {
+class FavouritePageUserInfo extends ConsumerWidget {
   const FavouritePageUserInfo({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Row(
+  Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(userAdditionStateProvider);
+    return Row(
       children: [
-        Spacer(
+        const Spacer(
           flex: 5,
         ),
-        Expanded(flex: 40, child: FavouritePageUserLocation()),
-        Spacer(
+        Expanded(
+            flex: 40,
+            child: FavouritePageUserLocation(
+              location: (state as AddittionLoadedState).user.userLocation,
+            )),
+        const Spacer(
           flex: 40,
         ),
-        Expanded(flex: 10, child: FavouritePageProfilePic()),
-        Spacer(
+        Expanded(
+            flex: 10,
+            child: FavouritePageProfilePic(
+              profilePic: state.user.profilePicUrl,
+            )),
+        const Spacer(
           flex: 5,
         )
       ],

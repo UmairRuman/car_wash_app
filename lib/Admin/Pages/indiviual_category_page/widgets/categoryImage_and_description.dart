@@ -12,6 +12,7 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
   final String serviceName;
   final String serviceId;
   final bool isAssetImage;
+  final String adminPhoneNumber;
 
   const AdminSideIndiviualCategoryImageAndDescription(
       {super.key,
@@ -19,7 +20,8 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
       required this.imagePath,
       required this.description,
       required this.serviceId,
-      required this.serviceName});
+      required this.serviceName,
+      required this.adminPhoneNumber});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -83,7 +85,7 @@ class AdminSideIndiviualCategoryImageAndDescription extends ConsumerWidget {
                             flex: 80,
                             child: FittedBox(
                                 child: Text(
-                              FirebaseAuth.instance.currentUser!.phoneNumber!,
+                              adminPhoneNumber,
                               style: const TextStyle(
                                   color:
                                       const Color.fromARGB(255, 16, 66, 108)),

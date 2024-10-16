@@ -64,7 +64,7 @@ class SearchPage extends ConsumerWidget {
                 ),
                 initialList: ref.watch(filterSearchListProvider),
                 itemBuilder: (Services service) =>
-                    BuilderWidgetSearchBar(service: service),
+                    AdminSideBuilderWidgetSearchBar(service: service),
                 filter: (value) => services
                     .where(
                       (element) =>

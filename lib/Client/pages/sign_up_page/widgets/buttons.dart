@@ -1,6 +1,10 @@
 import 'package:car_wash_app/Client/pages/email_verification_page/view/verification_page.dart';
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/sign_up_page_controller.dart';
+import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
+import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/utils/global_keys.dart';
 import 'package:car_wash_app/utils/gradients.dart';
 import 'package:car_wash_app/utils/strings.dart';
@@ -38,31 +42,76 @@ class _BtnCreateAccountState extends ConsumerState<BtnCreateAccount>
     await Future.delayed(const Duration(milliseconds: 100));
     await animationController.reverse();
 
+    // Check form validation before proceeding
     if (signUpPagePasswordKey.currentState!.validate() &&
         signUpPageEmailKey.currentState!.validate() &&
-        signUpPageNameKey.currentState!.validate()) {
+        signUpPageNameKey.currentState!.validate() &&
+        ref.read(signUpPageProvider.notifier).isPhoneNoValidated) {
       String trimmedEmail = email.trimEmail()!;
       try {
+        String phoneNumber =
+            ref.read(signUpPageProvider.notifier).combinePhoneNo;
+
+        // Show dialog for account creation
         informerDialog(context, "Creating Account");
+
+        // Create user account using FirebaseAuth
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: trimmedEmail, password: userPassword);
+            email: email, password: userPassword);
+
+        // Update user's display name
         if (FirebaseAuth.instance.currentUser != null) {
           await FirebaseAuth.instance.currentUser!.updateDisplayName(userName);
         }
+
+        // Add user to Firestore or database
+        await ref
+            .read(userAdditionStateProvider.notifier)
+            .addUser(userName, trimmedEmail, phoneNumber);
+
+        // Update shared preferences and clear sign-up fields
+        prefs!.setBool(SharedPreferncesConstants.isUserInfoProvided, false);
+        ref
+            .read(userAdditionStateProvider.notifier)
+            .listOfUserInfo[MapForUserInfo.email] = email;
+        ref.read(signUpPageProvider.notifier).clearAllSignUpFields();
+
+        // Close any open dialogs and navigate to email verification page
         Navigator.of(context).pop();
-        Navigator.of(context)
-            .pushReplacementNamed(EmailVerificationPage.pageName);
-      } catch (signUpError) {
-        // if (signUpError is PlatformException) {
-        //   if (signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
-        //     /// `foo@bar.com` has alread been registered.
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                "Email is already registered! ${signUpError.toString()}")));
-        // }
-        // }
+        Navigator.of(context).pushNamed(
+          EmailVerificationPage.pageName,
+        );
+      } catch (e) {
+        Navigator.of(context).pop(); // Close any loading dialogs
+
+        // Handle Firebase sign-up errors
+        if (e is FirebaseAuthException) {
+          switch (e.code) {
+            case 'email-already-in-use':
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Email is already registered!")));
+              break;
+            case 'invalid-email':
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("The email address is not valid.")));
+              break;
+            case 'weak-password':
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("The password is too weak.")));
+              break;
+            default:
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("An error occurred: ${e.message}")));
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("An unknown error occurred.")));
+        }
       }
+    } else {
+      // If validation fails, show a message to the user
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Please fill in all fields correctly.")));
     }
   }
 

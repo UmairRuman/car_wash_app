@@ -146,9 +146,11 @@ class AdminSideMesssageIntialWidget extends StatelessWidget {
                                   ),
                                   Expanded(
                                       flex: 20,
-                                      child: Text(
-                                        notificationDeleiveredData,
-                                        style: TextStyle(fontSize: 12),
+                                      child: FittedBox(
+                                        child: Text(
+                                          notificationDeleiveredData,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
                                       )),
                                 ],
                               )),

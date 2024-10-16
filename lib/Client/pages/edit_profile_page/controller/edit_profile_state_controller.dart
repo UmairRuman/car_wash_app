@@ -39,7 +39,7 @@ class EditProfileStateController extends Notifier<String> {
     profileImagePath = newImagePath;
     dialogForUpdatingProfilePicProvider(context);
     await userCollection.updateUserProfilePic(userId, newImagePath);
-    ref.read(userAdditionStateProvider.notifier).getUser(userId);
+    ref.read(userAdditionStateProvider.notifier).getUser();
     Navigator.of(context).pop();
   }
 
@@ -60,8 +60,9 @@ class EditProfileStateController extends Notifier<String> {
       await userCollection.updateUserName(userId, editNameTEC.text);
       await userCollection.updateUserLocation(userId, editLocationTEC.text);
 
-      await ref.read(userAdditionStateProvider.notifier).getUser(userId);
-      await ref.read(profileDataStateProvider.notifier).getUserAllDData();
+      await ref.read(userAdditionStateProvider.notifier).getUser();
+      ref.read(profileDataStateProvider.notifier).getUserAllDData();
+      Navigator.of(context).pop();
       Navigator.of(context).pop();
     } catch (e) {
       log("Error in updating all info");

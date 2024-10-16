@@ -20,9 +20,22 @@ class TextCheckYourEmail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-        child: Text(
-      "We have send you email on $email , Kindly check your email!",
-      textAlign: TextAlign.center,
-    ));
+        alignment: Alignment.centerLeft,
+        child: RichText(
+          text: TextSpan(
+              style: const TextStyle(color: Colors.black, fontSize: 14),
+              children: [
+                const TextSpan(
+                    text:
+                        "To create your account please verify your email. We have send you email on "),
+                TextSpan(
+                    text: email,
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 53, 143, 217),
+                        fontWeight: FontWeight.bold)),
+                const TextSpan(text: " .Kindly check your email."),
+              ]),
+          textAlign: TextAlign.center,
+        ));
   }
 }

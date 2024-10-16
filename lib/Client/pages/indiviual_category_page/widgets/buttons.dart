@@ -1,8 +1,8 @@
 import 'package:car_wash_app/Admin/Pages/indiviual_category_page/widgets/Dialogs/edit_rating_dialog.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
+import 'package:car_wash_app/Functions/intenet_connectivity.dart';
 import 'package:car_wash_app/payment_methods/model/data_sender_model.dart';
 import 'package:car_wash_app/payment_methods/view/payment_page.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -104,18 +104,15 @@ class _ButtonBookAWashState extends ConsumerState<ButtonBookAWash>
               scale: animationForSize,
               child: FloatingActionButton(
                 onPressed: () async {
-                  final connectivityResult =
-                      await Connectivity().checkConnectivity();
-                  if (connectivityResult[0] == ConnectivityResult.none) {
-                    // No internet connection
+                  if (await hasInternetConnection()) {
+                    onBookButtonClick(ref);
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('No internet connection'),
                         backgroundColor: Colors.red,
                       ),
                     );
-                  } else {
-                    onBookButtonClick(ref);
                   }
                 },
                 backgroundColor: Colors.blue,

@@ -1,12 +1,16 @@
 //Firstly we have to implement singelton of class
 import 'dart:developer';
 
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/BookingCollections/booking_collextion.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/firebase_notifications/message_sender.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/payment_methods/Stripe/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +20,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class StripeServices {
   BookingCollection bookingCollection = BookingCollection();
-
+  TimeSlotCollection timeSlotCollection = TimeSlotCollection();
+  String adminId = prefs!.getString(SharedPreferncesConstants.adminkey) ?? "";
   AdminDeviceTokenCollection adminDeviceTokenCollection =
       AdminDeviceTokenCollection();
   StripeServices._internal();
@@ -97,8 +102,15 @@ class StripeServices {
       await ref
           .read(bookingStateProvider.notifier)
           .addBooking(serviceId, serviceName, serviceImageUrl);
+      //Deleting the booking timeslot from booking collection
+
+      await timeSlotCollection.deleteSpecificTimeSlot(
+          adminId,
+          ref.read(timeSlotsStateProvider.notifier).indexOfTimeSlot,
+          carWashDate);
 
       //Show toast to user for successfully reservation of slot
+
       Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "You have reserved slot successfully",
@@ -106,6 +118,8 @@ class StripeServices {
           gravity: ToastGravity.CENTER,
           textColor: Colors.white,
           backgroundColor: Colors.green);
+      Navigator.pop(context);
+      Navigator.pop(context);
       //When the payment is successfull then we have to send messages to admins by taking their token
       // await ref
       //     .read(bookingStateProvider.notifier)
@@ -135,7 +149,7 @@ class StripeServices {
       await Stripe.instance.confirmPaymentSheetPayment();
     } catch (e) {
       Fluttertoast.showToast(
-          msg: "Payment Failed ,${e.toString()}",
+          msg: "Payment Failed ",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           textColor: Colors.white,

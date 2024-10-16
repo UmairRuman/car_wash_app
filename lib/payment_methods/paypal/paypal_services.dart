@@ -1,17 +1,17 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
-import 'package:car_wash_app/Admin/Pages/booking_page/model/message_model.dart';
+import 'package:car_wash_app/Admin/Pages/indiviual_category_page/controller/timeslot_controller.dart';
 import 'package:car_wash_app/Client/pages/NotificationPage/controller/messages_state_controller.dart';
-import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
+import 'package:car_wash_app/Collections.dart/sub_collections.dart/time_slot_collection.dart';
 import 'package:car_wash_app/Controllers/booking_controller.dart';
-import 'package:car_wash_app/ModelClasses/admin_info.dart';
+import 'package:car_wash_app/Dialogs/dialogs.dart';
+import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/firebase_notifications/message_sender.dart';
-import 'package:car_wash_app/payment_methods/model/paypal_model.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:car_wash_app/payment_methods/paypal/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_paypal_checkout/flutter_paypal_checkout.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -25,6 +25,8 @@ Widget payPallmethod(
     String serviceId,
     DateTime carWashDate,
     WidgetRef ref) {
+  TimeSlotCollection timeSlotCollection = TimeSlotCollection();
+  String adminId = prefs!.getString(SharedPreferncesConstants.adminkey) ?? "";
   MessageDatabase messageDatabase = MessageDatabase();
   MessageSender messageSender = MessageSender();
   AdminDeviceTokenCollection adminDeviceTokenCollection =
@@ -75,24 +77,32 @@ Widget payPallmethod(
     onSuccess: (Map params) async {
       log("payment SuccessFull ");
       try {
+        informerDialog(context, "Reserving Slot...");
         await ref
             .read(bookingStateProvider.notifier)
             .addBooking(serviceId, serviceName, serviceImagPath);
 
+        await timeSlotCollection.deleteSpecificTimeSlot(
+            adminId,
+            ref.read(timeSlotsStateProvider.notifier).indexOfTimeSlot,
+            carWashDate);
+
         //If the payement is successFull then we have to  send notifications to all admin
 
         //Show toast to user for successfully reservation of slot
-
+        Navigator.pop(context);
         Fluttertoast.showToast(
             msg: "You have reserved slot successfully",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
             textColor: Colors.white,
             backgroundColor: Colors.green);
-    
+        Navigator.pop(context);
+        Navigator.pop(context);
+
         await ref
-          .read(messageStateProvider.notifier)
-          .getAllNotificationsByUserId();
+            .read(messageStateProvider.notifier)
+            .getAllNotificationsByUserId();
         var listOfAdminToken =
             await adminDeviceTokenCollection.getAllAdminDeviceTokens();
 
@@ -107,7 +117,7 @@ Widget payPallmethod(
         }
       } catch (e) {
         Fluttertoast.showToast(
-            msg: "Payment Failed ,${e.toString()}",
+            msg: "Payment Failed ",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
             textColor: Colors.white,

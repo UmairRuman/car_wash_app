@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bcrypt/bcrypt.dart';
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/controller/edit_profile_state_controller.dart';
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/view/edit_profile_page.dart';
+import 'package:car_wash_app/Admin/Pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/controller/key_state_controller.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/after_verify_btn_click.dart';
 import 'package:car_wash_app/Collections.dart/admin_key_collection.dart';
@@ -101,7 +102,9 @@ void showBottomSheetForEnteringOwnerKeyInProfilePage(
                             Navigator.of(context).pop();
                             Navigator.of(context)
                                 .pushNamed(AdminSideEditProfilePage.pageName);
-
+                            ref
+                                .read(bottomStateProvider.notifier)
+                                .currentNavigationState(1);
                             log("Both keys matched");
                             isWrongKey = false;
                           } else {

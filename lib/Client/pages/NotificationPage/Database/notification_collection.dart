@@ -73,25 +73,25 @@ class NotificationCollection {
       int hours = 168; // Default to 1 week (168 hours) for the admin
 
       // If the user is a client
-      if (currentUserId != adminId &&
-          isServiceProvider != null &&
-          !isServiceProvider) {
-        var allNotification = await fetchAllNotification(currentUserId);
+      // if (currentUserId != adminId &&
+      //     isServiceProvider != null &&
+      //     !isServiceProvider) {
+      //   var allNotification = await fetchAllNotification(currentUserId);
 
-        // Ensure there are bookings to process
-        if (allNotification.isNotEmpty) {
-          final clientCutoff =
-              allNotification.last.carWashDate.add(const Duration(hours: 24));
-          log("Clinet Cut off $clientCutoff");
-          // Ensure the cutoff is not in the future to avoid negative hours
-          if (clientCutoff.isBefore(DateTime.now())) {
-            hours = DateTime.now().difference(clientCutoff).inHours;
-          } else {
-            // If cutoff is in the future, set hours to 0 to avoid deletion
-            hours = 0;
-          }
-        }
-      }
+      //   // Ensure there are bookings to process
+      //   if (allNotification.isNotEmpty) {
+      //     final clientCutoff =
+      //         allNotification.last.carWashDate.add(const Duration(hours: 24));
+      //     log("Clinet Cut off $clientCutoff");
+      //     // Ensure the cutoff is not in the future to avoid negative hours
+      //     if (clientCutoff.isBefore(DateTime.now())) {
+      //       hours = DateTime.now().difference(clientCutoff).inHours;
+      //     } else {
+      //       // If cutoff is in the future, set hours to 0 to avoid deletion
+      //       hours = 0;
+      //     }
+      //   }
+      // }
 
       log("In delete Old notifications ");
       final now = DateTime.now();

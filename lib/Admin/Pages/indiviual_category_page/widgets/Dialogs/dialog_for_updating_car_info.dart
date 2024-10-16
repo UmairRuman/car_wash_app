@@ -19,6 +19,7 @@ class CarInfoUpdatingModel {
   static String downloadedImagePath = "";
   static bool isNewImagePicked = false;
   static String carOldName = "";
+  static bool isAssetImage = true;
 }
 
 void dialogForUpdatingCarInfo(
@@ -38,6 +39,7 @@ void dialogForUpdatingCarInfo(
   int currentlySelectedPrice =
       int.parse(carWashPrice.substring(0, carWashPrice.length - 1));
   ref.read(carInfoUpdationProvider.notifier).onChangeCarName(carName);
+  CarInfoUpdatingModel.isAssetImage = isCarAssetImage;
 
   showDialog(
     context: context,
@@ -91,6 +93,7 @@ void dialogForUpdatingCarInfo(
                                   CarInfoUpdatingModel.isImageUpdated = true;
                                   CarInfoUpdatingModel.isNewImagePicked = true;
                                   CarInfoUpdatingModel.imagePath = file.path;
+                                  CarInfoUpdatingModel.isAssetImage = false;
                                 });
                               }
                             },
@@ -173,7 +176,9 @@ void dialogForUpdatingCarInfo(
                             onPressed: () {
                               Navigator.of(context).pop();
                               CarInfoUpdatingModel.imagePath = "";
+                              CarInfoUpdatingModel.isImageUpdated = false;
                               CarInfoUpdatingModel.isNewImagePicked = false;
+                              CarInfoUpdatingModel.isAssetImage = true;
                             },
                             backgroundColor: const Color(0xFF1BC0C5),
                             child: const Text(
@@ -195,18 +200,30 @@ void dialogForUpdatingCarInfo(
                                   ? FirebaseAuth.instance.currentUser!.uid
                                   : prefs!.getString(
                                       SharedPreferncesConstants.adminkey);
-                              await uploadCarImageOnFirebaseStorageBox(
-                                  serviceName);
-                              await serviceCollection.updateCarInfo(
-                                  adminId!,
-                                  serviceId,
-                                  CarInfoUpdatingModel.carOldName,
-                                  serviceName,
-                                  "$currentlySelectedPrice\$",
-                                  carNameTEC.text,
-                                  CarInfoUpdatingModel.downloadedImagePath,
-                                  false);
 
+                              if (CarInfoUpdatingModel.isNewImagePicked) {
+                                await uploadCarImageOnFirebaseStorageBox(
+                                    serviceName);
+                                await serviceCollection.updateCarInfo(
+                                    adminId!,
+                                    serviceId,
+                                    CarInfoUpdatingModel.carOldName,
+                                    serviceName,
+                                    "$currentlySelectedPrice\$",
+                                    carNameTEC.text,
+                                    CarInfoUpdatingModel.downloadedImagePath,
+                                    CarInfoUpdatingModel.isAssetImage);
+                              } else {
+                                await serviceCollection.updateCarInfo(
+                                    adminId!,
+                                    serviceId,
+                                    CarInfoUpdatingModel.carOldName,
+                                    serviceName,
+                                    "$currentlySelectedPrice\$",
+                                    carNameTEC.text,
+                                    carImagePath,
+                                    CarInfoUpdatingModel.isAssetImage);
+                              }
                               await ref
                                   .read(allServiceDataStateProvider.notifier)
                                   .fetchServiceData(serviceName, serviceId);
@@ -215,6 +232,7 @@ void dialogForUpdatingCarInfo(
                               Navigator.of(context).pop();
                               CarInfoUpdatingModel.imagePath = "";
                               CarInfoUpdatingModel.isNewImagePicked = false;
+                              CarInfoUpdatingModel.isImageUpdated = false;
                             },
                             backgroundColor: const Color(0xFF1BC0C5),
                             child: const Text(

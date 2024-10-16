@@ -1,12 +1,20 @@
 import 'dart:developer';
 
+import 'package:car_wash_app/Admin/Pages/home_page/view/admin_side_home_page.dart';
+import 'package:car_wash_app/Client/pages/chooser_page/view/chooser_page.dart';
+import 'package:car_wash_app/Client/pages/home_page/view/home_page.dart';
+import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/Controllers/user_state_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
+import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/main.dart';
+import 'package:car_wash_app/top_level_classes/google_authentication.dart';
 import 'package:car_wash_app/utils/images_path.dart'; // Assuming you have this file for the icon paths.
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:oauth1/oauth1.dart' as oauth1;
@@ -14,14 +22,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:touch_ripple_effect/touch_ripple_effect.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class SocialMediaIcons extends StatefulWidget {
+class SocialMediaIcons extends ConsumerStatefulWidget {
   const SocialMediaIcons({super.key});
 
   @override
-  State<SocialMediaIcons> createState() => _SocialMediaIconsState();
+  ConsumerState<SocialMediaIcons> createState() => _SocialMediaIconsState();
 }
 
-class _SocialMediaIconsState extends State<SocialMediaIcons> {
+class _SocialMediaIconsState extends ConsumerState<SocialMediaIcons> {
+  UserCollection userCollection = UserCollection();
   final String consumerKey = 'UqrRottm7foCZtUQN1pXeLXog';
   final String consumerSecret =
       'KPjQqryETBVlGMjUz3Kc6M8s6y0Nyu427DBSHWa9dPM5ZU9C39';
@@ -49,8 +58,10 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
 
   Future<void> _checkIfLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? twitterToken = prefs.getString('twitterAccessToken');
-    String? twitterTokenSecret = prefs.getString('twitterAccessTokenSecret');
+    String? twitterToken =
+        prefs.getString(SharedPreferncesConstants.twitterAccessToken);
+    String? twitterTokenSecret =
+        prefs.getString(SharedPreferncesConstants.twitterAccessTokenSecret);
     User? googleUser = FirebaseAuth.instance.currentUser;
 
     if (twitterToken != null && twitterTokenSecret != null) {
@@ -161,29 +172,84 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
             SharedPreferncesConstants.twitterAccessTokenSecret,
             res.credentials.tokenSecret);
 
-        // Sign in to Firebase with Twitter credentials
-        final AuthCredential twitterCredential = TwitterAuthProvider.credential(
-          accessToken: res.credentials.token,
-          secret: res.credentials.tokenSecret,
-        );
-
-        UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithCredential(twitterCredential);
-
-        User? user = userCredential.user;
-        if (user != null) {
-          log('User authenticated successfully with Twitter and Firebase: ${user.displayName}');
-          Navigator.pop(context);
-        } else {
-          log('Failed to authenticate with Firebase.');
-          Navigator.pop(context);
-        }
-
-        setState(() {});
+        // Call the _authenticateWithTwitter method here
+        await _authenticateWithTwitter(
+            res.credentials.token, res.credentials.tokenSecret);
       } catch (e) {
         log('Failed to obtain access token: $e');
         Navigator.pop(context);
       }
+    }
+  }
+
+  Future<void> _authenticateWithTwitter(
+      String accessToken, String secret) async {
+    try {
+      // Sign in with Firebase using Twitter credentials
+      final AuthCredential twitterCredential = TwitterAuthProvider.credential(
+        accessToken: accessToken,
+        secret: secret,
+      );
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(twitterCredential);
+
+      User? user = userCredential.user;
+      if (user != null) {
+        // Check if user already exists in Firestore
+        final userSnapshot =
+            await UserCollection.userCollection.doc(user.uid).get();
+
+        if (!userSnapshot.exists) {
+          // This is the first time the user is logging in, so add their details
+          await ref.read(userAdditionStateProvider.notifier).addUser(
+                user.displayName!,
+                user.email ?? "No email provided",
+                user.phoneNumber ?? "",
+              );
+          // Set a flag in SharedPreferences to know that user is logged in
+          prefs!.setBool(SharedPreferncesConstants.isUserInfoProvided, false);
+          Navigator.pop(context);
+          // Navigate to the Chooser page for first-time login
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            ChooserPage.pageName,
+            (route) => false,
+          );
+        } else {
+          // User is already logged in, so update preferences and navigate to their respective page
+          bool isUserInfoProvided =
+              await userCollection.getServiceProviderInfo(user.uid);
+          bool isServiceProvider = await userCollection.getUserInfo(user.uid);
+          prefs!.setBool(
+              SharedPreferncesConstants.isServiceProvider, isServiceProvider);
+          prefs!.setBool(
+              SharedPreferncesConstants.isUserInfoProvided, isUserInfoProvided);
+          await getAdminIdFromFireStore(ref);
+          Navigator.pop(context);
+          if (!isUserInfoProvided) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              ChooserPage.pageName,
+              (route) => false,
+            );
+          } else if (isServiceProvider) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AdminSideHomePage.pageName,
+              (route) => false,
+            );
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              HomePage.pageName,
+              (route) => false,
+            );
+          }
+        }
+      }
+    } catch (e) {
+      log('Error authenticating with Firebase: $e');
     }
   }
 
@@ -204,70 +270,45 @@ class _SocialMediaIconsState extends State<SocialMediaIcons> {
         ],
       );
 
-      // Check if user is already signed in with Google
+      // Check if the user is already signed in
       if (await googleSignIn.isSignedIn()) {
-        // If user is signed in, get the current Google user
-        final GoogleSignInAccount? googleUser = googleSignIn.currentUser;
+        log('User is already signed in with Google.');
+        // User is already signed in, authenticate with Firebase
 
-        if (googleUser != null) {
-          // Authenticate with Firebase using the existing Google credentials
-          await _authenticateWithFirebase(googleUser);
-
-          // Check if the user's phone number is authenticated
-          _checkPhoneNumberVerification();
-          return;
+        bool? isServiceProvider = await GoogleAuthentication.signingInUser(ref);
+        if (isServiceProvider != null) {
+          if (!mounted) return;
+          Navigator.pop(context);
+          if (isServiceProvider) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AdminSideHomePage.pageName,
+              (route) => false,
+            );
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              HomePage.pageName,
+              (route) => false,
+            );
+          }
         }
-      }
-
-      // If the user is not signed in, prompt them to sign in
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-
-      if (googleUser != null) {
-        await _authenticateWithFirebase(googleUser);
-        _checkPhoneNumberVerification();
+      } else {
+        log("User is not signed in with Google.");
+        await GoogleAuthentication
+            .signingUserWhenReinstallingAppOrInstallingForTheFirstTime(
+                ref, context);
       }
     } catch (e) {
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
       Fluttertoast.showToast(
-        msg: "Failed Login",
+        msg: "Failed Login ${e.toString()}",
         textColor: Colors.white,
         backgroundColor: Colors.red,
       );
       log("Error in logging in with Google: ${e.toString()}");
-    }
-  }
-
-  Future<void> _authenticateWithFirebase(GoogleSignInAccount googleUser) async {
-    try {
-      // Authenticate with Google
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      // Create credential for Firebase
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      // Sign in with Firebase
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      log('User authenticated successfully with Google: ${googleUser.email}');
-      setState(() {});
-
-      Fluttertoast.showToast(
-        msg: "Login Successfully",
-        textColor: Colors.white,
-        backgroundColor: Colors.green,
-      );
-    } catch (e) {
-      Navigator.pop(context);
-      Fluttertoast.showToast(
-        msg: "Failed Login",
-        textColor: Colors.white,
-        backgroundColor: Colors.red,
-      );
-      log("Error in authenticating with Firebase: ${e.toString()}");
     }
   }
 

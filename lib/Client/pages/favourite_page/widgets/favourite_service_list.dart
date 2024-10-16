@@ -78,7 +78,7 @@ class FavouriteServiceList extends ConsumerWidget {
               height: 20,
             ),
             Text(
-              "Fetching Services For You...",
+              "Removing Service from favourite ...",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

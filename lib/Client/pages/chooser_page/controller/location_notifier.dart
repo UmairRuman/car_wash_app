@@ -10,6 +10,10 @@ class CurrentLocationNotifier extends Notifier<Placemark> {
   void getCurrentLocation(Placemark placeMark) {
     state = placeMark;
   }
+
+  void resetLocation() {
+    state = const Placemark();
+  }
 }
 
 final locationProvider = NotifierProvider<CurrentLocationNotifier, Placemark>(

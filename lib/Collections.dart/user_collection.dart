@@ -27,9 +27,18 @@ class UserCollection {
       var snapShot = await userCollection.doc(userId).get();
 
       return Users.fromMap(snapShot.data()!).name;
-      ;
     } catch (e) {
       return "";
+    }
+  }
+
+  Future<bool> getServiceProviderInfo(String userId) async {
+    try {
+      var snapShot = await userCollection.doc(userId).get();
+
+      return Users.fromMap(snapShot.data()!).isUserInfo;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -135,6 +144,34 @@ class UserCollection {
     }
   }
 
+  Future<bool> updateServiceProviderInfo(
+      String userId, bool isServiceProvider) async {
+    try {
+      log("Updating User Status Info ");
+      await userCollection
+          .doc(userId)
+          .update({"isUserInfo": isServiceProvider});
+      return true;
+    } catch (e) {
+      log("Error in updating user stateus info ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateUserStatusInfo(
+      String userId, bool isServiceProvider) async {
+    try {
+      log("Updating User Status Info ");
+      await userCollection
+          .doc(userId)
+          .update({"isServiceProvider": isServiceProvider});
+      return true;
+    } catch (e) {
+      log("Error in updating user stateus info ${e.toString()}");
+      return false;
+    }
+  }
+
   Future<String> getUserLocation(String userId) async {
     try {
       var querrySnapshot = await userCollection.doc(userId).get();
@@ -159,8 +196,10 @@ class UserCollection {
     try {
       var querrySnapshot = await userCollection.doc(userId).get();
 
+      log("Querry snapshot in get user info through google icon ${querrySnapshot.data().toString()}");
       return Users.fromMap(querrySnapshot.data()!).isServiceProvider;
     } catch (e) {
+      log("Exception on getting user info throgh login page ${e.toString()}");
       return false;
     }
   }
@@ -208,10 +247,11 @@ class UserCollection {
       var snapshot = await userCollection.doc(userId).get();
 
       var singleUserData = Users.fromMap(snapshot.data()!);
-
+      log("User data $singleUserData");
       return singleUserData;
     } catch (e) {
       return Users(
+          isUserInfo: false,
           userId: userId,
           name: "",
           email: "",

@@ -37,6 +37,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
           var serviceDescription = state.service.description;
           var listOfDates = state.service.availableDates;
           var isAssetImage = state.service.isAssetImage;
+          var adminPhoneNo = state.service.adminPhoneNo;
           List<Car> listOfCars = state.service.cars;
           return Column(
             children: [
@@ -60,6 +61,7 @@ class AdminSideIndiviualCategoryPage extends ConsumerWidget {
                     serviceName: serviceName,
                     description: serviceDescription,
                     imagePath: serviceImage,
+                    adminPhoneNumber: adminPhoneNo,
                   )),
               Expanded(
                 flex: 5,

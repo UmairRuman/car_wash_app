@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/controller/edit_profile_state_controller.dart';
 import 'package:car_wash_app/Admin/Pages/profile_page/controller/profile_pic_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:car_wash_app/Functions/intenet_connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +25,10 @@ class _AdminProfilePageEditIconState
     extends ConsumerState<AdminProfilePageEditIcon> {
   Future<void> _pickAndCropImage(BuildContext context) async {
     // Pick the image from the gallery
-    var pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
     try {
+      var pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         // Crop the image
         var croppedFile = await ImageCropper().cropImage(
@@ -79,19 +81,12 @@ class _AdminProfilePageEditIconState
     return TouchRippleEffect(
       rippleColor: Colors.orange,
       onTap: () async {
-        final connectivityResult = await Connectivity().checkConnectivity();
-        if (connectivityResult == ConnectivityResult.none) {
-          // No internet connection
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('No internet connection'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
+        if (await hasInternetConnection()) {
+          _pickAndCropImage(context);
         } else {
-          await _pickAndCropImage(context);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('No internet connection'),
+          ));
         }
       },
       child: Container(

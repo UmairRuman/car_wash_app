@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/Admin/Pages/NotificationPage/view/notification_page.dart';
 import 'package:car_wash_app/Admin/Pages/booking_page/database/message_database.dart';
@@ -21,47 +22,52 @@ class AdminProfilePic extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(profilePicProvider);
     return InkWell(
-      onTap: () {
-        log("State = $state");
-        if (state == "") {
-          log("Profile pic url $userProfilePic");
-          dialogForShowingProfileImage(context, userProfilePic, false);
-        } else {
-          dialogForShowingProfileImage(context, state, true);
-        }
-      },
-      child: Container(
-        decoration: BoxDecoration(
+        onTap: () {
+          log("State = $state");
+          if (state == "") {
+            log("Profile pic url $userProfilePic");
+            dialogForShowingProfileImage(context, userProfilePic, false);
+          } else {
+            dialogForShowingProfileImage(context, state, true);
+          }
+        },
+        child: Container(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            image: DecorationImage(
-                image: userProfilePic == ""
-                    ? AssetImage(profilePic)
-                    : CachedNetworkImageProvider(userProfilePic),
-                fit: BoxFit.fill)),
-        child: state != ""
-            ? Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: FileImage(File(state)), fit: BoxFit.fill)),
-              )
-            : CachedNetworkImage(
-                imageUrl: userProfilePic,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                imageBuilder: (context, imageProvider) => Container(
+          ),
+          child: state != "" // Check if the user has picked a new image
+              ? Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: imageProvider,
+                      image: FileImage(File(
+                          state)), // Show the newly picked image immediately
                       fit: BoxFit.fill,
                     ),
                   ),
-                ),
-              ),
-      ),
-    );
+                )
+              : userProfilePic ==
+                      "" // If no new image is picked, check if profileImageUrl is empty
+                  ? Image.asset(
+                      emptyImage) // Show the default empty image if profileImageUrl is empty
+                  : CachedNetworkImage(
+                      imageUrl:
+                          userProfilePic, // Show the network image if profileImageUrl is available
+                      placeholder: (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ),
+        ));
   }
 }
 
@@ -81,12 +87,10 @@ class AdminHomePageUserLocation extends StatelessWidget {
             )),
         Expanded(
             flex: 85,
-            child: FittedBox(
-              child: Text(
-                userLocation == "" ? "Location" : userLocation,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
-              ),
+            child: AutoSizeText(
+              userLocation == "" ? "Location" : userLocation,
+              textAlign: TextAlign.start,
+              style: const TextStyle(color: Colors.white),
             ))
       ],
     );

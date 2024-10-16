@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/main_container.dart';
+import 'package:car_wash_app/Client/pages/chooser_page/widgets/skip_dialog.dart';
 import 'package:car_wash_app/Client/pages/chooser_page/widgets/user_info.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/Controllers/dialog_info_controller.dart';
 import 'package:car_wash_app/Dialogs/dialogs.dart';
 import 'package:car_wash_app/Functions/geo_locator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,22 +28,22 @@ class _ChooserPageState extends ConsumerState<ChooserPage> {
   }
 
   void getPosition() async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      String userLocation = await userCollection
-          .getUserLocation(FirebaseAuth.instance.currentUser!.uid);
-      if (userLocation == "") {
-        if (mounted) {
-          var position = await determinePosition(context);
-          currentUserPosition = position;
-        }
-        log("User Position in IF $currentUserPosition");
-      }
-    } else {
+    // if (FirebaseAuth.instance.currentUser != null) {
+    //   String userLocation = await userCollection
+    //       .getUserLocation(FirebaseAuth.instance.currentUser!.uid);
+    //   if (userLocation == "") {
+    if (mounted) {
       var position = await determinePosition(context);
       currentUserPosition = position;
-      log("User Position $currentUserPosition");
     }
+    log("User Position in IF $currentUserPosition");
   }
+  // } else {
+  //   var position = await determinePosition(context);
+  //   currentUserPosition = position;
+  //   log("User Position $currentUserPosition");
+  // }
+  //}
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,27 @@ class _ChooserPageState extends ConsumerState<ChooserPage> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
+        actions: [
+          InkWell(
+              onTap: () async {
+                largeTextInformerDialog(context, "Checking phone no");
+                String userPhoneNo = await userCollection
+                    .getUserPhoneNumber(FirebaseAuth.instance.currentUser!.uid);
+                Navigator.pop(context);
+                if (userPhoneNo == "") {
+                  dialogForPhoneNo(context, ref);
+                } else {
+                  dialogForSkipProfile(context, ref);
+                }
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: 16.0),
+                child: Text(
+                  "Skip",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ))
+        ],
         leading: InkWell(
             onTap: () async {
               log("Tapped on icon");

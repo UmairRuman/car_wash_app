@@ -5,13 +5,28 @@ class SignUpPageController extends Notifier<String> {
   TextEditingController nameTEC = TextEditingController();
   TextEditingController passwordTEC = TextEditingController();
   TextEditingController emailTEC = TextEditingController();
-
+  TextEditingController phoneTEC = TextEditingController();
+  bool isPhoneNoValidated = false;
+  String combinePhoneNo = "";
   @override
   String build() {
+    ref.onDispose(
+      () {
+        nameTEC.dispose();
+        passwordTEC.dispose();
+        emailTEC.dispose();
+        phoneTEC.dispose();
+      },
+    );
     return "";
   }
 
-  void disposeControllers() {}
+  void clearAllSignUpFields() {
+    nameTEC.clear();
+    passwordTEC.clear();
+    emailTEC.clear();
+    phoneTEC.clear();
+  }
 }
 
 final signUpPageProvider =

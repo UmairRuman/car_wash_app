@@ -31,26 +31,29 @@ class AdminSideDateTimePicker extends ConsumerWidget {
     DateTime focusDate =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     var selectedYear = ref.watch(yearStateProvider);
-    return DatePicker(
-      // inactiveDates: getInactiveDates(),
-      daysCount:
-          ref.read(increamentingDaysStateProvider.notifier).intialShowingDates,
-      initialSelectedDate: DateTime.now(),
-      DateTime.now(),
-      selectionColor: Colors.blue,
-      selectedTextColor: Colors.white,
-      onDateChange: (selectedDate) {
-        //We are setting current Date  to delete TimeSlots at that date
-        ref.read(timeSlotsStateProvider.notifier).currentDate =
-            DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
-        ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
-              DateTime(selectedDate.year, selectedDate.month, selectedDate.day),
-            );
-        focusDate =
-            DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
-        ref.read(dateProvider.notifier).onClickChangeDate(
-            DateTime(selectedDate.year, selectedDate.month, selectedDate.day));
-      },
+    return Padding(
+      padding: const EdgeInsets.only(left:  8.0),
+      child: DatePicker(
+        // inactiveDates: getInactiveDates(),
+        daysCount:
+            ref.read(increamentingDaysStateProvider.notifier).intialShowingDates,
+        initialSelectedDate: DateTime.now(),
+        DateTime.now(),
+        selectionColor: Colors.blue,
+        selectedTextColor: Colors.white,
+        onDateChange: (selectedDate) {
+          //We are setting current Date  to delete TimeSlots at that date
+          ref.read(timeSlotsStateProvider.notifier).currentDate =
+              DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+          ref.read(timeSlotsStateProvider.notifier).getTimeSlots(
+                DateTime(selectedDate.year, selectedDate.month, selectedDate.day),
+              );
+          focusDate =
+              DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+          ref.read(dateProvider.notifier).onClickChangeDate(
+              DateTime(selectedDate.year, selectedDate.month, selectedDate.day));
+        },
+      ),
     );
   }
 }

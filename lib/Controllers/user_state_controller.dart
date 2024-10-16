@@ -4,6 +4,7 @@ import 'package:car_wash_app/Collections.dart/admin_info_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_count_collection.dart';
 import 'package:car_wash_app/Collections.dart/sub_collections.dart/admin_device_token_collectiion.dart';
 import 'package:car_wash_app/Collections.dart/user_collection.dart';
+import 'package:car_wash_app/Controllers/app_opening_controller.dart';
 import 'package:car_wash_app/Functions/admin_info_function.dart';
 import 'package:car_wash_app/ModelClasses/Users.dart';
 import 'package:car_wash_app/ModelClasses/admin_device_token.dart';
@@ -11,6 +12,7 @@ import 'package:car_wash_app/ModelClasses/admin_info.dart';
 import 'package:car_wash_app/ModelClasses/map_for_User_info.dart';
 import 'package:car_wash_app/ModelClasses/shraed_prefernces_constants.dart';
 import 'package:car_wash_app/firebase_notifications/notification_service.dart';
+import 'package:car_wash_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,8 +40,10 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     MapForUserInfo.bonusPoints: 0.0,
     MapForUserInfo.phoneNumber: "",
     MapForUserInfo.createdAt: DateTime.now(),
-    MapForUserInfo.userLocation: ""
+    MapForUserInfo.userLocation: "",
+    MapForUserInfo.userPassword: ""
   };
+
   bool isUserDataAdded = false;
   UserCollection userCollection = UserCollection();
   @override
@@ -74,14 +78,62 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     }
   }
 
-  void addUser() async {
-    log("User name ${listOfUserInfo[MapForUserInfo.userName]}");
-    log("User id ${listOfUserInfo[MapForUserInfo.userId]}");
-    log("User gmail ${listOfUserInfo[MapForUserInfo.email]}");
+  Future<void> addUser(
+      String userName, String email, String userPhoneNo) async {
+    try {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      var deviceToken = await notificationServices.getTokken();
+      var allAdminsDeviceTokenlist =
+          await adminDeviceTokenCollection.getAllAdminDeviceTokens();
+      var realAdminInfo = await adminInfoCollection.getAdminInfoByNumber("01");
+      var adminInfo = await adminInfoCollection.getAllAdminInfo();
+      var adminNo = adminInfo.length + 1;
+
+      List<String> listOfTokens = [];
+      for (int index = 0; index < allAdminsDeviceTokenlist.length; index++) {
+        listOfTokens.add(allAdminsDeviceTokenlist[index].deviceToken);
+      }
+
+      if (realAdminInfo.adminId != "") {
+        //Storing all the admin info iin shared prefrences
+        storeServiceProviderTokens(listOfTokens);
+        sharedPreferences.setString(
+            SharedPreferncesConstants.phoneNo, realAdminInfo.adminPhoneNo);
+        sharedPreferences.setString(
+            SharedPreferncesConstants.adminkey, realAdminInfo.adminId);
+        sharedPreferences.setInt(
+            SharedPreferncesConstants.adminCount, int.parse("0$adminNo"));
+      }
+
+      log("User Shared Prefrences");
+      log("Phone number in shared prefrences ${sharedPreferences.getString(SharedPreferncesConstants.phoneNo)}");
+      log("Admin Id in shared prefrences ${sharedPreferences.getString(SharedPreferncesConstants.adminkey)}");
+      log("Admin Device Token in shared prefrences ${sharedPreferences.getString(SharedPreferncesConstants.adminTokenKey)}");
+
+      await userCollection.addUser(Users(
+          isUserInfo: false,
+          userId: FirebaseAuth.instance.currentUser!.uid,
+          name: userName,
+          email: email,
+          profilePicUrl: "",
+          phoneNumber: userPhoneNo,
+          isServiceProvider: false,
+          bonusPoints: 0.0,
+          serviceConsumed: 0,
+          createdAt: DateTime.now(),
+          userLocation: "No location",
+          deviceToken: deviceToken));
+    } catch (e) {
+      log("Error in adding user $e");
+    }
+  }
+
+  void updateUser() async {
     log("Profile Pic Url ${listOfUserInfo[MapForUserInfo.profilePicUrl]}");
     log("Is Service Provider ${listOfUserInfo[MapForUserInfo.isServiceProvider]}");
     log("User Location ${listOfUserInfo[MapForUserInfo.userLocation]}");
-    log("Phone No ${FirebaseAuth.instance.currentUser!.phoneNumber!}");
+
     //In user collection firstly we get user device token
     var realToken = await notificationServices.getTokken();
     log("Device Token $realToken");
@@ -97,9 +149,7 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     var userId = listOfUserInfo[MapForUserInfo.userId] == ""
         ? FirebaseAuth.instance.currentUser!.uid
         : listOfUserInfo[MapForUserInfo.userId];
-    var userPhoneNo = listOfUserInfo[MapForUserInfo.phoneNumber] == ""
-        ? FirebaseAuth.instance.currentUser!.phoneNumber
-        : listOfUserInfo[MapForUserInfo.phoneNumber];
+    var userPhoneNo = await userCollection.getUserPhoneNumber(userId);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     //If the user is admin then we will fetch the list of admin to check their number and add admin info
 
@@ -149,32 +199,55 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
 
     log("All data added");
     isUserDataAdded = true;
-    bool isUserAdd = await userCollection.addUser(Users(
-        deviceToken: realToken,
-        userId: userId,
-        name: userName ?? "No name",
-        email: FirebaseAuth.instance.currentUser!.email ?? "",
-        profilePicUrl: listOfUserInfo[MapForUserInfo.profilePicUrl],
-        phoneNumber:
-            FirebaseAuth.instance.currentUser!.phoneNumber ?? userPhoneNo,
-        isServiceProvider: listOfUserInfo[MapForUserInfo.isServiceProvider],
-        bonusPoints: listOfUserInfo[MapForUserInfo.bonusPoints],
-        serviceConsumed: listOfUserInfo[MapForUserInfo.serviceConsumed],
-        createdAt: DateTime.now(),
-        userLocation: listOfUserInfo[MapForUserInfo.userLocation]));
-    log("User  added $isUserAdd");
+    // bool isUserAdd = await userCollection.addUser(Users(
+    //     deviceToken: realToken,
+    //     userId: userId,
+    //     name: userName ?? "No name",
+    //     email: FirebaseAuth.instance.currentUser!.email ?? "",
+    //     profilePicUrl: listOfUserInfo[MapForUserInfo.profilePicUrl],
+    //     phoneNumber:
+    //         FirebaseAuth.instance.currentUser!.phoneNumber ?? userPhoneNo,
+    //     isServiceProvider: listOfUserInfo[MapForUserInfo.isServiceProvider],
+    //     bonusPoints: listOfUserInfo[MapForUserInfo.bonusPoints],
+    //     serviceConsumed: listOfUserInfo[MapForUserInfo.serviceConsumed],
+    //     createdAt: DateTime.now(),
+    //     userLocation: listOfUserInfo[MapForUserInfo.userLocation]));
+    prefs!.setBool(SharedPreferncesConstants.isUserInfoProvided, true);
+    await userCollection.updateServiceProviderInfo(userId, true);
+    await userCollection.updateUserStatusInfo(
+        userId, listOfUserInfo[MapForUserInfo.isServiceProvider]);
+    await userCollection.updateUserProfilePic(
+        userId, listOfUserInfo[MapForUserInfo.profilePicUrl]);
+
+    await userCollection.updateUserLocation(
+        userId, listOfUserInfo[MapForUserInfo.userLocation]);
   }
 
-  Future<void> getUser(String userId) async {
-    await Future.delayed(const Duration(seconds: 3));
+  Future<void> getUser() async {
+    if (!ref.read(appOpeningStateProvider.notifier).isUserLogin) {
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (ref
+          .read(appOpeningStateProvider.notifier)
+          .isUserLoginFirstTimeAfterReinstalling) {
+        await Future.delayed(const Duration(seconds: 5));
+      }
+    }
+
     state = AdditionLoadingState();
 
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     try {
-      var user = await userCollection.getUser(userId);
+      var user = await userCollection.getUser(uid);
+
       state = AddittionLoadedState(user: user);
     } catch (e) {
       state = AdditionErrorState(error: e.toString());
     }
+  }
+
+  void reInitializeState() {
+    state = AdditionIntialState();
   }
 
   Future<bool> checkUserIfExitsOrNot() async {
@@ -190,9 +263,13 @@ class UserStateNotifier extends Notifier<UserAdditionStates> {
     }
     return false;
   }
+
+  void disposeAllData() {
+    ref.onDispose(() {});
+  }
 }
 
-abstract class UserAdditionStates {}
+sealed class UserAdditionStates {}
 
 class AdditionIntialState extends UserAdditionStates {}
 

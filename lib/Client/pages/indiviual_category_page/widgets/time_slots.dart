@@ -42,6 +42,9 @@ class ClientSideTimeSlots extends ConsumerWidget {
                               if (isClicked && selectedIndex == index) {
                                 isClicked = false;
                               } else {
+                                ref
+                                    .read(timeSlotsStateProvider.notifier)
+                                    .indexOfTimeSlot = index;
                                 isClicked = true;
                               }
                               selectedIndex = index;
@@ -49,39 +52,48 @@ class ClientSideTimeSlots extends ConsumerWidget {
                             ref.read(bookingStateProvider.notifier).timeSlot =
                                 state.list[selectedIndex];
                           },
-                          child: Container(
-                            height: constraints.maxHeight / 2,
-                            width: constraints.maxWidth / 4,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: isClicked && selectedIndex == index
-                                    ? Colors.blue
-                                    : Colors.white,
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Color.fromARGB(255, 167, 204, 234),
-                                      offset: Offset(3, 3),
-                                      blurRadius: 3)
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Container(
+                              height: constraints.maxHeight / 2,
+                              width: constraints.maxWidth / 4,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: isClicked && selectedIndex == index
+                                      ? Colors.blue
+                                      : Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color:
+                                            Color.fromARGB(255, 167, 204, 234),
+                                        offset: Offset(3, 3),
+                                        blurRadius: 3)
+                                  ],
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.elliptical(15, 15))),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    state.list[index],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            isClicked && selectedIndex == index
+                                                ? Colors.white
+                                                : Colors.black),
+                                  ),
+                                  Text(
+                                    "Available",
+                                    style: TextStyle(
+                                        color:
+                                            isClicked && selectedIndex == index
+                                                ? Colors.yellow
+                                                : Colors.green,
+                                        fontSize: 10),
+                                  )
                                 ],
-                                borderRadius: const BorderRadius.all(
-                                    Radius.elliptical(15, 15))),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  state.list[index],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: isClicked && selectedIndex == index
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-                                const Text(
-                                  "Available",
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 10),
-                                )
-                              ],
+                              ),
                             ),
                           ),
                         ),

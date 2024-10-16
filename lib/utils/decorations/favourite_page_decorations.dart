@@ -9,7 +9,7 @@ var favouriteCategoryContainerDecoration = const BoxDecoration(
     color: Colors.white,
     boxShadow: [
       BoxShadow(
-          offset: Offset(3, -3),
+          offset: Offset(3, 3),
           color: Color.fromARGB(255, 151, 188, 219),
           blurRadius: 3)
     ],

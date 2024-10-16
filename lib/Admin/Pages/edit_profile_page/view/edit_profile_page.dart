@@ -1,6 +1,6 @@
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/widgets/buttons.dart';
 import 'package:car_wash_app/Admin/Pages/edit_profile_page/widgets/text_editting_controllers.dart';
-import 'package:car_wash_app/Client/pages/home_page/Controller/bottom_bar_controller.dart';
+import 'package:car_wash_app/Admin/Pages/home_page/Controller/bottom_bar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,8 +20,11 @@ class AdminSideEditProfilePage extends ConsumerWidget {
         backgroundColor: const Color.fromARGB(255, 89, 171, 239),
         leading: InkWell(
             onTap: () {
-              ref.read(bottomStateProvider.notifier).currentNavigationState(2);
               Navigator.of(context).pop();
+              ref.read(bottomStateProvider.notifier).currentNavigationState(2);
+              // Future(() => ref
+              //     .read(bottomStateProvider.notifier)
+              //     .currentNavigationState(2));
             },
             child: const Icon(
               Icons.arrow_back,

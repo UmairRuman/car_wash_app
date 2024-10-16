@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:car_wash_app/Client/pages/sign_up_page/controller/sign_up_page_controller.dart';
 import 'package:car_wash_app/utils/validations/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class TextFieldName extends ConsumerWidget {
   final GlobalKey<FormState> formKey;
@@ -133,6 +136,61 @@ class TextFieldPassword extends ConsumerWidget {
           ),
         ),
         const Spacer(flex: 10),
+      ],
+    );
+  }
+}
+
+class TextFieldPhoneNo extends ConsumerWidget {
+  const TextFieldPhoneNo({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final PhoneNumber intialPhoneNumber = PhoneNumber(isoCode: "PK");
+    return Row(
+      children: [
+        const Spacer(
+          flex: 10,
+        ),
+        Expanded(
+            flex: 80,
+            child: InternationalPhoneNumberInput(
+              selectorConfig: const SelectorConfig(
+                selectorType: PhoneInputSelectorType.DIALOG,
+              ),
+              inputDecoration: const InputDecoration(
+                fillColor: Colors.white,
+                labelText: "Phone Number ",
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ),
+              ),
+              initialValue: intialPhoneNumber,
+              autoValidateMode: AutovalidateMode.onUserInteraction,
+              hintText: "Phone No",
+              textFieldController:
+                  ref.read(signUpPageProvider.notifier).phoneTEC,
+              onInputValidated: (value) {
+                if (value) {
+                  ref.read(signUpPageProvider.notifier).isPhoneNoValidated =
+                      value;
+                  log("Is phone Number validated $value");
+                }
+              },
+              onInputChanged: (phoneNumber) {
+                final combinedPhoneNumber = '${phoneNumber.phoneNumber}';
+                ref.read(signUpPageProvider.notifier).combinePhoneNo =
+                    combinedPhoneNumber;
+              },
+            )),
+        const Spacer(
+          flex: 10,
+        ),
       ],
     );
   }

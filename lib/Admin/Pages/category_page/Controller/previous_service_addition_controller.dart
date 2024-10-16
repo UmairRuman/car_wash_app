@@ -50,6 +50,7 @@ class PreviousServiceAdditionController extends Notifier<PreviousDataStates> {
   }
 
   Future<void> getAllPreviousData() async {
+    log("Admin ID In all previous service list  ${adminId}");
     state = PreviousDataLoadingState();
     try {
       var listOfPreviousWorks =
